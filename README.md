@@ -22,7 +22,7 @@ than for example cores implementing the MD5 cryptographic hash
 function.
 
 The project includes a testbench that verifies that the core generates
-the correct respons to the testvectors in Appendix A of the SipHash
+the correct response to the testvectors in Appendix A of the SipHash
 paper [1]. The project also includes a simple Makefile for compiling the
 core using Icarus Verilog [3].
 
