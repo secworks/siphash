@@ -231,17 +231,12 @@ module siphash_core(
   always @*
     begin : datapath_update
       // Internal wires
-      reg [63 : 0] add_a_op0;
       reg [63 : 0] add_a_op1;
       reg [63 : 0] add_a_res;
-      
-      reg [63 : 0] add_b_op0;
       reg [63 : 0] add_b_op1;
       reg [63 : 0] add_b_res;
       
       // Default assignments
-      add_a_op0 = v0_reg;
-      add_b_op0 = v2_reg;
       v0_new    = 64'h0000000000000000;
       v0_we     = 0;
       v1_new    = 64'h0000000000000000;
@@ -273,8 +268,8 @@ module siphash_core(
       endcase // case (dp_state_reg)
 
       // The 64 bit adders
-      add_a_res = add_a_op0 + add_a_op1;
-      add_b_res = add_b_op0 + add_b_op1;
+      add_a_res = v0_reg + add_a_op1;
+      add_b_res = v2_reg + add_b_op1;
       
       // Main DP logic.
       if (dp_update)
