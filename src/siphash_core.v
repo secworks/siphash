@@ -74,8 +74,6 @@ module siphash_core(
   parameter DP_FINALIZATION      = 3'h3;
   parameter DP_SIPROUND_0        = 3'h4;
   parameter DP_SIPROUND_1        = 3'h5;
-  parameter DP_SIPROUND_2        = 3'h6;
-  parameter DP_SIPROUND_3        = 3'h7;
 
   // State names for the control FSM.
   parameter CTRL_IDLE    = 3'h0;
@@ -261,7 +259,7 @@ module siphash_core(
             add_b_op1 = v3_reg;
           end
         
-        DP_SIPROUND_2:
+        DP_SIPROUND_1:
           begin
             add_a_op1 = v3_reg;
             add_b_op1 = v1_reg;
@@ -314,47 +312,34 @@ module siphash_core(
             
             DP_SIPROUND_0:
               begin
-                v0_new = add_a_res;
+                v0_new = {add_a_res[31:0], add_a_res[63:32]};
                 v0_we = 1;
-                v1_new = {v1_reg[50:0], v1_reg[63:51]};
+
+                v1_new = {v1_reg[50:0], v1_reg[63:51]} ^ add_a_res;
                 v1_we = 1;
+                
                 v2_new = add_b_res;
                 v2_we = 1;
-                v3_new = {v3_reg[47:0],v3_reg[63:48]};
+                
+                v3_new = {v3_reg[47:0], v3_reg[63:48]} ^ v2_new;
                 v3_we = 1;
               end
 
             DP_SIPROUND_1:
               begin
-                v0_new = {v0_reg[31:0],v0_reg[63:32]};
-                v0_we = 1;
-                v1_new = v1_reg ^ v0_reg;
-                v1_we = 1;
-                v3_new = v3_reg ^ v2_reg;
-                v3_we = 1;
-              end
-
-            DP_SIPROUND_2:
-              begin
                 v0_new = add_a_res;
                 v0_we = 1;
-                v1_new = {v1_reg[46:0],v1_reg[63:47]};
-                v1_we = 1;
-                v2_new = add_b_res;
-                v2_we = 1;
-                v3_new = {v3_reg[42:0],v3_reg[63:43]};
-                v3_we = 1;
-              end
 
-            DP_SIPROUND_3:
-              begin
-                v1_new = v1_reg ^ v2_reg;
+                v1_new = {v1_reg[46:0], v1_reg[63:47]} ^ add_b_res;
                 v1_we = 1;
-                v2_new = {v2_reg[31:0],v2_reg[63:32]};
+
+                v2_new = {add_b_res[31:0], add_b_res[63:32]};
                 v2_we = 1;
-                v3_new = v3_reg ^ v0_reg;
+
+                v3_new = {v3_reg[42:0], v3_reg[63:43]} ^ add_a_res;
                 v3_we = 1;
               end
+            
           endcase // case (dp_state_reg)
         end // if (dp_update)
     end // block: datapath_update
@@ -458,7 +443,7 @@ module siphash_core(
 
         CTRL_COMP_1:
           begin
-            if (dp_state_reg == DP_SIPROUND_3)
+            if (dp_state_reg == DP_SIPROUND_1)
               begin
                 if (loop_ctr_reg == (c - 1))
                   begin
@@ -503,7 +488,7 @@ module siphash_core(
 
         CTRL_FINAL_1:
           begin
-            if (dp_state_reg == DP_SIPROUND_3)              
+            if (dp_state_reg == DP_SIPROUND_1)              
               begin
                 if (loop_ctr_reg == (d - 1))
                   begin
