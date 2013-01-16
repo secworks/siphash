@@ -41,11 +41,12 @@ module siphash_core(
                     input wire           clk,
                     input wire           reset_n,
                 
-                    // Control
+                    // Control.
                     input wire           initalize,
                     input wire           compress,
                     input wire           finalize,
 
+                    // Parameters and data.
                     // Number of compression rounds c.
                     // Number of finalization rounds d.
                     // Key k.
@@ -85,7 +86,7 @@ module siphash_core(
 
   
   //----------------------------------------------------------------
-  // Registers including update variables
+  // Registers including update variables and write enable.
   //----------------------------------------------------------------
   reg [63 : 0] v0_reg;
   reg [63 : 0] v0_new;
@@ -145,9 +146,9 @@ module siphash_core(
   
   //----------------------------------------------------------------
   // reg_update
-  // This block contains all the register updates in the core.
+  // Update functionality for all registers in the core.
   // All registers are positive edge triggered with synchronous
-  // active low reset.
+  // active low reset. All registers have write enable.
   //----------------------------------------------------------------
   always @ (posedge clk)
     begin
@@ -222,10 +223,10 @@ module siphash_core(
 
   //----------------------------------------------------------------
   // datapath_update
-  // update_logic for the internal datapath with internal state 
+  // update_logic for the internal datapath with the internal state 
   // stored in the v0, v1, v2 and v3 registers.
   //
-  // This datapath contains two parallel 64-bit adders with 
+  // The datapath contains two parallel 64-bit adders with 
   // operand MUXes to support reuse during processing.
   //----------------------------------------------------------------
   always @*
@@ -245,6 +246,8 @@ module siphash_core(
       v2_we     = 0;
       v3_new    = 64'h0000000000000000;
       v3_we     = 0;
+      add_a_op1 = 64'h0000000000000000;
+      add_b_op1 = 64'h0000000000000000;
 
       // Operand MUXes for the adders.
       case (dp_state_reg)
@@ -258,12 +261,6 @@ module siphash_core(
           begin
             add_a_op1 = v3_reg;
             add_b_op1 = v1_reg;
-          end
-        
-        default:
-          begin
-            add_a_op1    = 64'h0000000000000000;
-            add_b_op1    = 64'h0000000000000000;
           end
       endcase // case (dp_state_reg)
 
@@ -334,7 +331,6 @@ module siphash_core(
                 v3_new = {v3_reg[42:0], v3_reg[63:43]} ^ add_a_res;
                 v3_we = 1;
               end
-            
           endcase // case (dp_state_reg)
         end // if (dp_update)
     end // block: datapath_update
@@ -342,8 +338,8 @@ module siphash_core(
   
   //----------------------------------------------------------------
   // loop_ctr
-  // Update logic for the loop counter.
-  // A simple monotonically increasing counter.
+  // Update logic for the loop counter, a monotonically 
+  // increasing counter with reset.
   //----------------------------------------------------------------
   always @*
     begin : loop_ctr
@@ -513,7 +509,6 @@ module siphash_core(
           end
       endcase // case (siphash_ctrl_reg)
     end // siphash_ctrl_fsm
-
 endmodule // siphash_core
 
 //======================================================================
