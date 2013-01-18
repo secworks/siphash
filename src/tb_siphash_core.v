@@ -45,12 +45,11 @@ module tb_siphash_core();
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
-  // Symbolic names for control FSM states.
   parameter CLK_HALF_PERIOD = 2;
 
   
   //----------------------------------------------------------------
-  // Register and Wire declarations
+  // Register and Wire declarations.
   //----------------------------------------------------------------
   // Cycle counter.
   reg [31 : 0] cycle_ctr;
@@ -63,10 +62,10 @@ module tb_siphash_core();
   reg           tb_initalize;
   reg           tb_compress;
   reg           tb_finalize;
-  reg [7 : 0]   tb_c;
-  reg [7 : 0]   tb_d;
+  reg [3 : 0]   tb_c;
+  reg [3 : 0]   tb_d;
   reg [127 : 0] tb_k;
-  reg [63 : 0] tb_mi;
+  reg [63 : 0]  tb_mi;
   wire          tb_ready;
   wire [63 : 0] tb_siphash_word;
   wire          tb_siphash_word_valid;
@@ -76,30 +75,29 @@ module tb_siphash_core();
   // siphash_core device under test.
   //----------------------------------------------------------------
   siphash_core dut(
-                    // Clock and reset.
-                    .clk(tb_clk),
-                    .reset_n(tb_reset_n),
+                   // Clock and reset.
+                   .clk(tb_clk),
+                   .reset_n(tb_reset_n),
                 
-                    // Control
-                    .initalize(tb_initalize),
-                    .compress(tb_compress),
-                    .finalize(tb_finalize),
+                   // Control
+                   .initalize(tb_initalize),
+                   .compress(tb_compress),
+                   .finalize(tb_finalize),
 
-                    .c(tb_c),
-                    .d(tb_d),
-                    .k(tb_k),
-                    .mi(tb_mi),
+                   .c(tb_c),
+                   .d(tb_d),
+                   .k(tb_k),
+                   .mi(tb_mi),
 
-                    .ready(tb_ready),
+                   .ready(tb_ready),
                    
-                    .siphash_word(tb_siphash_word),
-                    .siphash_word_valid(tb_siphash_word_valid)
-              );
+                   .siphash_word(tb_siphash_word),
+                   .siphash_word_valid(tb_siphash_word_valid)
+                  );
   
 
   //----------------------------------------------------------------
   // clk_gen
-  //
   // Clock generator process. 
   //----------------------------------------------------------------
   always 
@@ -110,7 +108,6 @@ module tb_siphash_core();
   
   //--------------------------------------------------------------------
   // dut_monitor
-  //
   // Monitor for observing the inputs and outputs to the dut.
   // Includes the cycle counter.
   //--------------------------------------------------------------------
@@ -129,7 +126,6 @@ module tb_siphash_core();
 
   //----------------------------------------------------------------
   // dump_inputs
-  //
   // Dump the internal SIPHASH state to std out.
   //----------------------------------------------------------------
   task dump_inputs();
@@ -146,7 +142,6 @@ module tb_siphash_core();
 
   //----------------------------------------------------------------
   // dump_outputs
-  //
   // Dump the outputs from the SipHash to std out.
   //----------------------------------------------------------------
   task dump_outputs();
@@ -161,7 +156,6 @@ module tb_siphash_core();
 
   //----------------------------------------------------------------
   // dump_state
-  //
   // Dump the internal SIPHASH state to std out.
   //----------------------------------------------------------------
   task dump_state();
@@ -179,7 +173,6 @@ module tb_siphash_core();
   
   //----------------------------------------------------------------
   // siphash_core_test
-  //
   // The main test functionality. 
   //----------------------------------------------------------------
   initial

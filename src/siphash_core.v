@@ -355,7 +355,7 @@ module siphash_core(
 
       if (loop_ctr_inc)
         begin
-          loop_ctr_new = loop_ctr_reg + 4'h01;
+          loop_ctr_new = loop_ctr_reg + 4'h1;
           loop_ctr_we  = 1;
         end
     end // loop_ctr
