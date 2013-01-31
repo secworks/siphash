@@ -1,8 +1,8 @@
 //======================================================================
 //
 // tb_siphash_core.v
-// -------------
-// Testbench for the SIPHASH stream cipher core.
+// -----------------
+// Testbench for the SipHash hash function core.
 //
 //
 // Copyright (c) 2012, Secworks Sweden AB
