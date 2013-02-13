@@ -78,8 +78,7 @@ module siphash_core(
   parameter DP_COMPRESSION_START = 3'h1;
   parameter DP_COMPRESSION_END   = 3'h2;
   parameter DP_FINALIZATION      = 3'h3;
-  parameter DP_SIPROUND_0        = 3'h4;
-  parameter DP_SIPROUND_1        = 3'h5;
+  parameter DP_SIPROUND          = 3'h4;
 
   // State names for the control FSM.
   parameter CTRL_IDLE    = 3'h0;
@@ -291,7 +290,7 @@ module siphash_core(
                 v2_we = 1;
               end
             
-            DP_SIPROUND_0:
+            DP_SIPROUND:
               begin
                 // First two adders.
                 add_0_res = v0_reg + v1_reg;
@@ -413,7 +412,7 @@ module siphash_core(
         CTRL_COMP_0:
           begin
             dp_update        = 1;
-            dp_state_new     = DP_SIPROUND_0;
+            dp_state_new     = DP_SIPROUND;
             dp_state_we      = 1;
             siphash_ctrl_new = CTRL_COMP_1;
             siphash_ctrl_we  = 1;
@@ -430,7 +429,7 @@ module siphash_core(
               begin
                 loop_ctr_inc = 1;
                 dp_update    = 1;
-                dp_state_new = DP_SIPROUND_0;
+                dp_state_new = DP_SIPROUND;
                 dp_state_we  = 1;
               end
           end
@@ -449,7 +448,7 @@ module siphash_core(
         CTRL_FINAL_0:
           begin
             dp_update         = 1;
-            dp_state_new      = DP_SIPROUND_0;
+            dp_state_new      = DP_SIPROUND;
             dp_state_we       = 1;
             siphash_ctrl_new  = CTRL_FINAL_1;
             siphash_ctrl_we   = 1;
@@ -472,7 +471,7 @@ module siphash_core(
               begin
                 loop_ctr_inc = 1;
                 dp_update    = 1;
-                dp_state_new = DP_SIPROUND_0;
+                dp_state_new = DP_SIPROUND;
                 dp_state_we  = 1;
               end
           end
