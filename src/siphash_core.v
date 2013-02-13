@@ -1,9 +1,14 @@
 //======================================================================
 //
 // siphash_core.v
-// ---------------
+// --------------
 // Verilog 2001 implementation of SipHash.
-// This is the core with wide interface.
+// This is the internal core with wide interface.
+// The core implements the round function as a one cycle, full parallel
+// operation. This means chained 64 bit adders.
+//
+// Note that the module name is siphash_core to allow usage of the
+// same TB and wrapper as the default and tiny versions of the core.
 //
 //
 // Copyright (c) 2012, Secworks Sweden AB
@@ -232,10 +237,15 @@ module siphash_core(
   always @*
     begin : datapath_update
       // Internal wires
-      reg [63 : 0] add_a_op1;
-      reg [63 : 0] add_a_res;
-      reg [63 : 0] add_b_op1;
-      reg [63 : 0] add_b_res;
+      reg [63 : 0] add_0_res;
+      reg [63 : 0] add_1_res;
+      reg [63 : 0] add_2_res;
+      reg [63 : 0] add_3_res;
+
+      reg [63 : 0] v0_tmp;
+      reg [63 : 0] v1_tmp;
+      reg [63 : 0] v2_tmp;
+      reg [63 : 0] v3_tmp;
       
       // Default assignments
       v0_new    = 64'h0000000000000000;
@@ -246,27 +256,6 @@ module siphash_core(
       v2_we     = 0;
       v3_new    = 64'h0000000000000000;
       v3_we     = 0;
-      add_a_op1 = 64'h0000000000000000;
-      add_b_op1 = 64'h0000000000000000;
-
-      // Operand MUXes for the adders.
-      case (dp_state_reg)
-        DP_SIPROUND_0:
-          begin
-            add_a_op1 = v1_reg;
-            add_b_op1 = v3_reg;
-          end
-        
-        DP_SIPROUND_1:
-          begin
-            add_a_op1 = v3_reg;
-            add_b_op1 = v1_reg;
-          end
-      endcase // case (dp_state_reg)
-
-      // The 64 bit adders
-      add_a_res = v0_reg + add_a_op1;
-      add_b_res = v2_reg + add_b_op1;
       
       // Main DP logic.
       if (dp_update)
@@ -304,31 +293,29 @@ module siphash_core(
             
             DP_SIPROUND_0:
               begin
-                v0_new = {add_a_res[31:0], add_a_res[63:32]};
+                // First two adders.
+                add_0_res = v0_reg + v1_reg;
+                add_1_res = v2_reg + v3_reg;
+
+                v0_tmp = {add_0_res[31:0], add_0_res[63:32]};
+                v1_tmp = {v1_reg[50:0], v1_reg[63:51]} ^ add_0_res;
+                v2_tmp = add_1_res;
+                v3_tmp = {v3_reg[47:0], v3_reg[63:48]} ^ add_1_res;
+
+                // Second pair of adders.
+                add_2_res = v1_tmp + v2_tmp;
+                add_3_res = v0_tmp + v3_tmp;
+                
+                v0_new = add_3_res;
                 v0_we = 1;
 
-                v1_new = {v1_reg[50:0], v1_reg[63:51]} ^ add_a_res;
-                v1_we = 1;
-                
-                v2_new = add_b_res;
-                v2_we = 1;
-                
-                v3_new = {v3_reg[47:0], v3_reg[63:48]} ^ v2_new;
-                v3_we = 1;
-              end
-
-            DP_SIPROUND_1:
-              begin
-                v0_new = add_a_res;
-                v0_we = 1;
-
-                v1_new = {v1_reg[46:0], v1_reg[63:47]} ^ add_b_res;
+                v1_new = {v1_tmp[46:0], v1_tmp[63:47]} ^ add_2_res;
                 v1_we = 1;
 
-                v2_new = {add_b_res[31:0], add_b_res[63:32]};
+                v2_new = {add_2_res[31:0], add_2_res[63:32]};
                 v2_we = 1;
 
-                v3_new = {v3_reg[42:0], v3_reg[63:43]} ^ add_a_res;
+                v3_new = {v3_tmp[42:0], v3_tmp[63:43]} ^ add_3_res;
                 v3_we = 1;
               end
           endcase // case (dp_state_reg)
@@ -434,25 +421,16 @@ module siphash_core(
 
         CTRL_COMP_1:
           begin
-            if (dp_state_reg == DP_SIPROUND_1)
+            if (loop_ctr_reg == (c - 1))
               begin
-                if (loop_ctr_reg == (c - 1))
-                  begin
-                    siphash_ctrl_new  = CTRL_COMP_2;
-                    siphash_ctrl_we   = 1;
-                  end
-                else
-                  begin
-                    loop_ctr_inc = 1;
-                    dp_update    = 1;
-                    dp_state_new = DP_SIPROUND_0;
-                    dp_state_we  = 1;
-                  end
+                siphash_ctrl_new  = CTRL_COMP_2;
+                siphash_ctrl_we   = 1;
               end
             else
               begin
+                loop_ctr_inc = 1;
                 dp_update    = 1;
-                dp_state_new = dp_state_reg + 3'b01;
+                dp_state_new = DP_SIPROUND_0;
                 dp_state_we  = 1;
               end
           end
@@ -479,31 +457,22 @@ module siphash_core(
 
         CTRL_FINAL_1:
           begin
-            if (dp_state_reg == DP_SIPROUND_1)              
+            if (loop_ctr_reg == (d - 1))
               begin
-                if (loop_ctr_reg == (d - 1))
-                  begin
-                    // Done.
-                    ready_new         = 1;
-                    ready_we          = 1;
-                    dp_update         = 1;
-                    siphash_valid_new = 1;
-                    siphash_valid_we  = 1;
-                    siphash_ctrl_new  = CTRL_IDLE;
-                    siphash_ctrl_we   = 1;
-                  end
-                else
-                  begin
-                    loop_ctr_inc = 1;
-                    dp_update    = 1;
-                    dp_state_new = DP_SIPROUND_0;
-                    dp_state_we  = 1;
-                  end
+                // Done.
+                ready_new         = 1;
+                ready_we          = 1;
+                dp_update         = 1;
+                siphash_valid_new = 1;
+                siphash_valid_we  = 1;
+                siphash_ctrl_new  = CTRL_IDLE;
+                siphash_ctrl_we   = 1;
               end
             else
               begin
+                loop_ctr_inc = 1;
                 dp_update    = 1;
-                dp_state_new = dp_state_reg + 3'b001;
+                dp_state_new = DP_SIPROUND_0;
                 dp_state_we  = 1;
               end
           end
