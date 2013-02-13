@@ -1,9 +1,9 @@
 //======================================================================
 //
-// siphash_core.v
-// ---------------
-// Verilog 2001 implementation of SipHash.
-// This is the core with wide interface.
+// siphash.v
+// ---------
+// Top level wrapper for the Verilog 2001 implementation of SipHash.
+// This wrapper provides a 32-bit memory like interface.
 //
 //
 // Copyright (c) 2012, Secworks Sweden AB
@@ -430,5 +430,5 @@ module siphash(
 endmodule // siphash
 
 //======================================================================
-// EOF siphash_core.v
+// EOF siphash.v
 //======================================================================
