@@ -26,7 +26,7 @@ the correct response to the testvectors in Appendix A of the SipHash
 paper [1]. The project also includes a simple Makefile for compiling the
 core using Icarus Verilog [3].
 
-The core has been as hardware for an Altera Cyclone IV GX FPGA, see
+The core has been implemented in an Altera Cyclone IV GX FPGA, see
 Implementation notes below for more information.
 
 This core is released as open source under a BSD license, see
@@ -64,19 +64,19 @@ language. The core uses synchronous reset for all registers and all
 registers are equipped with write enable. The core should integrate and
 build cleanly into any standard FPGA project.
 
-The core implements the SipRound function with two 64 bit adders capable
+The core implements the SipRound function with four 64 bit adders capable
 of performing operations in parallel. A single SipRound operation takes
-two cycles to perform.
+one cycle to perform.
 
 Total latency for processing a message that consists of a single 64 bit
 block using SipHash-2-4 is:
 
- -                 1 cycle for initialization
- - 1 + 2 * 2 + 1 = 6 cycles for compression
- - 4 * 2 + 1     = 9 cycles for finalization
+ - 1 cycle for initialization
+ - 1 + 2 + 1 = 4 cycles for compression
+ - 4 + 1 = 5 cycles for finalization
 
-In total: 16 cycles or 2 cycles/Byte.
-For long messages, the latency is asymptotically 0.75 cycles/Byte.
+In total: 10 cycles or 1.25 cycles/Byte.
+For long messages, the latency is asymptotically 0.5 cycles/Byte.
 
 
 ## Implementation results ##
@@ -85,9 +85,9 @@ A test implementation of the core for Altera Cyclone IV GX has been done
 using the Altera Quartus 12 design tool. The resource usage for the core
 is:
 
-  - Number of LEs: 1301
-  - Number of regs: 332
-  - Max frequency:  112 MHz
+  - Number of LEs: 1088
+  - Number of regs: 337
+  - Max frequency:  98 MHz
 
 Note: Quartus might add three regs due to FSM encoding.
 
