@@ -1,4 +1,6 @@
 # SipHash Core #
+(This repo has been moved to Github from Gitorious.)
+
 
 ## Introduction ##
 
