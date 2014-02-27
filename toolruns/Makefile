@@ -36,11 +36,10 @@
 #=======================================================================
 
 CC = iverilog
-SRC = tb_shiphash_core.v siphash_core.v
+CORE_SRC = ../src/tb/tb_siphash_core.v ../src/rtl/siphash_core.v
 
-
-all:	tb_siphash_core.v siphash_core.v
-	iverilog -v -Wall -o test_siphash tb_siphash_core.v siphash_core.v
+all:	$(CORE_SRC)
+	iverilog -Wall -o sim.siphash $(CORE_SRC)
 
 #=======================================================================
 # EOF Makefile
