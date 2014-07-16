@@ -59,7 +59,7 @@ The core will only accept new commands (initialize, compress, finalize)
 when the (ready) flag is asserted.
 
 
-## Implementation notes ## 
+## Implementation notes ##
 
 The core is implemented using the Verilog 2001 hardware description
 language. The core uses synchronous reset for all registers and all
