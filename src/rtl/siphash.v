@@ -8,30 +8,30 @@
 //
 // Copyright (c) 2012, Secworks Sweden AB
 // All rights reserved.
-// 
-// Redistribution and use in source and binary forms, with or 
-// without modification, are permitted provided that the following 
-// conditions are met: 
-// 
-// 1. Redistributions of source code must retain the above copyright 
-//    notice, this list of conditions and the following disclaimer. 
-// 
-// 2. Redistributions in binary form must reproduce the above copyright 
-//    notice, this list of conditions and the following disclaimer in 
-//    the documentation and/or other materials provided with the 
-//    distribution. 
-// 
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
-// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
-// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
-// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in
+//    the documentation and/or other materials provided with the
+//    distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
 // BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //======================================================================
@@ -51,20 +51,20 @@ module siphash(
                output wire          error
               );
 
-  
+
   //----------------------------------------------------------------
   // Symbolic names.
   //----------------------------------------------------------------
   `include "siphash.vh"
 
-  
+
   //----------------------------------------------------------------
   // Registers including update variables and write enable.
   //----------------------------------------------------------------
   reg [2 : 0]  ctrl_reg;
   reg [2 : 0]  ctrl_new;
   reg          ctrl_we;
-  
+
   reg [7 : 0]  param_reg;
   reg [7 : 0]  param_new;
   reg          param_we;
@@ -100,8 +100,8 @@ module siphash(
   reg [31 : 0] word1_reg;
   reg [31 : 0] word1_new;
   reg          word1_we;
-  
-  
+
+
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
@@ -120,7 +120,7 @@ module siphash(
   wire [63 : 0] core_siphash_word;
   wire          core_siphash_word_valid;
 
-  
+
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
@@ -129,14 +129,14 @@ module siphash(
   assign error           = error_out;
 
 
-  
+
   //----------------------------------------------------------------
   // Core instance.
   //----------------------------------------------------------------
   siphash_core core(
                     .clk(clk),
                     .reset_n(reset_n),
-                
+
                     .initalize(core_initalize),
                     .compress(core_compress),
                     .finalize(core_finalize),
@@ -147,19 +147,19 @@ module siphash(
                     .mi(core_mi),
 
                     .ready(core_ready),
-                    
+
                     .siphash_word(core_siphash_word),
                     .siphash_word_valid(core_siphash_word_valid)
                    );
-  
-  
+
+
   //----------------------------------------------------------------
   // reg_update
   // Update functionality for all registers in the core.
-  // All registers are positive edge triggered with synchronous
-  // active low reset. All registers have write enable.
+  // All registers are positive edge triggered with
+  // asynchronous active low reset.
   //----------------------------------------------------------------
-  always @ (posedge clk)
+  always @ (posedge clk or negedge reset_n)
     begin
       if (!reset_n)
         begin
@@ -181,37 +181,37 @@ module siphash(
             begin
               ctrl_reg <= ctrl_new;
             end
-          
+
           if (param_we)
             begin
               param_reg <= param_new;
             end
-          
+
           if (key0_we)
             begin
               key0_reg <= key0_new;
             end
-          
+
           if (key1_we)
             begin
               key1_reg <= key1_new;
             end
-          
+
           if (key2_we)
             begin
               key2_reg <= key2_new;
             end
-          
+
           if (key3_we)
             begin
               key3_reg <= key3_new;
             end
-          
+
           if (mi0_we)
             begin
               mi0_reg <= mi0_new;
             end
-          
+
           if (mi1_we)
             begin
               mi1_reg <= mi1_new;
@@ -235,11 +235,11 @@ module siphash(
       core_finalize  = ctrl_reg[SIPHASH_BIT_FINALIZE];
       core_c         = param_reg[(SIPHASH_START_C + SIPHASH_SIZE_C) : SIPHASH_START_C];
       core_d         = param_reg[(SIPHASH_START_D + SIPHASH_SIZE_D) : SIPHASH_START_D];
-      core_k         = {key0_reg, key1_reg, key2_reg, key3_reg};     
+      core_k         = {key0_reg, key1_reg, key2_reg, key3_reg};
       core_mi        = {mi0_reg, mi1_reg};
     end
 
-  
+
   //----------------------------------------------------------------
   // register update control logic.
   //----------------------------------------------------------------
@@ -254,7 +254,7 @@ module siphash(
       ctrl_we             = 1'b0;
       param_new           = 8'h00;
       param_we            = 1'b0;
-      
+
       key0_new            = 32'h00000000;
       key0_we             = 1'b0;
       key1_new            = 32'h00000000;
@@ -263,17 +263,17 @@ module siphash(
       key2_we             = 1'b0;
       key3_new            = 32'h00000000;
       key3_we             = 1'b0;
-      
+
       mi0_new             = 32'h00000000;
       mi0_we              = 1'b0;
       mi1_new             = 32'h00000000;
       mi1_we              = 1'b0;
-      
+
       word0_new           = 32'h00000000;
       word0_we            = 1'b0;
       word1_new           = 32'h00000000;
       word1_we            = 1'b0;
-      
+
       if (cs)
         begin
           if (wr_rd)
@@ -286,7 +286,7 @@ module siphash(
                     ctrl_new = write_data[2 : 0];
                     ctrl_we  = 1'b1;
                   end
-                
+
                 SIPHASH_ADDR_PARAM:
                   begin
                     param_new = write_data[7 : 0];
@@ -340,7 +340,7 @@ module siphash(
                     word1_new = write_data;
                     word1_we  = 1'b1;
                   end
-                
+
                 default:
                   begin
                     error_out = 1;
@@ -363,7 +363,7 @@ module siphash(
                     read_data_out       = {30'h00000000, core_ready, core_siphash_word_valid};
                     read_data_valid_out = 1'b1;
                   end
-                
+
                 SIPHASH_ADDR_PARAM:
                   begin
                     read_data_out       = {24'h000000, param_reg};
@@ -417,7 +417,7 @@ module siphash(
                     read_data_out       = mi1_reg;
                     read_data_valid_out = 1'b1;
                   end
-                
+
                 default:
                   begin
                     error_out = 1;
@@ -426,7 +426,7 @@ module siphash(
             end
         end
     end
-  
+
 endmodule // siphash
 
 //======================================================================

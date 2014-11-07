@@ -13,30 +13,30 @@
 //
 // Copyright (c) 2012, Secworks Sweden AB
 // All rights reserved.
-// 
-// Redistribution and use in source and binary forms, with or 
-// without modification, are permitted provided that the following 
-// conditions are met: 
-// 
-// 1. Redistributions of source code must retain the above copyright 
-//    notice, this list of conditions and the following disclaimer. 
-// 
-// 2. Redistributions in binary form must reproduce the above copyright 
-//    notice, this list of conditions and the following disclaimer in 
-//    the documentation and/or other materials provided with the 
-//    distribution. 
-// 
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
-// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
-// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
-// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in
+//    the documentation and/or other materials provided with the
+//    distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
 // BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //======================================================================
@@ -45,7 +45,7 @@ module siphash_core(
                     // Clock and reset.
                     input wire           clk,
                     input wire           reset_n,
-                
+
                     // Control.
                     input wire           initalize,
                     input wire           compress,
@@ -63,13 +63,13 @@ module siphash_core(
 
                     // Status output.
                     output wire          ready,
-                    
+
                     // Hash word output.
                     output wire [63 : 0] siphash_word,
                     output wire          siphash_word_valid
                    );
 
-  
+
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
@@ -88,7 +88,7 @@ module siphash_core(
   parameter CTRL_FINAL_0 = 3'h4;
   parameter CTRL_FINAL_1 = 3'h5;
 
-  
+
   //----------------------------------------------------------------
   // Registers including update variables and write enable.
   //----------------------------------------------------------------
@@ -120,7 +120,7 @@ module siphash_core(
   reg ready_reg;
   reg ready_new;
   reg ready_we;
-  
+
   reg siphash_valid_reg;
   reg siphash_valid_new;
   reg siphash_valid_we;
@@ -132,29 +132,29 @@ module siphash_core(
   reg [2 : 0] siphash_ctrl_reg;
   reg [2 : 0] siphash_ctrl_new;
   reg         siphash_ctrl_we;
-  
-  
+
+
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
   reg dp_update;
 
-  
+
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
   assign ready              = ready_reg;
   assign siphash_word       = v0_reg ^ v1_reg ^ v2_reg ^ v3_reg;
   assign siphash_word_valid = siphash_valid_reg;
-  
-  
+
+
   //----------------------------------------------------------------
   // reg_update
   // Update functionality for all registers in the core.
-  // All registers are positive edge triggered with synchronous
-  // active low reset. All registers have write enable.
+  // All registers are positive edge triggered with
+  // asynchronous active low reset.
   //----------------------------------------------------------------
-  always @ (posedge clk)
+  always @ (posedge clk or negedge reset_n)
     begin
       if (!reset_n)
         begin
@@ -176,7 +176,7 @@ module siphash_core(
             begin
               v0_reg <= v0_new;
             end
-          
+
           if (v1_we)
             begin
               v1_reg <= v1_new;
@@ -186,12 +186,12 @@ module siphash_core(
             begin
               v2_reg <= v2_new;
             end
- 
+
           if (v3_we)
             begin
               v3_reg <= v3_new;
             end
- 
+
           if (mi_we)
             begin
               mi_reg <= mi;
@@ -206,17 +206,17 @@ module siphash_core(
             begin
               siphash_valid_reg <= siphash_valid_new;
             end
-          
+
           if (loop_ctr_we)
             begin
               loop_ctr_reg <= loop_ctr_new;
             end
-          
+
           if (dp_state_we)
             begin
               dp_state_reg <= dp_state_new;
             end
-          
+
           if (siphash_ctrl_we)
             begin
               siphash_ctrl_reg <= siphash_ctrl_new;
@@ -227,10 +227,10 @@ module siphash_core(
 
   //----------------------------------------------------------------
   // datapath_update
-  // update_logic for the internal datapath with the internal state 
+  // update_logic for the internal datapath with the internal state
   // stored in the v0, v1, v2 and v3 registers.
   //
-  // The datapath contains two parallel 64-bit adders with 
+  // The datapath contains two parallel 64-bit adders with
   // operand MUXes to support reuse during processing.
   //----------------------------------------------------------------
   always @*
@@ -245,7 +245,7 @@ module siphash_core(
       reg [63 : 0] v1_tmp;
       reg [63 : 0] v2_tmp;
       reg [63 : 0] v3_tmp;
-      
+
       // Default assignments
       v0_new    = 64'h0000000000000000;
       v0_we     = 0;
@@ -255,7 +255,7 @@ module siphash_core(
       v2_we     = 0;
       v3_new    = 64'h0000000000000000;
       v3_we     = 0;
-      
+
       // Main DP logic.
       if (dp_update)
         begin
@@ -289,7 +289,7 @@ module siphash_core(
                 v2_new = {{v2_reg[63:8]}, {v2_reg[7:0] ^ 8'hff}};
                 v2_we = 1;
               end
-            
+
             DP_SIPROUND:
               begin
                 // First two adders.
@@ -304,7 +304,7 @@ module siphash_core(
                 // Second pair of adders.
                 add_2_res = v1_tmp + v2_tmp;
                 add_3_res = v0_tmp + v3_tmp;
-                
+
                 v0_new = add_3_res;
                 v0_we = 1;
 
@@ -320,11 +320,11 @@ module siphash_core(
           endcase // case (dp_state_reg)
         end // if (dp_update)
     end // block: datapath_update
-  
-  
+
+
   //----------------------------------------------------------------
   // loop_ctr
-  // Update logic for the loop counter, a monotonically 
+  // Update logic for the loop counter, a monotonically
   // increasing counter with reset.
   //----------------------------------------------------------------
   always @*
@@ -332,7 +332,7 @@ module siphash_core(
       // Defult assignments
       loop_ctr_new = 0;
       loop_ctr_we  = 0;
-      
+
       if (loop_ctr_rst)
         begin
           loop_ctr_new = 0;
@@ -345,8 +345,8 @@ module siphash_core(
           loop_ctr_we  = 1;
         end
     end // loop_ctr
-  
-  
+
+
   //----------------------------------------------------------------
   // siphash_ctrl_fsm
   // Logic for the state machine controlling the core behaviour.
@@ -366,7 +366,7 @@ module siphash_core(
       siphash_valid_we  = 0;
       siphash_ctrl_new  = CTRL_IDLE;
       siphash_ctrl_we   = 0;
-      
+
       case (siphash_ctrl_reg)
         CTRL_IDLE:
           begin
@@ -378,7 +378,7 @@ module siphash_core(
                 siphash_valid_new = 0;
                 siphash_valid_we  = 1;
               end
-            
+
             else if (compress)
               begin
                 mi_we             = 1;
@@ -444,7 +444,7 @@ module siphash_core(
             siphash_ctrl_new = CTRL_IDLE;
             siphash_ctrl_we  = 1;
           end
-        
+
         CTRL_FINAL_0:
           begin
             dp_update         = 1;
