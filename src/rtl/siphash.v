@@ -101,6 +101,14 @@ module siphash(
   reg [31 : 0] word1_new;
   reg          word1_we;
 
+  reg [31 : 0] word2_reg;
+  reg [31 : 0] word2_new;
+  reg          word2_we;
+
+  reg [31 : 0] word3_reg;
+  reg [31 : 0] word3_new;
+  reg          word3_we;
+
 
   //----------------------------------------------------------------
   // Wires.
@@ -109,16 +117,16 @@ module siphash(
   reg read_data_valid_out;
   reg error_out;
 
-  reg           core_initalize;
-  reg           core_compress;
-  reg           core_finalize;
-  reg [3 : 0]   core_c;
-  reg [3 : 0]   core_d;
-  reg [127 : 0] core_k;
-  reg [63 : 0]  core_mi;
-  wire          core_ready;
-  wire [63 : 0] core_siphash_word;
-  wire          core_siphash_word_valid;
+  reg            core_initalize;
+  reg            core_compress;
+  reg            core_finalize;
+  reg [3 : 0]    core_c;
+  reg [3 : 0]    core_d;
+  reg [127 : 0]  core_k;
+  reg [63 : 0]   core_mi;
+  wire           core_ready;
+  wire [127 : 0] core_siphash_word;
+  wire           core_siphash_word_valid;
 
 
   //----------------------------------------------------------------
@@ -174,6 +182,8 @@ module siphash(
           mi1_reg   <= 32'h00000000;
           word0_reg <= 32'h00000000;
           word1_reg <= 32'h00000000;
+          word2_reg <= 32'h00000000;
+          word3_reg <= 32'h00000000;
         end
       else
         begin
@@ -220,8 +230,10 @@ module siphash(
           // We sample the siphash word when valid is set.
           if (core_siphash_word_valid)
             begin
-              word0_reg <= core_siphash_word[31 : 0];
-              word1_reg <= core_siphash_word[63 : 0];
+              word0_reg <= core_siphash_word[31  :  0];
+              word1_reg <= core_siphash_word[63  : 32];
+              word2_reg <= core_siphash_word[95  : 64];
+              word3_reg <= core_siphash_word[127 : 96];
             end
         end
     end // reg_update
@@ -273,6 +285,10 @@ module siphash(
       word0_we            = 1'b0;
       word1_new           = 32'h00000000;
       word1_we            = 1'b0;
+      word2_new           = 32'h00000000;
+      word2_we            = 1'b0;
+      word3_new           = 32'h00000000;
+      word3_we            = 1'b0;
 
       if (cs)
         begin
@@ -327,18 +343,6 @@ module siphash(
                   begin
                     mi1_new = write_data;
                     mi1_we  = 1'b1;
-                  end
-
-                SIPHASH_ADDR_WORD0:
-                  begin
-                    word0_new = write_data;
-                    word0_we  = 1'b1;
-                  end
-
-                SIPHASH_ADDR_WORD1:
-                  begin
-                    word1_new = write_data;
-                    word1_we  = 1'b1;
                   end
 
                 default:
@@ -415,6 +419,18 @@ module siphash(
                 SIPHASH_ADDR_WORD1:
                   begin
                     read_data_out       = mi1_reg;
+                    read_data_valid_out = 1'b1;
+                  end
+
+                SIPHASH_ADDR_WORD2:
+                  begin
+                    read_data_out       = mi2_reg;
+                    read_data_valid_out = 1'b1;
+                  end
+
+                SIPHASH_ADDR_WORD3:
+                  begin
+                    read_data_out       = mi3_reg;
                     read_data_valid_out = 1'b1;
                   end
 
