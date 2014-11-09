@@ -50,6 +50,7 @@ module siphash_core(
                     input wire           initalize,
                     input wire           compress,
                     input wire           finalize,
+                    input wire           long,
 
                     // Parameters and data.
                     // Number of compression rounds c.
@@ -65,8 +66,8 @@ module siphash_core(
                     output wire          ready,
 
                     // Hash word output.
-                    output wire [63 : 0] siphash_word,
-                    output wire          siphash_word_valid
+                    output wire [127 : 0] siphash_word,
+                    output wire           siphash_word_valid
                    );
 
 

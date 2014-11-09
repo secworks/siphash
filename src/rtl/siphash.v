@@ -61,8 +61,8 @@ module siphash(
   //----------------------------------------------------------------
   // Registers including update variables and write enable.
   //----------------------------------------------------------------
-  reg [2 : 0]  ctrl_reg;
-  reg [2 : 0]  ctrl_new;
+  reg [3 : 0]  ctrl_reg;
+  reg [3 : 0]  ctrl_new;
   reg          ctrl_we;
 
   reg [7 : 0]  param_reg;
@@ -120,6 +120,7 @@ module siphash(
   reg            core_initalize;
   reg            core_compress;
   reg            core_finalize;
+  reg            core_long;
   reg [3 : 0]    core_c;
   reg [3 : 0]    core_d;
   reg [127 : 0]  core_k;
@@ -148,6 +149,7 @@ module siphash(
                     .initalize(core_initalize),
                     .compress(core_compress),
                     .finalize(core_finalize),
+                    .long(core_long),
 
                     .c(core_c),
                     .d(core_d),
@@ -245,6 +247,8 @@ module siphash(
       core_initalize = ctrl_reg[SIPHASH_BIT_INITIALIZE];
       core_compress  = ctrl_reg[SIPHASH_BIT_COMPRESS];
       core_finalize  = ctrl_reg[SIPHASH_BIT_FINALIZE];
+      core_long      = ctrl_reg[SIPHASH_BIT_LONG];
+
       core_c         = param_reg[(SIPHASH_START_C + SIPHASH_SIZE_C) : SIPHASH_START_C];
       core_d         = param_reg[(SIPHASH_START_D + SIPHASH_SIZE_D) : SIPHASH_START_D];
       core_k         = {key0_reg, key1_reg, key2_reg, key3_reg};
