@@ -271,6 +271,11 @@ module siphash_core(
                 v2_we = 1;
                 v3_new = k[127 : 64] ^ 64'h7465646279746573;
                 v3_we = 1;
+
+                if (long)
+                  begin
+                    v1_new = v1_new ^ 8'hee;
+                  end
               end
 
             DP_COMPRESSION_START:
