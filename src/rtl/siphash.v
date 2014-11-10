@@ -53,9 +53,24 @@ module siphash(
 
 
   //----------------------------------------------------------------
-  // Symbolic names.
+  // API and Symbolic names.
   //----------------------------------------------------------------
-  `include "siphash.vh"
+  parameter SIPHASH_ADDR_CTRL   = 4'h0;
+  parameter SIPHASH_ADDR_STATUS = 4'h1;
+  parameter SIPHASH_ADDR_PARAM  = 4'h2;
+
+  parameter SIPHASH_ADDR_KEY0   = 4'h4;
+  parameter SIPHASH_ADDR_KEY1   = 4'h5;
+  parameter SIPHASH_ADDR_KEY2   = 4'h6;
+  parameter SIPHASH_ADDR_KEY3   = 4'h7;
+
+  parameter SIPHASH_ADDR_M0     = 4'h8;
+  parameter SIPHASH_ADDR_M1     = 4'h9;
+
+  parameter SIPHASH_ADDR_WORD0  = 4'hc;
+  parameter SIPHASH_ADDR_WORD1  = 4'hd;
+  parameter SIPHASH_ADDR_WORD2  = 4'he;
+  parameter SIPHASH_ADDR_WORD3  = 4'hf;
 
 
   //----------------------------------------------------------------
