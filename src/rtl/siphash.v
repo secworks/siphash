@@ -431,25 +431,25 @@ module siphash(
 
                 SIPHASH_ADDR_WORD0:
                   begin
-                    read_data_out       = mi0_reg;
+                    read_data_out       = word0_reg;
                     read_data_valid_out = 1'b1;
                   end
 
                 SIPHASH_ADDR_WORD1:
                   begin
-                    read_data_out       = mi1_reg;
+                    read_data_out       = word1_reg;
                     read_data_valid_out = 1'b1;
                   end
 
                 SIPHASH_ADDR_WORD2:
                   begin
-                    read_data_out       = mi2_reg;
+                    read_data_out       = word2_reg;
                     read_data_valid_out = 1'b1;
                   end
 
                 SIPHASH_ADDR_WORD3:
                   begin
-                    read_data_out       = mi3_reg;
+                    read_data_out       = wordi3_reg;
                     read_data_valid_out = 1'b1;
                   end
 
