@@ -37,9 +37,14 @@
 
 CC = iverilog
 
+TOP_SRC = ../src/tb/tb_siphash.v ../src/rtl/siphash.v ../src/rtl/siphash_core.v
 CORE_SRC = ../src/tb/tb_siphash_core.v ../src/rtl/siphash_core.v
 
-all:    core
+all:    top core
+
+
+top:	$(TOP_SRC)
+	iverilog -Wall -o top.sim $(TOP_SRC)
 
 
 core:	$(CORE_SRC)
