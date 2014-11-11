@@ -56,7 +56,13 @@ module siphash(
   // API and Symbolic names.
   //----------------------------------------------------------------
   parameter SIPHASH_ADDR_CTRL   = 4'h0;
+  SIPHASH_BIT_INITIALIZE        = 0;
+  SIPHASH_BIT_COMPRESS          = 1;
+  SIPHASH_BIT_FINALIZE          = 2;
+  SIPHASH_BIT_LONG              = 3;
+
   parameter SIPHASH_ADDR_STATUS = 4'h1;
+
   parameter SIPHASH_ADDR_PARAM  = 4'h2;
 
   parameter SIPHASH_ADDR_KEY0   = 4'h4;
