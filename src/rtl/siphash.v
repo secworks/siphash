@@ -158,6 +158,14 @@ module siphash(
   assign read_data_valid = read_data_valid_out;
   assign error           = error_out;
 
+  assign core_initalize  = ctrl_reg[SIPHASH_BIT_INITIALIZE];
+  assign core_compress   = ctrl_reg[SIPHASH_BIT_COMPRESS];
+  assign core_finalize   = ctrl_reg[SIPHASH_BIT_FINALIZE];
+  assign core_long       = ctrl_reg[SIPHASH_BIT_LONG];
+  assign core_c          = param_reg[(SIPHASH_START_C + SIPHASH_SIZE_C) : SIPHASH_START_C];
+  assign core_d          = param_reg[(SIPHASH_START_D + SIPHASH_SIZE_D) : SIPHASH_START_D];
+  assign core_k          = {key0_reg, key1_reg, key2_reg, key3_reg};
+  assign core_mi         = {mi0_reg, mi1_reg};
 
 
   //----------------------------------------------------------------
@@ -262,26 +270,11 @@ module siphash(
     end // reg_update
 
 
-  // Map core inputs and outputs to the wrapper registers.
-  always @*
-    begin : mapping
-      core_initalize = ctrl_reg[SIPHASH_BIT_INITIALIZE];
-      core_compress  = ctrl_reg[SIPHASH_BIT_COMPRESS];
-      core_finalize  = ctrl_reg[SIPHASH_BIT_FINALIZE];
-      core_long      = ctrl_reg[SIPHASH_BIT_LONG];
-
-      core_c         = param_reg[(SIPHASH_START_C + SIPHASH_SIZE_C) : SIPHASH_START_C];
-      core_d         = param_reg[(SIPHASH_START_D + SIPHASH_SIZE_D) : SIPHASH_START_D];
-      core_k         = {key0_reg, key1_reg, key2_reg, key3_reg};
-      core_mi        = {mi0_reg, mi1_reg};
-    end
-
-
   //----------------------------------------------------------------
-  // register update control logic.
+  // api
   //----------------------------------------------------------------
   always @*
-    begin : reg_ctrl
+    begin : api
       // Default assignments
       read_data_out       = 32'h00000000;
       read_data_valid_out = 1'b0;
