@@ -305,6 +305,18 @@ module tb_siphash_core();
   endtask // dump_state
 
 
+
+  //----------------------------------------------------------------
+  // test_short()
+  //----------------------------------------------------------------
+  task test_short();
+   begin
+     $display("*** Test case for short started.");
+
+   end
+  endtask // test_short
+
+
   //----------------------------------------------------------------
   // siphash_core_test
   // The main test functionality.
