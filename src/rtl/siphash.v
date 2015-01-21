@@ -37,11 +37,9 @@
 //======================================================================
 
 module siphash(
-               // Clock and reset.
                input wire           clk,
                input wire           reset_n,
 
-               // Read and write interface.
                input wire           cs,
                input wire           wr_rd,
                input wire [3 : 0]   addr,
