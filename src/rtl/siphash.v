@@ -53,28 +53,28 @@ module siphash(
   //----------------------------------------------------------------
   // API and Symbolic names.
   //----------------------------------------------------------------
-  parameter SIPHASH_ADDR_CTRL   = 4'h0;
-  SIPHASH_BIT_INITIALIZE        = 0;
-  SIPHASH_BIT_COMPRESS          = 1;
-  SIPHASH_BIT_FINALIZE          = 2;
-  SIPHASH_BIT_LONG              = 3;
+  parameter SIPHASH_ADDR_CTRL      = 4'h0;
+  parameter SIPHASH_BIT_INITIALIZE = 0;
+  parameter SIPHASH_BIT_COMPRESS   = 1;
+  parameter SIPHASH_BIT_FINALIZE   = 2;
+  parameter SIPHASH_BIT_LONG       = 3;
 
-  parameter SIPHASH_ADDR_STATUS = 4'h1;
+  parameter SIPHASH_ADDR_STATUS    = 4'h1;
 
-  parameter SIPHASH_ADDR_PARAM  = 4'h2;
+  parameter SIPHASH_ADDR_PARAM     = 4'h2;
 
-  parameter SIPHASH_ADDR_KEY0   = 4'h4;
-  parameter SIPHASH_ADDR_KEY1   = 4'h5;
-  parameter SIPHASH_ADDR_KEY2   = 4'h6;
-  parameter SIPHASH_ADDR_KEY3   = 4'h7;
+  parameter SIPHASH_ADDR_KEY0      = 4'h4;
+  parameter SIPHASH_ADDR_KEY1      = 4'h5;
+  parameter SIPHASH_ADDR_KEY2      = 4'h6;
+  parameter SIPHASH_ADDR_KEY3      = 4'h7;
 
-  parameter SIPHASH_ADDR_M0     = 4'h8;
-  parameter SIPHASH_ADDR_M1     = 4'h9;
+  parameter SIPHASH_ADDR_M0        = 4'h8;
+  parameter SIPHASH_ADDR_M1        = 4'h9;
 
-  parameter SIPHASH_ADDR_WORD0  = 4'hc;
-  parameter SIPHASH_ADDR_WORD1  = 4'hd;
-  parameter SIPHASH_ADDR_WORD2  = 4'he;
-  parameter SIPHASH_ADDR_WORD3  = 4'hf;
+  parameter SIPHASH_ADDR_WORD0     = 4'hc;
+  parameter SIPHASH_ADDR_WORD1     = 4'hd;
+  parameter SIPHASH_ADDR_WORD2     = 4'he;
+  parameter SIPHASH_ADDR_WORD3     = 4'hf;
 
 
   //----------------------------------------------------------------
@@ -89,44 +89,27 @@ module siphash(
   reg          param_we;
 
   reg [31 : 0] key0_reg;
-  reg [31 : 0] key0_new;
   reg          key0_we;
 
   reg [31 : 0] key1_reg;
-  reg [31 : 0] key1_new;
   reg          key1_we;
 
   reg [31 : 0] key2_reg;
-  reg [31 : 0] key2_new;
   reg          key2_we;
 
   reg [31 : 0] key3_reg;
-  reg [31 : 0] key3_new;
   reg          key3_we;
 
   reg [31 : 0] mi0_reg;
-  reg [31 : 0] mi0_new;
   reg          mi0_we;
 
   reg [31 : 0] mi1_reg;
-  reg [31 : 0] mi1_new;
   reg          mi1_we;
 
   reg [31 : 0] word0_reg;
-  reg [31 : 0] word0_new;
-  reg          word0_we;
-
   reg [31 : 0] word1_reg;
-  reg [31 : 0] word1_new;
-  reg          word1_we;
-
   reg [31 : 0] word2_reg;
-  reg [31 : 0] word2_new;
-  reg          word2_we;
-
   reg [31 : 0] word3_reg;
-  reg [31 : 0] word3_new;
-  reg          word3_we;
 
 
   //----------------------------------------------------------------
@@ -228,32 +211,32 @@ module siphash(
 
           if (key0_we)
             begin
-              key0_reg <= key0_new;
+              key0_reg <= write_data;
             end
 
           if (key1_we)
             begin
-              key1_reg <= key1_new;
+              key1_reg <= write_data;
             end
 
           if (key2_we)
             begin
-              key2_reg <= key2_new;
+              key2_reg <= write_data;
             end
 
           if (key3_we)
             begin
-              key3_reg <= key3_new;
+              key3_reg <= write_data;
             end
 
           if (mi0_we)
             begin
-              mi0_reg <= mi0_new;
+              mi0_reg <= write_data;
             end
 
           if (mi1_we)
             begin
-              mi1_reg <= mi1_new;
+              mi1_reg <= write_data;
             end
 
           // We sample the siphash word when valid is set.
@@ -283,28 +266,13 @@ module siphash(
       param_new           = 8'h00;
       param_we            = 1'b0;
 
-      key0_new            = 32'h00000000;
       key0_we             = 1'b0;
-      key1_new            = 32'h00000000;
       key1_we             = 1'b0;
-      key2_new            = 32'h00000000;
       key2_we             = 1'b0;
-      key3_new            = 32'h00000000;
       key3_we             = 1'b0;
 
-      mi0_new             = 32'h00000000;
       mi0_we              = 1'b0;
-      mi1_new             = 32'h00000000;
       mi1_we              = 1'b0;
-
-      word0_new           = 32'h00000000;
-      word0_we            = 1'b0;
-      word1_new           = 32'h00000000;
-      word1_we            = 1'b0;
-      word2_new           = 32'h00000000;
-      word2_we            = 1'b0;
-      word3_new           = 32'h00000000;
-      word3_we            = 1'b0;
 
       if (cs)
         begin
