@@ -96,7 +96,7 @@ Note: Quartus might add three regs due to FSM encoding.
 
 As a comparison, building the OpenCores MD5 core [2] using the same
 tools and for the same target device requires the following amount of
-resources: 
+resources:
 
   - Number of LEs: 1883
   - Number of regs: 910
@@ -105,14 +105,12 @@ resources:
 Note: MD5 processing takes at least 64 cycles for a message block.
 
 
-## TODOs ##
+## Status ##
 
-* Create compact as well as high performance versions of the core.
+*** (2015-01-24) ***
+The core now includes the first parts of a beta implementation of the
+long version with 128 bit digest.
 
-* Add a top level wrapper with a simple API for easy integration with
-  WISHBONE or AMBA APB bus standards.
-
-* Add more test cases. Vectors as well as use cases.
 
 
 ## Contact information ##
@@ -126,7 +124,7 @@ contact Secworks Sweden AB: http://secworks.se/
 [1] J-P. Aumasson, D. J. Bernstein. SipHash: a fast short-input PRF.
 
   - SipHash Project: https://131002.net/siphash/
-  - Siphash Paper: https://131002.net/siphash/siphash.pdf        
+  - Siphash Paper: https://131002.net/siphash/siphash.pdf
 
 
 [2] OpenCores. MD5 core.
@@ -137,5 +135,3 @@ contact Secworks Sweden AB: http://secworks.se/
 [3] Icarus Verilog
 
   - http://iverilog.icarus.com/
-
-
