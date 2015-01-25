@@ -63,12 +63,12 @@ module siphash(
 
   parameter SIPHASH_ADDR_PARAM     = 4'h2;
   parameter SIPHASH_START_C        = 0;
-  parameter SIPHASH_SIZE_C         = 3;
-  parameter SIPHASH_DEFAULT_C      = 3'h2;
+  parameter SIPHASH_SIZE_C         = 4;
+  parameter SIPHASH_DEFAULT_C      = 4'h2;
 
   parameter SIPHASH_START_D        = 3;
-  parameter SIPHASH_SIZE_D         = 3;
-  parameter SIPHASH_DEFAULT_D      = 3'h4;
+  parameter SIPHASH_SIZE_D         = 4;
+  parameter SIPHASH_DEFAULT_D      = 4'h4;
 
   parameter SIPHASH_ADDR_KEY0      = 4'h4;
   parameter SIPHASH_ADDR_KEY1      = 4'h5;
