@@ -122,9 +122,9 @@ module siphash(
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
-  reg read_data_out;
-  reg read_data_valid_out;
-  reg error_out;
+  reg [31 : 0]   read_data_out;
+  reg            read_data_valid_out;
+  reg            error_out;
 
   wire           core_initalize;
   wire           core_compress;
@@ -193,7 +193,7 @@ module siphash(
       if (!reset_n)
         begin
           // Reset all registers to defined values.
-          ctrl_reg  <= 3'b000;
+          ctrl_reg  <= 4'h0;
           param_reg <= {SIPHASH_DEFAULT_D, SIPHASH_DEFAULT_C};
           key0_reg  <= 32'h00000000;
           key1_reg  <= 32'h00000000;
@@ -270,7 +270,7 @@ module siphash(
       read_data_valid_out = 1'b0;
       error_out           = 1'b0;
 
-      ctrl_new            = 3'b000;
+      ctrl_new            = 4'h0;
       ctrl_we             = 1'b0;
       param_new           = 8'h00;
       param_we            = 1'b0;
@@ -292,7 +292,7 @@ module siphash(
 
                 SIPHASH_ADDR_CTRL:
                   begin
-                    ctrl_new = write_data[2 : 0];
+                    ctrl_new = write_data[3 : 0];
                     ctrl_we  = 1'b1;
                   end
 
@@ -345,7 +345,7 @@ module siphash(
               case (addr)
                 SIPHASH_ADDR_CTRL:
                   begin
-                    read_data_out       = {29'h00000000, ctrl_reg};
+                    read_data_out       = {28'h0000000, ctrl_reg};
                     read_data_valid_out = 1'b1;
                   end
 
