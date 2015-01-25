@@ -145,7 +145,7 @@ module siphash_core(
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
   assign ready              = ready_reg;
-  assign siphash_word       = v0_reg ^ v1_reg ^ v2_reg ^ v3_reg;
+  assign siphash_word       = {v0_reg ^ v1_reg, v2_reg ^ v3_reg};
   assign siphash_word_valid = siphash_valid_reg;
 
 
@@ -263,18 +263,27 @@ module siphash_core(
           case (dp_state_reg)
             DP_INITIALIZAION:
               begin
-                v0_new = k[63 : 0] ^ 64'h736f6d6570736575;
-                v0_we = 1;
-                v1_new = k[127 : 64] ^ 64'h646f72616e646f6d;
-                v1_we = 1;
-                v2_new = k[63 : 0] ^ 64'h6c7967656e657261;
-                v2_we = 1;
-                v3_new = k[127 : 64] ^ 64'h7465646279746573;
-                v3_we = 1;
-
                 if (long)
                   begin
-                    v1_new = v1_new ^ 8'hee;
+                    v0_new = k[063 : 000] ^ 64'h736f6d6570736575;
+                    v1_new = k[127 : 064] ^ 64'h646f72616e646f6d;
+                    v2_new = k[063 : 000] ^ 64'h6c7967656e657261;
+                    v3_new = k[127 : 064] ^ 64'h7465646279746573;
+                    v0_we  = 1;
+                    v1_we  = 1;
+                    v2_we  = 1;
+                    v3_we  = 1;
+                  end
+                else
+                  begin
+                    v0_new = k[063 : 000] ^ 64'h736f6d6570736575;
+                    v1_new = k[127 : 064] ^ 64'h646f72616e646f6d;
+                    v2_new = k[063 : 000] ^ 64'h6c7967656e657261;
+                    v3_new = k[127 : 064] ^ 64'h7465646279746573;
+                    v0_we  = 1;
+                    v1_we  = 1;
+                    v2_we  = 1;
+                    v3_we  = 1;
                   end
               end
 
@@ -322,6 +331,10 @@ module siphash_core(
 
                 v3_new = {v3_tmp[42:0], v3_tmp[63:43]} ^ add_3_res;
                 v3_we = 1;
+              end
+
+            default:
+              begin
               end
           endcase // case (dp_state_reg)
         end // if (dp_update)
@@ -480,6 +493,10 @@ module siphash_core(
                 dp_state_new = DP_SIPROUND;
                 dp_state_we  = 1;
               end
+          end
+
+        default:
+          begin
           end
       endcase // case (siphash_ctrl_reg)
     end // siphash_ctrl_fsm
