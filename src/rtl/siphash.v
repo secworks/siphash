@@ -62,14 +62,21 @@ module siphash(
   parameter SIPHASH_ADDR_STATUS    = 4'h1;
 
   parameter SIPHASH_ADDR_PARAM     = 4'h2;
+  parameter SIPHASH_START_C        = 0;
+  parameter SIPHASH_SIZE_C         = 3;
+  parameter SIPHASH_DEFAULT_C      = 3'h2;
+
+  parameter SIPHASH_START_D        = 3;
+  parameter SIPHASH_SIZE_D         = 3;
+  parameter SIPHASH_DEFAULT_D      = 3'h4;
 
   parameter SIPHASH_ADDR_KEY0      = 4'h4;
   parameter SIPHASH_ADDR_KEY1      = 4'h5;
   parameter SIPHASH_ADDR_KEY2      = 4'h6;
   parameter SIPHASH_ADDR_KEY3      = 4'h7;
 
-  parameter SIPHASH_ADDR_M0        = 4'h8;
-  parameter SIPHASH_ADDR_M1        = 4'h9;
+  parameter SIPHASH_ADDR_MI0       = 4'h8;
+  parameter SIPHASH_ADDR_MI1       = 4'h9;
 
   parameter SIPHASH_ADDR_WORD0     = 4'hc;
   parameter SIPHASH_ADDR_WORD1     = 4'hd;
@@ -119,14 +126,14 @@ module siphash(
   reg read_data_valid_out;
   reg error_out;
 
-  reg            core_initalize;
-  reg            core_compress;
-  reg            core_finalize;
-  reg            core_long;
-  reg [3 : 0]    core_c;
-  reg [3 : 0]    core_d;
-  reg [127 : 0]  core_k;
-  reg [63 : 0]   core_mi;
+  wire           core_initalize;
+  wire           core_compress;
+  wire           core_finalize;
+  wire           core_long;
+  wire [3 : 0]   core_c;
+  wire [3 : 0]   core_d;
+  wire [127 : 0] core_k;
+  wire [63 : 0]  core_mi;
   wire           core_ready;
   wire [127 : 0] core_siphash_word;
   wire           core_siphash_word_valid;
@@ -143,8 +150,10 @@ module siphash(
   assign core_compress   = ctrl_reg[SIPHASH_BIT_COMPRESS];
   assign core_finalize   = ctrl_reg[SIPHASH_BIT_FINALIZE];
   assign core_long       = ctrl_reg[SIPHASH_BIT_LONG];
-  assign core_c          = param_reg[(SIPHASH_START_C + SIPHASH_SIZE_C) : SIPHASH_START_C];
-  assign core_d          = param_reg[(SIPHASH_START_D + SIPHASH_SIZE_D) : SIPHASH_START_D];
+  assign core_c          = param_reg[(SIPHASH_START_C + SIPHASH_SIZE_C - 1) :
+                                     SIPHASH_START_C];
+  assign core_d          = param_reg[(SIPHASH_START_D + SIPHASH_SIZE_D - 1) :
+                                     SIPHASH_START_D];
   assign core_k          = {key0_reg, key1_reg, key2_reg, key3_reg};
   assign core_mi         = {mi0_reg, mi1_reg};
 
@@ -295,37 +304,31 @@ module siphash(
 
                 SIPHASH_ADDR_KEY0:
                   begin
-                    key0_new = write_data;
                     key0_we  = 1'b1;
                   end
 
                 SIPHASH_ADDR_KEY1:
                   begin
-                    key1_new = write_data;
                     key1_we  = 1'b1;
                   end
 
                 SIPHASH_ADDR_KEY2:
                   begin
-                    key2_new = write_data;
                     key2_we  = 1'b1;
                   end
 
                 SIPHASH_ADDR_KEY3:
                   begin
-                    key3_new = write_data;
                     key3_we  = 1'b1;
                   end
 
                 SIPHASH_ADDR_MI0:
                   begin
-                    mi0_new = write_data;
                     mi0_we  = 1'b1;
                   end
 
                 SIPHASH_ADDR_MI1:
                   begin
-                    mi1_new = write_data;
                     mi1_we  = 1'b1;
                   end
 
@@ -414,7 +417,7 @@ module siphash(
 
                 SIPHASH_ADDR_WORD3:
                   begin
-                    read_data_out       = wordi3_reg;
+                    read_data_out       = word3_reg;
                     read_data_valid_out = 1'b1;
                   end
 
