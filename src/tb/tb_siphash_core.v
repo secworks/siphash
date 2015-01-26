@@ -151,7 +151,8 @@ module tb_siphash_core();
     begin
       $display("Outputs:");
       $display("ready = %d", tb_ready);
-      $display("siphash_word = 0x%032x, valid = %d", tb_siphash_word, tb_siphash_word_valid);
+      $display("siphash_word = 0x%032x, valid = %d",
+               tb_siphash_word, tb_siphash_word_valid);
       $display("");
     end
   endtask // dump_inputs
