@@ -66,7 +66,7 @@ module tb_siphash_core();
   reg            tb_long;
   reg [3 : 0]    tb_c;
   reg [3 : 0]    tb_d;
-  reg [127 : 0]  tb_k;
+  reg [127 : 0]  tb_key;
   reg [63 : 0]   tb_mi;
   wire           tb_ready;
   wire [127 : 0] tb_siphash_word;
@@ -89,7 +89,7 @@ module tb_siphash_core();
 
                    .c(tb_c),
                    .d(tb_d),
-                   .k(tb_k),
+                   .k(tb_key),
                    .mi(tb_mi),
 
                    .ready(tb_ready),
@@ -176,6 +176,19 @@ module tb_siphash_core();
 
 
   //----------------------------------------------------------------
+  //----------------------------------------------------------------
+  task run_long_test(
+                      input reg [063 : 0] block,
+                      input reg [127 : 0] expected
+                     );
+    begin
+      tb_key = 128'h000102030405060708090a0b0c0d0e0f;
+
+    end
+  endtask // run_short_test
+
+
+  //----------------------------------------------------------------
   // test_long()
   //
   // Test cases for long mode.
@@ -185,73 +198,85 @@ module tb_siphash_core();
     begin
       $display("*** Test case for long started.");
 
-      long_test_vector = 128'ha3817f04ba25a8e66df67214c7550293;
-      long_test_vector = 128'hda87c1d86b99af44347659119b22fc45;
-      long_test_vector = 128'h8177228da4a45dc7fca38bdef60affe4;
-      long_test_vector = 128'h9c70b60c5267a94e5f33b6b02985ed51;
-      long_test_vector = 128'hf88164c12d9c8faf7d0f6e7c7bcd5579;
-      long_test_vector = 128'h1368875980776f8854527a07690e9627;
-      long_test_vector = 128'h14eeca338b208613485ea0308fd7a15e;
-      long_test_vector = 128'ha1f1ebbed8dbc153c0b84aa61ff08239;
-      long_test_vector = 128'h3b62a9ba6258f5610f83e264f31497b4;
-      long_test_vector = 128'h264499060ad9baabc47f8b02bb6d71ed;
-      long_test_vector = 128'h00110dc378146956c95447d3f3d0fbba;
-      long_test_vector = 128'h0151c568386b6677a2b4dc6f81e5dc18;
-      long_test_vector = 128'hd626b266905ef35882634df68532c125;
-      long_test_vector = 128'h9869e247e9c08b10d029934fc4b952f7;
-      long_test_vector = 128'h31fcefac66d7de9c7ec7485fe4494902;
-      long_test_vector = 128'h5493e99933b0a8117e08ec0f97cfc3d9;
-      long_test_vector = 128'h6ee2a4ca67b054bbfd3315bf85230577;
-      long_test_vector = 128'h473d06e8738db89854c066c47ae47740;
-      long_test_vector = 128'ha426e5e423bf4885294da481feaef723;
-      long_test_vector = 128'h78017731cf65fab074d5208952512eb1;
-      long_test_vector = 128'h9e25fc833f2290733e9344a5e83839eb;
-      long_test_vector = 128'h568e495abe525a218a2214cd3e071d12;
-      long_test_vector = 128'h4a29b54552d16b9a469c10528eff0aae;
-      long_test_vector = 128'hc9d184ddd5a9f5e0cf8ce29a9abf691c;
-      long_test_vector = 128'h2db479ae78bd50d8882a8a178a6132ad;
-      long_test_vector = 128'h8ece5f042d5e447b5051b9eacb8d8f6f;
-      long_test_vector = 128'h9c0b53b4b3c307e87eaee08678141f66;
-      long_test_vector = 128'habf248af69a6eae4bfd3eb2f129eeb94;
-      long_test_vector = 128'h0664da1668574b88b935f3027358aef4;
-      long_test_vector = 128'haa4b9dc4bf337de90cd4fd3c467c6ab7;
-      long_test_vector = 128'hea5c7f471faf6bde2b1ad7d4686d2287;
-      long_test_vector = 128'h2939b0183223fafc1723de4f52c43d35;
-      long_test_vector = 128'h7c3956ca5eeafc3e363e9d556546eb68;
-      long_test_vector = 128'h77c6077146f01c32b6b69d5f4ea9ffcf;
-      long_test_vector = 128'h37a6986cb8847edf0925f0f1309b54de;
-      long_test_vector = 128'ha705f0e69da9a8f907241a2e923c8cc8;
-      long_test_vector = 128'h3dc47d1f29c448461e9e76ed904f6711;
-      long_test_vector = 128'h0d62bf01e6fc0e1a0d3c4751c5d3692b;
-      long_test_vector = 128'h8c03468bca7c669ee4fd5e084bbee7b5;
-      long_test_vector = 128'h528a5bb93baf2c9c4473cce5d0d22bd9;
-      long_test_vector = 128'hdf6a301e95c95dad97ae0cc8c6913bd8;
-      long_test_vector = 128'h801189902c857f39e73591285e70b6db;
-      long_test_vector = 128'he617346ac9c231bb3650ae34ccca0c5b;
-      long_test_vector = 128'h27d93437efb721aa401821dcec5adf89;
-      long_test_vector = 128'h89237d9ded9c5e78d8b1c9b166cc7342;
-      long_test_vector = 128'h4a6d8091bf5e7d651189fa94a250b14c;
-      long_test_vector = 128'h0e33f96055e7ae893ffc0e3dcf492902;
-      long_test_vector = 128'he61c432b720b19d18ec8d84bdc63151b;
-      long_test_vector = 128'hf7e5aef549f782cf379055a608269b16;
-      long_test_vector = 128'h438d030fd0b7a54fa837f2ad201a6403;
-      long_test_vector = 128'ha590d3ee4fbf04e3247e0d27f286423f;
-      long_test_vector = 128'h5fe2c1a172fe93c4b15cd37caef9f538;
-      long_test_vector = 128'h2c97325cbd06b36eb2133dd08b3a017c;
-      long_test_vector = 128'h92c814227a6bca949ff0659f002ad39e;
-      long_test_vector = 128'hdce850110bd8328cfbd50841d6911d87;
-      long_test_vector = 128'h67f14984c7da791248e32bb5922583da;
-      long_test_vector = 128'h1938f2cf72d54ee97e94166fa91d2a36;
-      long_test_vector = 128'h74481e9646ed49fe0f6224301604698e;
-      long_test_vector = 128'h57fca5de98a9d6d8006438d0583d8a1d;
-      long_test_vector = 128'h9fecde1cefdc1cbed4763674d9575359;
-      long_test_vector = 128'he3040c00eb28f15366ca73cbd872e740;
-      long_test_vector = 128'h7697009a6a831dfecca91c5993670f7a;
-      long_test_vector = 128'h5853542321f567a005d547a4f04759bd;
-      long_test_vector = 128'h5150d1772f50834a503e069a973fbd7c;
-
+      run_long_test(64'h0000000000000000, 128'ha3817f04ba25a8e66df67214c7550293);
+      run_long_test(64'h0000000000000000, 128'hda87c1d86b99af44347659119b22fc45);
+      run_long_test(64'h0000000000000000, 128'h8177228da4a45dc7fca38bdef60affe4);
+      run_long_test(64'h0000000000000000, 128'h9c70b60c5267a94e5f33b6b02985ed51);
+      run_long_test(64'h0000000000000000, 128'hf88164c12d9c8faf7d0f6e7c7bcd5579);
+      run_long_test(64'h0000000000000000, 128'h1368875980776f8854527a07690e9627);
+      run_long_test(64'h0000000000000000, 128'h14eeca338b208613485ea0308fd7a15e);
+      run_long_test(64'h0000000000000000, 128'ha1f1ebbed8dbc153c0b84aa61ff08239);
+      run_long_test(64'h0000000000000000, 128'h3b62a9ba6258f5610f83e264f31497b4);
+      run_long_test(64'h0000000000000000, 128'h264499060ad9baabc47f8b02bb6d71ed);
+      run_long_test(64'h0000000000000000, 128'h00110dc378146956c95447d3f3d0fbba);
+      run_long_test(64'h0000000000000000, 128'h0151c568386b6677a2b4dc6f81e5dc18);
+      run_long_test(64'h0000000000000000, 128'hd626b266905ef35882634df68532c125);
+      run_long_test(64'h0000000000000000, 128'h9869e247e9c08b10d029934fc4b952f7);
+      run_long_test(64'h0000000000000000, 128'h31fcefac66d7de9c7ec7485fe4494902);
+      run_long_test(64'h0000000000000000, 128'h5493e99933b0a8117e08ec0f97cfc3d9);
+      run_long_test(64'h0000000000000000, 128'h6ee2a4ca67b054bbfd3315bf85230577);
+      run_long_test(64'h0000000000000000, 128'h473d06e8738db89854c066c47ae47740);
+      run_long_test(64'h0000000000000000, 128'ha426e5e423bf4885294da481feaef723);
+      run_long_test(64'h0000000000000000, 128'h78017731cf65fab074d5208952512eb1);
+      run_long_test(64'h0000000000000000, 128'h9e25fc833f2290733e9344a5e83839eb);
+      run_long_test(64'h0000000000000000, 128'h568e495abe525a218a2214cd3e071d12);
+      run_long_test(64'h0000000000000000, 128'h4a29b54552d16b9a469c10528eff0aae);
+      run_long_test(64'h0000000000000000, 128'hc9d184ddd5a9f5e0cf8ce29a9abf691c);
+      run_long_test(64'h0000000000000000, 128'h2db479ae78bd50d8882a8a178a6132ad);
+      run_long_test(64'h0000000000000000, 128'h8ece5f042d5e447b5051b9eacb8d8f6f);
+      run_long_test(64'h0000000000000000, 128'h9c0b53b4b3c307e87eaee08678141f66);
+      run_long_test(64'h0000000000000000, 128'habf248af69a6eae4bfd3eb2f129eeb94);
+      run_long_test(64'h0000000000000000, 128'h0664da1668574b88b935f3027358aef4);
+      run_long_test(64'h0000000000000000, 128'haa4b9dc4bf337de90cd4fd3c467c6ab7);
+      run_long_test(64'h0000000000000000, 128'hea5c7f471faf6bde2b1ad7d4686d2287);
+      run_long_test(64'h0000000000000000, 128'h2939b0183223fafc1723de4f52c43d35);
+      run_long_test(64'h0000000000000000, 128'h7c3956ca5eeafc3e363e9d556546eb68);
+      run_long_test(64'h0000000000000000, 128'h77c6077146f01c32b6b69d5f4ea9ffcf);
+      run_long_test(64'h0000000000000000, 128'h37a6986cb8847edf0925f0f1309b54de);
+      run_long_test(64'h0000000000000000, 128'ha705f0e69da9a8f907241a2e923c8cc8);
+      run_long_test(64'h0000000000000000, 128'h3dc47d1f29c448461e9e76ed904f6711);
+      run_long_test(64'h0000000000000000, 128'h0d62bf01e6fc0e1a0d3c4751c5d3692b);
+      run_long_test(64'h0000000000000000, 128'h8c03468bca7c669ee4fd5e084bbee7b5);
+      run_long_test(64'h0000000000000000, 128'h528a5bb93baf2c9c4473cce5d0d22bd9);
+      run_long_test(64'h0000000000000000, 128'hdf6a301e95c95dad97ae0cc8c6913bd8);
+      run_long_test(64'h0000000000000000, 128'h801189902c857f39e73591285e70b6db);
+      run_long_test(64'h0000000000000000, 128'he617346ac9c231bb3650ae34ccca0c5b);
+      run_long_test(64'h0000000000000000, 128'h27d93437efb721aa401821dcec5adf89);
+      run_long_test(64'h0000000000000000, 128'h89237d9ded9c5e78d8b1c9b166cc7342);
+      run_long_test(64'h0000000000000000, 128'h4a6d8091bf5e7d651189fa94a250b14c);
+      run_long_test(64'h0000000000000000, 128'h0e33f96055e7ae893ffc0e3dcf492902);
+      run_long_test(64'h0000000000000000, 128'he61c432b720b19d18ec8d84bdc63151b);
+      run_long_test(64'h0000000000000000, 128'hf7e5aef549f782cf379055a608269b16);
+      run_long_test(64'h0000000000000000, 128'h438d030fd0b7a54fa837f2ad201a6403);
+      run_long_test(64'h0000000000000000, 128'ha590d3ee4fbf04e3247e0d27f286423f);
+      run_long_test(64'h0000000000000000, 128'h5fe2c1a172fe93c4b15cd37caef9f538);
+      run_long_test(64'h0000000000000000, 128'h2c97325cbd06b36eb2133dd08b3a017c);
+      run_long_test(64'h0000000000000000, 128'h92c814227a6bca949ff0659f002ad39e);
+      run_long_test(64'h0000000000000000, 128'hdce850110bd8328cfbd50841d6911d87);
+      run_long_test(64'h0000000000000000, 128'h67f14984c7da791248e32bb5922583da);
+      run_long_test(64'h0000000000000000, 128'h1938f2cf72d54ee97e94166fa91d2a36);
+      run_long_test(64'h0000000000000000, 128'h74481e9646ed49fe0f6224301604698e);
+      run_long_test(64'h0000000000000000, 128'h57fca5de98a9d6d8006438d0583d8a1d);
+      run_long_test(64'h0000000000000000, 128'h9fecde1cefdc1cbed4763674d9575359);
+      run_long_test(64'h0000000000000000, 128'he3040c00eb28f15366ca73cbd872e740);
+      run_long_test(64'h0000000000000000, 128'h7697009a6a831dfecca91c5993670f7a);
+      run_long_test(64'h0000000000000000, 128'h5853542321f567a005d547a4f04759bd);
+      run_long_test(64'h0000000000000000, 128'h5150d1772f50834a503e069a973fbd7c);
     end
   endtask // test_long
+
+
+  //----------------------------------------------------------------
+  //----------------------------------------------------------------
+  task run_short_test(
+                      input reg [63 : 0] block,
+                      input reg [63 : 0] expected
+                     );
+    begin
+      tb_key = 128'h000102030405060708090a0b0c0d0e0f;
+
+    end
+  endtask // run_short_test
 
 
   //----------------------------------------------------------------
@@ -263,71 +288,70 @@ module tb_siphash_core();
     reg [063 : 000] short_test_vector;
     begin
       $display("*** Test case for short started.");
-
-      short_test_vector = 64'h310e0edd47db6f72;
-      short_test_vector = 64'hfd67dc93c539f874;
-      short_test_vector = 64'h5a4fa9d909806c0d;
-      short_test_vector = 64'h2d7efbd796666785;
-      short_test_vector = 64'hb7877127e09427cf;
-      short_test_vector = 64'h8da699cd64557618;
-      short_test_vector = 64'hcee3fe586e46c9cb;
-      short_test_vector = 64'h37d1018bf50002ab;
-      short_test_vector = 64'h6224939a79f5f593;
-      short_test_vector = 64'hb0e4a90bdf82009e;
-      short_test_vector = 64'hf3b9dd94c5bb5d7a;
-      short_test_vector = 64'ha7ad6b22462fb3f4;
-      short_test_vector = 64'hfbe50e86bc8f1e75;
-      short_test_vector = 64'h903d84c02756ea14;
-      short_test_vector = 64'heef27a8e90ca23f7;
-      short_test_vector = 64'he545be4961ca29a1;
-      short_test_vector = 64'hdb9bc2577fcc2a3f;
-      short_test_vector = 64'h9447be2cf5e99a69;
-      short_test_vector = 64'h9cd38d96f0b3c14b;
-      short_test_vector = 64'hbd6179a71dc96dbb;
-      short_test_vector = 64'h98eea21af25cd6be;
-      short_test_vector = 64'hc7673b2eb0cbf2d0;
-      short_test_vector = 64'h883ea3e395675393;
-      short_test_vector = 64'hc8ce5ccd8c030ca8;
-      short_test_vector = 64'h94af49f6c650adb8;
-      short_test_vector = 64'heab8858ade92e1bc;
-      short_test_vector = 64'hf315bb5bb835d817;
-      short_test_vector = 64'hadcf6b0763612e2f;
-      short_test_vector = 64'ha5c91da7acaa4dde;
-      short_test_vector = 64'h716595876650a2a6;
-      short_test_vector = 64'h28ef495c53a387ad;
-      short_test_vector = 64'h42c341d8fa92d832;
-      short_test_vector = 64'hce7cf2722f512771;
-      short_test_vector = 64'he37859f94623f3a7;
-      short_test_vector = 64'h381205bb1ab0e012;
-      short_test_vector = 64'hae97a10fd434e015;
-      short_test_vector = 64'hb4a31508beff4d31;
-      short_test_vector = 64'h81396229f0907902;
-      short_test_vector = 64'h4d0cf49ee5d4dcca;
-      short_test_vector = 64'h5c73336a76d8bf9a;
-      short_test_vector = 64'hd0a704536ba93e0e;
-      short_test_vector = 64'h925958fcd6420cad;
-      short_test_vector = 64'ha915c29bc8067318;
-      short_test_vector = 64'h952b79f3bc0aa6d4;
-      short_test_vector = 64'hf21df2e41d4535f9;
-      short_test_vector = 64'h87577519048f53a9;
-      short_test_vector = 64'h10a56cf5dfcd9adb;
-      short_test_vector = 64'heb75095ccd986cd0;
-      short_test_vector = 64'h51a9cb9ecba312e6;
-      short_test_vector = 64'h96afadfc2ce666c7;
-      short_test_vector = 64'h72fe52975a4364ee;
-      short_test_vector = 64'h5a1645b276d592a1;
-      short_test_vector = 64'hb274cb8ebf87870a;
-      short_test_vector = 64'h6f9bb4203de7b381;
-      short_test_vector = 64'heaecb2a30b22a87f;
-      short_test_vector = 64'h9924a43cc1315724;
-      short_test_vector = 64'hbd838d3aafbf8db7;
-      short_test_vector = 64'h0b1a2a3265d51aea;
-      short_test_vector = 64'h135079a3231ce660;
-      short_test_vector = 64'h932b2846e4d70666;
-      short_test_vector = 64'he1915f5cb1eca46c;
-      short_test_vector = 64'hf325965ca16d629f;
-      short_test_vector = 64'h575ff28e60381be5;
-      short_test_vector = 64'h724506eb4c328a95;
+      run_short_test(64'h0000000000000000, 64'h310e0edd47db6f72);
+      run_short_test(64'h0000000000000000, 64'hfd67dc93c539f874);
+      run_short_test(64'h0000000000000000, 64'h5a4fa9d909806c0d);
+      run_short_test(64'h0000000000000000, 64'h2d7efbd796666785);
+      run_short_test(64'h0000000000000000, 64'hb7877127e09427cf);
+      run_short_test(64'h0000000000000000, 64'h8da699cd64557618);
+      run_short_test(64'h0000000000000000, 64'hcee3fe586e46c9cb);
+      run_short_test(64'h0000000000000000, 64'h37d1018bf50002ab);
+      run_short_test(64'h0000000000000000, 64'h6224939a79f5f593);
+      run_short_test(64'h0000000000000000, 64'hb0e4a90bdf82009e);
+      run_short_test(64'h0000000000000000, 64'hf3b9dd94c5bb5d7a);
+      run_short_test(64'h0000000000000000, 64'ha7ad6b22462fb3f4);
+      run_short_test(64'h0000000000000000, 64'hfbe50e86bc8f1e75);
+      run_short_test(64'h0000000000000000, 64'h903d84c02756ea14);
+      run_short_test(64'h0000000000000000, 64'heef27a8e90ca23f7);
+      run_short_test(64'h0000000000000000, 64'he545be4961ca29a1);
+      run_short_test(64'h0000000000000000, 64'hdb9bc2577fcc2a3f);
+      run_short_test(64'h0000000000000000, 64'h9447be2cf5e99a69);
+      run_short_test(64'h0000000000000000, 64'h9cd38d96f0b3c14b);
+      run_short_test(64'h0000000000000000, 64'hbd6179a71dc96dbb);
+      run_short_test(64'h0000000000000000, 64'h98eea21af25cd6be);
+      run_short_test(64'h0000000000000000, 64'hc7673b2eb0cbf2d0);
+      run_short_test(64'h0000000000000000, 64'h883ea3e395675393);
+      run_short_test(64'h0000000000000000, 64'hc8ce5ccd8c030ca8);
+      run_short_test(64'h0000000000000000, 64'h94af49f6c650adb8);
+      run_short_test(64'h0000000000000000, 64'heab8858ade92e1bc);
+      run_short_test(64'h0000000000000000, 64'hf315bb5bb835d817);
+      run_short_test(64'h0000000000000000, 64'hadcf6b0763612e2f);
+      run_short_test(64'h0000000000000000, 64'ha5c91da7acaa4dde);
+      run_short_test(64'h0000000000000000, 64'h716595876650a2a6);
+      run_short_test(64'h0000000000000000, 64'h28ef495c53a387ad);
+      run_short_test(64'h0000000000000000, 64'h42c341d8fa92d832);
+      run_short_test(64'h0000000000000000, 64'hce7cf2722f512771);
+      run_short_test(64'h0000000000000000, 64'he37859f94623f3a7);
+      run_short_test(64'h0000000000000000, 64'h381205bb1ab0e012);
+      run_short_test(64'h0000000000000000, 64'hae97a10fd434e015);
+      run_short_test(64'h0000000000000000, 64'hb4a31508beff4d31);
+      run_short_test(64'h0000000000000000, 64'h81396229f0907902);
+      run_short_test(64'h0000000000000000, 64'h4d0cf49ee5d4dcca);
+      run_short_test(64'h0000000000000000, 64'h5c73336a76d8bf9a);
+      run_short_test(64'h0000000000000000, 64'hd0a704536ba93e0e);
+      run_short_test(64'h0000000000000000, 64'h925958fcd6420cad);
+      run_short_test(64'h0000000000000000, 64'ha915c29bc8067318);
+      run_short_test(64'h0000000000000000, 64'h952b79f3bc0aa6d4);
+      run_short_test(64'h0000000000000000, 64'hf21df2e41d4535f9);
+      run_short_test(64'h0000000000000000, 64'h87577519048f53a9);
+      run_short_test(64'h0000000000000000, 64'h10a56cf5dfcd9adb);
+      run_short_test(64'h0000000000000000, 64'heb75095ccd986cd0);
+      run_short_test(64'h0000000000000000, 64'h51a9cb9ecba312e6);
+      run_short_test(64'h0000000000000000, 64'h96afadfc2ce666c7);
+      run_short_test(64'h0000000000000000, 64'h72fe52975a4364ee);
+      run_short_test(64'h0000000000000000, 64'h5a1645b276d592a1);
+      run_short_test(64'h0000000000000000, 64'hb274cb8ebf87870a);
+      run_short_test(64'h0000000000000000, 64'h6f9bb4203de7b381);
+      run_short_test(64'h0000000000000000, 64'heaecb2a30b22a87f);
+      run_short_test(64'h0000000000000000, 64'h9924a43cc1315724);
+      run_short_test(64'h0000000000000000, 64'hbd838d3aafbf8db7);
+      run_short_test(64'h0000000000000000, 64'h0b1a2a3265d51aea);
+      run_short_test(64'h0000000000000000, 64'h135079a3231ce660);
+      run_short_test(64'h0000000000000000, 64'h932b2846e4d70666);
+      run_short_test(64'h0000000000000000, 64'he1915f5cb1eca46c);
+      run_short_test(64'h0000000000000000, 64'hf325965ca16d629f);
+      run_short_test(64'h0000000000000000, 64'h575ff28e60381be5);
+      run_short_test(64'h0000000000000000, 64'h724506eb4c328a95);
 
     end
   endtask // test_short
@@ -346,7 +370,7 @@ module tb_siphash_core();
       tb_c         = 8'h02;
       tb_d         = 8'h04;
       tb_mi        = 64'h0000000000000000;
-      tb_k         = 128'h00000000000000000000000000000000;
+      tb_key       = 128'h00000000000000000000000000000000;
       tb_initalize = 0;
       tb_compress  = 0;
       tb_finalize  = 0;
@@ -371,7 +395,7 @@ module tb_siphash_core();
       // Pull init flag for a cycle
       // We use the SipHash paper Appendix A key.
       #(20 * CLK_HALF_PERIOD);
-      tb_k = 128'h0f0e0d0c0b0a09080706050403020100;
+      tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
       tb_initalize = 1;
       #(2 * CLK_HALF_PERIOD);
       tb_initalize = 0;
