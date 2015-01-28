@@ -382,57 +382,57 @@ module tb_siphash_core();
       dump_state();
 
       // Wait ten clock cycles and release reset.
-      #(20 * CLK_HALF_PERIOD);
+      #(10 * CLK_PERIOD);
       @(negedge tb_clk)
       tb_reset_n = 1;
       dump_state();
 
       // Dump the state to check reset.
-      #(4 * CLK_HALF_PERIOD);
+      #(2 * CLK_PERIOD);
       dump_state();
       dump_outputs();
 
       // Pull init flag for a cycle
       // We use the SipHash paper Appendix A key.
-      #(20 * CLK_HALF_PERIOD);
+      #(10 * CLK_PERIOD);
       tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
       tb_initalize = 1;
-      #(2 * CLK_HALF_PERIOD);
+      #(CLK_PERIOD);
       tb_initalize = 0;
       dump_outputs();
 
       // Add first block.
-      #(2 * CLK_HALF_PERIOD);
+      #(CLK_PERIOD);
       tb_compress = 1;
       tb_mi = 64'h0706050403020100;
-      #(2 * CLK_HALF_PERIOD);
+      #(CLK_PERIOD);
       tb_compress = 0;
       dump_state();
       dump_outputs();
 
       // Wait a number of cycle and
       // try and start the next iteration.
-      #(100 * CLK_HALF_PERIOD);
+      #(50 * CLK_PERIOD);
       dump_outputs();
       tb_compress = 1;
       tb_mi = 64'h0f0e0d0c0b0a0908;
-      #(2 * CLK_HALF_PERIOD);
+      #(CLK_PERIOD);
       tb_compress = 0;
       dump_state();
       dump_outputs();
 
       // Wait a number of cycles and
       // and pull finalizaition.
-      #(100 * CLK_HALF_PERIOD);
+      #(50 * CLK_PERIOD);
       dump_outputs();
       tb_finalize = 1;
-      #(2 * CLK_HALF_PERIOD);
+      #(CLK_PERIOD);
       tb_finalize = 0;
       dump_state();
       dump_outputs();
 
       // Wait some cycles.
-      #(200 * CLK_HALF_PERIOD);
+      #(100 * CLK_PERIOD);
       $display("Processing done..");
       dump_state();
       dump_outputs();
