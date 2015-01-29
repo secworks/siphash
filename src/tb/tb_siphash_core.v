@@ -358,42 +358,13 @@ module tb_siphash_core();
 
 
   //----------------------------------------------------------------
-  // siphash_core_test
-  // The main test functionality.
+  // run_old_short_test_vector()
+  //
+  // Perform testing of short mac using the testvectors
+  // from the the SipHash paper Appendix.
   //----------------------------------------------------------------
-  initial
-    begin : siphash_core_test
-      $display("   -- Testbench for siphash_core started --");
-
-      // Set clock, reset and DUT input signals to
-      // defined values at simulation start.
-      tb_c         = 8'h02;
-      tb_d         = 8'h04;
-      tb_mi        = 64'h0000000000000000;
-      tb_key       = 128'h00000000000000000000000000000000;
-      tb_initalize = 0;
-      tb_compress  = 0;
-      tb_finalize  = 0;
-      tb_long      = 0;
-
-      cycle_ctr    = 0;
-      tb_clk       = 0;
-      tb_reset_n   = 0;
-      dump_state();
-
-      // Wait ten clock cycles and release reset.
-      #(10 * CLK_PERIOD);
-      @(negedge tb_clk)
-      tb_reset_n = 1;
-      dump_state();
-
-      // Dump the state to check reset.
-      #(2 * CLK_PERIOD);
-      dump_state();
-      dump_outputs();
-
-      // Pull init flag for a cycle
-      // We use the SipHash paper Appendix A key.
+  task run_old_short_test_vector();
+    begin
       #(10 * CLK_PERIOD);
       tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
       tb_initalize = 1;
@@ -430,6 +401,47 @@ module tb_siphash_core();
       tb_finalize = 0;
       dump_state();
       dump_outputs();
+    end
+  endtask // run_old_short_test_vector
+
+
+  //----------------------------------------------------------------
+  // siphash_core_test
+  // The main test functionality.
+  //----------------------------------------------------------------
+  initial
+    begin : siphash_core_test
+      $display("   -- Testbench for siphash_core started --");
+
+      // Set clock, reset and DUT input signals to
+      // defined values at simulation start.
+      tb_c         = 8'h02;
+      tb_d         = 8'h04;
+      tb_mi        = 64'h0000000000000000;
+      tb_key       = 128'h00000000000000000000000000000000;
+      tb_initalize = 0;
+      tb_compress  = 0;
+      tb_finalize  = 0;
+      tb_long      = 0;
+
+      cycle_ctr    = 0;
+      tb_clk       = 0;
+      tb_reset_n   = 0;
+      dump_state();
+
+      // Wait ten clock cycles and release reset.
+      #(10 * CLK_PERIOD);
+      @(negedge tb_clk)
+      tb_reset_n = 1;
+      dump_state();
+
+      // Dump the state to check reset.
+      #(2 * CLK_PERIOD);
+      dump_state();
+      dump_outputs();
+
+      // Run old test vectors for short mode.
+      run_old_short_test_vector();
 
       // Wait some cycles.
       #(100 * CLK_PERIOD);
