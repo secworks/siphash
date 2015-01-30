@@ -46,6 +46,7 @@ module tb_siphash();
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
   parameter CLK_HALF_PERIOD = 2;
+  parameter CLK_PERIOD      = 2 * CLK_HALF_PERIOD;
 
 
   //----------------------------------------------------------------

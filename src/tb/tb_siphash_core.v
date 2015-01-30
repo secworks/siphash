@@ -401,6 +401,17 @@ module tb_siphash_core();
       tb_finalize = 0;
       dump_state();
       dump_outputs();
+
+      if (tb_siphash_word == 64'ha129ca6149be45e5)
+        begin
+          $display("Correct digest for old old short test vector recieved.");
+        end
+      else
+        begin
+          $display("Error: incorrect digest for old old short test vector recieved.");
+          $display("Expected: 0x%016x", 64'ha129ca6149be45e5);
+          $display("Recived:  0x%016x", tb_siphash_word);
+        end
     end
   endtask // run_old_short_test_vector
 
