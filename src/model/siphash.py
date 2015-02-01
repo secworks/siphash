@@ -74,61 +74,15 @@ class SipHash():
 
 
     #---------------------------------------------------------------
-    # set_key_iv()
+    # set_key()
     #
-    # Set key and iv. Basically reinitialize the cipher.
-    # This also resets the block counter.
+    # Set key.
     #---------------------------------------------------------------
-    def set_key_iv(self, key, iv):
-        keyword0 = self._b2w(key[0:4])
-        keyword1 = self._b2w(key[4:8])
-        keyword2 = self._b2w(key[8:12])
-        keyword3 = self._b2w(key[12:16])
-
-        if len(key) == 16:
-            self.state[0]  = TAU[0]
-            self.state[1]  = TAU[1]
-            self.state[2]  = TAU[2]
-            self.state[3]  = TAU[3]
-            self.state[4]  = keyword0
-            self.state[5]  = keyword1
-            self.state[6]  = keyword2
-            self.state[7]  = keyword3
-            self.state[8]  = keyword0
-            self.state[9]  = keyword1
-            self.state[10] = keyword2
-            self.state[11] = keyword3
-
-        elif len(key) == 32:
-            keyword4 = self._b2w(key[16:20])
-            keyword5 = self._b2w(key[20:24])
-            keyword6 = self._b2w(key[24:28])
-            keyword7 = self._b2w(key[28:32])
-            self.state[0]  = SIGMA[0]
-            self.state[1]  = SIGMA[1]
-            self.state[2]  = SIGMA[2]
-            self.state[3]  = SIGMA[3]
-            self.state[4]  = keyword0
-            self.state[5]  = keyword1
-            self.state[6]  = keyword2
-            self.state[7]  = keyword3
-            self.state[8]  = keyword4
-            self.state[9]  = keyword5
-            self.state[10] = keyword6
-            self.state[11] = keyword7
-        else:
-            print("Key length of %d bits, is not supported." % (len(key) * 8))
-
-        # Common state init for both key lengths.
-        self.block_counter = [0, 0]
-        self.state[12] = self.block_counter[0]
-        self.state[13] = self.block_counter[1]
-        self.state[14] = self._b2w(iv[0:4])
-        self.state[15] = self._b2w(iv[4:8])
-
-        if self.verbose:
-            print("State after init:")
-            self._print_state()
+    def set_key(self, key):
+        self.v0 = k0 ^ 0x736f6d6570736575
+        self.v1 = k1 ^ 0x646f72616e646f6d
+        self.v2 = k0 ^ 0x6c7967656e657261
+        self.v3 = k1 ^ 0x7465646279746573
 
 
     #---------------------------------------------------------------
