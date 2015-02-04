@@ -309,6 +309,15 @@ class SipHash():
 
 
 #-------------------------------------------------------------------
+# gen_message()
+#
+# Generate a message of n bytes with the contents 0x00, 0x01,...
+#-------------------------------------------------------------------
+def gen_message(n):
+    return [i for i in range(n)]
+
+
+#-------------------------------------------------------------------
 # print_block()
 #
 # Print a given block (list) of bytes ordered in
@@ -424,6 +433,8 @@ def main():
     print("--------------------------------")
     print
     print
+
+    print(gen_message(12))
 
 
 #-------------------------------------------------------------------
