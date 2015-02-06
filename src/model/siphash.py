@@ -423,6 +423,12 @@ def short_tests():
                 0x575ff28e60381be5, 0x724506eb4c328a95]
 
 
+    for i in len(64):
+        message = gen_message(i)
+        my_siphash = SipHash()
+        my_siphash.set_key([0x010203040, 0x05060708])
+
+
 #-------------------------------------------------------------------
 # main()
 #
