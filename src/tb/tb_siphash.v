@@ -114,7 +114,7 @@ module tb_siphash();
   // dump_inputs
   // Dump the internal SIPHASH state to std out.
   //----------------------------------------------------------------
-  task dump_inputs();
+  task dump_inputs;
     begin
       $display("Inputs:");
       $display("");
@@ -126,7 +126,7 @@ module tb_siphash();
   // dump_outputs
   // Dump the outputs from the SipHash to std out.
   //----------------------------------------------------------------
-  task dump_outputs();
+  task dump_outputs;
     begin
       $display("Outputs:");
       $display("");
@@ -138,7 +138,7 @@ module tb_siphash();
   // dump_state
   // Dump the internal SIPHASH state to std out.
   //----------------------------------------------------------------
-  task dump_state();
+  task dump_state;
     begin
       $display("Internal state:");
       $display("");

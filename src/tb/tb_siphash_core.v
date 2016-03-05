@@ -131,7 +131,7 @@ module tb_siphash_core();
   // dump_inputs
   // Dump the internal SIPHASH state to std out.
   //----------------------------------------------------------------
-  task dump_inputs();
+  task dump_inputs;
     begin
       $display("Inputs:");
       $display("init = %b, compress = %b, finalize = %b",
@@ -147,7 +147,7 @@ module tb_siphash_core();
   // dump_outputs
   // Dump the outputs from the SipHash to std out.
   //----------------------------------------------------------------
-  task dump_outputs();
+  task dump_outputs;
     begin
       $display("Outputs:");
       $display("ready = %d", tb_ready);
@@ -162,7 +162,7 @@ module tb_siphash_core();
   // dump_state
   // Dump the internal SIPHASH state to std out.
   //----------------------------------------------------------------
-  task dump_state();
+  task dump_state;
     begin
       $display("Internal state:");
       $display("v0_reg = %016x, v1_reg = %016x", dut.v0_reg, dut.v1_reg);
@@ -193,7 +193,7 @@ module tb_siphash_core();
   //
   // Test cases for long mode.
   //----------------------------------------------------------------
-  task test_long();
+  task test_long;
     reg [127 : 000] long_test_vector;
     begin
       $display("*** Test case for long started.");
@@ -284,7 +284,7 @@ module tb_siphash_core();
   //
   // test cases for 64 bit digests.
   //----------------------------------------------------------------
-  task test_short();
+  task test_short;
     reg [063 : 000] short_test_vector;
     begin
       $display("*** Test case for short started.");
@@ -363,7 +363,7 @@ module tb_siphash_core();
   // Perform testing of short mac using the testvectors
   // from the the SipHash paper Appendix.
   //----------------------------------------------------------------
-  task run_old_short_test_vector();
+  task run_old_short_test_vector;
     begin
       #(10 * CLK_PERIOD);
       tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
