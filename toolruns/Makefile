@@ -35,23 +35,43 @@
 #
 #=======================================================================
 
-CC = iverilog
+CORE_SRC = ../src/rtl/siphash_core.v
+TOP_SRC = ../src/rtl/siphash.v $(CORE_SRC)
 
-TOP_SRC = ../src/tb/tb_siphash.v ../src/rtl/siphash.v ../src/rtl/siphash_core.v
-CORE_SRC = ../src/tb/tb_siphash_core.v ../src/rtl/siphash_core.v
+TOP_TB = ../src/tb/tb_siphash.v
+CORE_TB = ../src/tb/tb_siphash_core.v
+
+CC = iverilog
+LINT=verilator
+
 
 all:    top core
 
 
-top:	$(TOP_SRC)
-	iverilog -Wall -o top.sim $(TOP_SRC)
+top:	$(TOP_TB) $(TOP_SRC)
+	iverilog -Wall -o top.sim $(TOP_TB) $(TOP_SRC)
 
 
-core:	$(CORE_SRC)
-	iverilog -Wall -o core.sim $(CORE_SRC)
+core:	$(CORE_TB) $(CORE_SRC)
+	iverilog -Wall -o core.sim $(CORE_TB) $(CORE_SRC)
+
+
+lint:
+	verilator --lint-only -Wall $(TOP_SRC)
+
 
 clean:
 	rm *.sim
+
+
+help:
+	@echo "Supported targets:"
+	@echo "------------------"
+	@echo "all:      Build all simulation targets."
+	@echo "top:      Build the top simulation target."
+	@echo "core:     Build the core simulation target."
+	@echo "lint:     Run the linter on the source"
+	@echo "clean:    Delete all built files."
 
 #=======================================================================
 # EOF Makefile
