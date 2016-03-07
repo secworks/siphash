@@ -209,44 +209,28 @@ module siphash(
       else
         begin
           if (ctrl_we)
-            begin
-              ctrl_reg <= ctrl_new;
-            end
+            ctrl_reg <= write_data[3 : 0];;
 
           if (param_we)
-            begin
-              param_reg <= param_new;
-            end
+            param_reg <= write_data[7 : 0];
 
           if (key0_we)
-            begin
-              key0_reg <= write_data;
-            end
+            key0_reg <= write_data;
 
           if (key1_we)
-            begin
-              key1_reg <= write_data;
-            end
+            key1_reg <= write_data;
 
           if (key2_we)
-            begin
-              key2_reg <= write_data;
-            end
+            key2_reg <= write_data;
 
           if (key3_we)
-            begin
-              key3_reg <= write_data;
-            end
+            key3_reg <= write_data;
 
           if (mi0_we)
-            begin
-              mi0_reg <= write_data;
-            end
+            mi0_reg <= write_data;
 
           if (mi1_we)
-            begin
-              mi1_reg <= write_data;
-            end
+            mi1_reg <= write_data;
 
           // We sample the siphash word when valid is set.
           if (core_siphash_word_valid)
@@ -270,9 +254,7 @@ module siphash(
       read_data_valid_out = 1'b0;
       error_out           = 1'b0;
 
-      ctrl_new            = 4'h0;
       ctrl_we             = 1'b0;
-      param_new           = 8'h00;
       param_we            = 1'b0;
 
       key0_we             = 1'b0;
@@ -289,48 +271,29 @@ module siphash(
             begin
               // Write operation.
               case (addr)
-
                 SIPHASH_ADDR_CTRL:
-                  begin
-                    ctrl_new = write_data[3 : 0];
-                    ctrl_we  = 1'b1;
-                  end
+                  ctrl_we  = 1'b1;
 
                 SIPHASH_ADDR_PARAM:
-                  begin
-                    param_new = write_data[7 : 0];
-                    param_we  = 1'b1;
-                  end
+                  param_we  = 1'b1;
 
                 SIPHASH_ADDR_KEY0:
-                  begin
-                    key0_we  = 1'b1;
-                  end
+                  key0_we  = 1'b1;
 
                 SIPHASH_ADDR_KEY1:
-                  begin
-                    key1_we  = 1'b1;
-                  end
+                  key1_we  = 1'b1;
 
                 SIPHASH_ADDR_KEY2:
-                  begin
-                    key2_we  = 1'b1;
-                  end
+                  key2_we  = 1'b1;
 
                 SIPHASH_ADDR_KEY3:
-                  begin
-                    key3_we  = 1'b1;
-                  end
+                  key3_we  = 1'b1;
 
                 SIPHASH_ADDR_MI0:
-                  begin
-                    mi0_we  = 1'b1;
-                  end
+                  mi0_we  = 1'b1;
 
                 SIPHASH_ADDR_MI1:
-                  begin
-                    mi1_we  = 1'b1;
-                  end
+                  mi1_we  = 1'b1;
 
                 default:
                   begin
@@ -351,7 +314,8 @@ module siphash(
 
                 SIPHASH_ADDR_STATUS:
                   begin
-                    read_data_out       = {30'h00000000, core_ready, core_siphash_word_valid};
+                    read_data_out       = {30'h00000000, core_ready,
+                                           core_siphash_word_valid};
                     read_data_valid_out = 1'b1;
                   end
 
