@@ -87,13 +87,12 @@ module tb_siphash_core();
                    .finalize(tb_finalize),
                    .long(tb_long),
 
-                   .c(tb_c),
-                   .d(tb_d),
-                   .k(tb_key),
+                   .compression_rounds(tb_c),
+                   .final_rounds(tb_d),
+                   .key(tb_key),
                    .mi(tb_mi),
 
                    .ready(tb_ready),
-
                    .siphash_word(tb_siphash_word),
                    .siphash_word_valid(tb_siphash_word_valid)
                   );

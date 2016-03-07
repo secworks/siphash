@@ -46,26 +46,17 @@ module siphash_core(
                     input wire           clk,
                     input wire           reset_n,
 
-                    // Control.
                     input wire           initalize,
                     input wire           compress,
                     input wire           finalize,
                     input wire           long,
 
-                    // Parameters and data.
-                    // Number of compression rounds c.
-                    // Number of finalization rounds d.
-                    // Key k.
-                    // Message word block mi.
-                    input wire [3 : 0]   c,
-                    input wire [3 : 0]   d,
-                    input wire [127 : 0] k,
-                    input wire [63 : 0]  mi,
+                    input wire [3 : 0]    compression_rounds,
+                    input wire [3 : 0]    final_rounds,
+                    input wire [127 : 0]  key,
+                    input wire [63 : 0]   mi,
 
-                    // Status output.
-                    output wire          ready,
-
-                    // Hash word output.
+                    output wire           ready,
                     output wire [127 : 0] siphash_word,
                     output wire           siphash_word_valid
                    );
@@ -74,20 +65,18 @@ module siphash_core(
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
-  // Datapath control states names.
-  parameter DP_INITIALIZAION     = 3'h0;
-  parameter DP_COMPRESSION_START = 3'h1;
-  parameter DP_COMPRESSION_END   = 3'h2;
-  parameter DP_FINALIZATION      = 3'h3;
-  parameter DP_SIPROUND          = 3'h4;
+  localparam DP_INITIALIZAION     = 3'h0;
+  localparam DP_COMPRESSION_START = 3'h1;
+  localparam DP_COMPRESSION_END   = 3'h2;
+  localparam DP_FINALIZATION      = 3'h3;
+  localparam DP_SIPROUND          = 3'h4;
 
-  // State names for the control FSM.
-  parameter CTRL_IDLE    = 3'h0;
-  parameter CTRL_COMP_0  = 3'h1;
-  parameter CTRL_COMP_1  = 3'h2;
-  parameter CTRL_COMP_2  = 3'h3;
-  parameter CTRL_FINAL_0 = 3'h4;
-  parameter CTRL_FINAL_1 = 3'h5;
+  localparam CTRL_IDLE    = 3'h0;
+  localparam CTRL_COMP_0  = 3'h1;
+  localparam CTRL_COMP_1  = 3'h2;
+  localparam CTRL_COMP_2  = 3'h3;
+  localparam CTRL_FINAL_0 = 3'h4;
+  localparam CTRL_FINAL_1 = 3'h5;
 
 
   //----------------------------------------------------------------
@@ -265,10 +254,10 @@ module siphash_core(
               begin
                 if (long)
                   begin
-                    v0_new = k[063 : 000] ^ 64'h736f6d6570736575;
-                    v1_new = k[127 : 064] ^ 64'h646f72616e646f6d;
-                    v2_new = k[063 : 000] ^ 64'h6c7967656e657261;
-                    v3_new = k[127 : 064] ^ 64'h7465646279746573;
+                    v0_new = key[063 : 000] ^ 64'h736f6d6570736575;
+                    v1_new = key[127 : 064] ^ 64'h646f72616e646f6d;
+                    v2_new = key[063 : 000] ^ 64'h6c7967656e657261;
+                    v3_new = key[127 : 064] ^ 64'h7465646279746573;
                     v0_we  = 1;
                     v1_we  = 1;
                     v2_we  = 1;
@@ -276,10 +265,10 @@ module siphash_core(
                   end
                 else
                   begin
-                    v0_new = k[063 : 000] ^ 64'h736f6d6570736575;
-                    v1_new = k[127 : 064] ^ 64'h646f72616e646f6d;
-                    v2_new = k[063 : 000] ^ 64'h6c7967656e657261;
-                    v3_new = k[127 : 064] ^ 64'h7465646279746573;
+                    v0_new = key[063 : 000] ^ 64'h736f6d6570736575;
+                    v1_new = key[127 : 064] ^ 64'h646f72616e646f6d;
+                    v2_new = key[063 : 000] ^ 64'h6c7967656e657261;
+                    v3_new = key[127 : 064] ^ 64'h7465646279746573;
                     v0_we  = 1;
                     v1_we  = 1;
                     v2_we  = 1;
@@ -439,7 +428,7 @@ module siphash_core(
 
         CTRL_COMP_1:
           begin
-            if (loop_ctr_reg == (c - 1))
+            if (loop_ctr_reg == (compression_rounds - 1))
               begin
                 siphash_ctrl_new  = CTRL_COMP_2;
                 siphash_ctrl_we   = 1;
@@ -475,7 +464,7 @@ module siphash_core(
 
         CTRL_FINAL_1:
           begin
-            if (loop_ctr_reg == (d - 1))
+            if (loop_ctr_reg == (final_rounds - 1))
               begin
                 // Done.
                 ready_new         = 1;

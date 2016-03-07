@@ -176,13 +176,12 @@ module siphash(
                     .finalize(core_finalize),
                     .long(core_long),
 
-                    .c(core_c),
-                    .d(core_d),
-                    .k(core_k),
+                    .compression_rounds(core_c),
+                    .final_rounds(core_d),
+                    .key(core_k),
                     .mi(core_mi),
 
                     .ready(core_ready),
-
                     .siphash_word(core_siphash_word),
                     .siphash_word_valid(core_siphash_word_valid)
                    );
