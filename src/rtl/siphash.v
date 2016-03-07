@@ -53,35 +53,35 @@ module siphash(
   //----------------------------------------------------------------
   // API and Symbolic names.
   //----------------------------------------------------------------
-  parameter SIPHASH_ADDR_CTRL      = 8'h00;
-  parameter SIPHASH_BIT_INITIALIZE = 0;
-  parameter SIPHASH_BIT_COMPRESS   = 1;
-  parameter SIPHASH_BIT_FINALIZE   = 2;
-  parameter SIPHASH_BIT_LONG       = 3;
+  localparam SIPHASH_ADDR_CTRL      = 8'h00;
+  localparam SIPHASH_BIT_INITIALIZE = 0;
+  localparam SIPHASH_BIT_COMPRESS   = 1;
+  localparam SIPHASH_BIT_FINALIZE   = 2;
+  localparam SIPHASH_BIT_LONG       = 3;
 
-  parameter SIPHASH_ADDR_STATUS    = 8'h01;
+  localparam SIPHASH_ADDR_STATUS    = 8'h01;
 
-  parameter SIPHASH_ADDR_PARAM     = 8'h02;
-  parameter SIPHASH_START_C        = 0;
-  parameter SIPHASH_SIZE_C         = 4;
-  parameter SIPHASH_DEFAULT_C      = 4'h2;
+  localparam SIPHASH_ADDR_PARAM     = 8'h02;
+  localparam SIPHASH_START_C        = 0;
+  localparam SIPHASH_SIZE_C         = 4;
+  localparam SIPHASH_DEFAULT_C      = 4'h2;
 
-  parameter SIPHASH_START_D        = 3;
-  parameter SIPHASH_SIZE_D         = 4;
-  parameter SIPHASH_DEFAULT_D      = 4'h4;
+  localparam SIPHASH_START_D        = 3;
+  localparam SIPHASH_SIZE_D         = 4;
+  localparam SIPHASH_DEFAULT_D      = 4'h4;
 
-  parameter SIPHASH_ADDR_KEY0      = 8'h10;
-  parameter SIPHASH_ADDR_KEY1      = 8'h11;
-  parameter SIPHASH_ADDR_KEY2      = 8'h12;
-  parameter SIPHASH_ADDR_KEY3      = 8'h13;
+  localparam SIPHASH_ADDR_KEY0      = 8'h10;
+  localparam SIPHASH_ADDR_KEY1      = 8'h11;
+  localparam SIPHASH_ADDR_KEY2      = 8'h12;
+  localparam SIPHASH_ADDR_KEY3      = 8'h13;
 
-  parameter SIPHASH_ADDR_MI0       = 8'h18;
-  parameter SIPHASH_ADDR_MI1       = 8'h19;
+  localparam SIPHASH_ADDR_MI0       = 8'h18;
+  localparam SIPHASH_ADDR_MI1       = 8'h19;
 
-  parameter SIPHASH_ADDR_WORD0     = 8'h20;
-  parameter SIPHASH_ADDR_WORD1     = 8'h21;
-  parameter SIPHASH_ADDR_WORD2     = 8'h22;
-  parameter SIPHASH_ADDR_WORD3     = 8'h23;
+  localparam SIPHASH_ADDR_WORD0     = 8'h20;
+  localparam SIPHASH_ADDR_WORD1     = 8'h21;
+  localparam SIPHASH_ADDR_WORD2     = 8'h22;
+  localparam SIPHASH_ADDR_WORD3     = 8'h23;
 
 
   //----------------------------------------------------------------
