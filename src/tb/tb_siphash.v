@@ -62,7 +62,7 @@ module tb_siphash();
   // DUT connections.
   reg           tb_cs;
   reg           tb_wr_rd;
-  reg [3 : 0]   tb_addr;
+  reg [7 : 0]   tb_addr;
   reg [31 : 0]  tb_write_data;
   wire [31 : 0] tb_read_data;
   wire          tb_read_data_valid;
@@ -158,7 +158,7 @@ module tb_siphash();
       // defined values at simulation start.
       tb_cs         = 1'b0;
       tb_wr_rd      = 1'b0;
-      tb_addr       = 4'h0;
+      tb_addr       = 8'h00;
       tb_write_data = 32'h00000000;
 
       cycle_ctr    = 0;

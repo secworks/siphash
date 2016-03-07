@@ -42,7 +42,7 @@ module siphash(
 
                input wire           cs,
                input wire           wr_rd,
-               input wire [3 : 0]   addr,
+               input wire [7 : 0]   addr,
                input wire [31 : 0]  write_data,
                output wire [31 : 0] read_data,
                output wire          read_data_valid,
@@ -53,15 +53,15 @@ module siphash(
   //----------------------------------------------------------------
   // API and Symbolic names.
   //----------------------------------------------------------------
-  parameter SIPHASH_ADDR_CTRL      = 4'h0;
+  parameter SIPHASH_ADDR_CTRL      = 8'h00;
   parameter SIPHASH_BIT_INITIALIZE = 0;
   parameter SIPHASH_BIT_COMPRESS   = 1;
   parameter SIPHASH_BIT_FINALIZE   = 2;
   parameter SIPHASH_BIT_LONG       = 3;
 
-  parameter SIPHASH_ADDR_STATUS    = 4'h1;
+  parameter SIPHASH_ADDR_STATUS    = 8'h01;
 
-  parameter SIPHASH_ADDR_PARAM     = 4'h2;
+  parameter SIPHASH_ADDR_PARAM     = 8'h02;
   parameter SIPHASH_START_C        = 0;
   parameter SIPHASH_SIZE_C         = 4;
   parameter SIPHASH_DEFAULT_C      = 4'h2;
@@ -70,29 +70,27 @@ module siphash(
   parameter SIPHASH_SIZE_D         = 4;
   parameter SIPHASH_DEFAULT_D      = 4'h4;
 
-  parameter SIPHASH_ADDR_KEY0      = 4'h4;
-  parameter SIPHASH_ADDR_KEY1      = 4'h5;
-  parameter SIPHASH_ADDR_KEY2      = 4'h6;
-  parameter SIPHASH_ADDR_KEY3      = 4'h7;
+  parameter SIPHASH_ADDR_KEY0      = 8'h10;
+  parameter SIPHASH_ADDR_KEY1      = 8'h11;
+  parameter SIPHASH_ADDR_KEY2      = 8'h12;
+  parameter SIPHASH_ADDR_KEY3      = 8'h13;
 
-  parameter SIPHASH_ADDR_MI0       = 4'h8;
-  parameter SIPHASH_ADDR_MI1       = 4'h9;
+  parameter SIPHASH_ADDR_MI0       = 8'h18;
+  parameter SIPHASH_ADDR_MI1       = 8'h19;
 
-  parameter SIPHASH_ADDR_WORD0     = 4'hc;
-  parameter SIPHASH_ADDR_WORD1     = 4'hd;
-  parameter SIPHASH_ADDR_WORD2     = 4'he;
-  parameter SIPHASH_ADDR_WORD3     = 4'hf;
+  parameter SIPHASH_ADDR_WORD0     = 8'h20;
+  parameter SIPHASH_ADDR_WORD1     = 8'h21;
+  parameter SIPHASH_ADDR_WORD2     = 8'h22;
+  parameter SIPHASH_ADDR_WORD3     = 8'h23;
 
 
   //----------------------------------------------------------------
   // Registers including update variables and write enable.
   //----------------------------------------------------------------
   reg [3 : 0]  ctrl_reg;
-  reg [3 : 0]  ctrl_new;
   reg          ctrl_we;
 
   reg [7 : 0]  param_reg;
-  reg [7 : 0]  param_new;
   reg          param_we;
 
   reg [31 : 0] key0_reg;
