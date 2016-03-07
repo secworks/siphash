@@ -163,54 +163,34 @@ module siphash_core(
       else
         begin
           if (v0_we)
-            begin
-              v0_reg <= v0_new;
-            end
+            v0_reg <= v0_new;
 
           if (v1_we)
-            begin
-              v1_reg <= v1_new;
-            end
+            v1_reg <= v1_new;
 
           if (v2_we)
-            begin
-              v2_reg <= v2_new;
-            end
+            v2_reg <= v2_new;
 
           if (v3_we)
-            begin
-              v3_reg <= v3_new;
-            end
+            v3_reg <= v3_new;
 
           if (mi_we)
-            begin
-              mi_reg <= mi;
-            end
+            mi_reg <= mi;
 
           if (ready_we)
-            begin
-              ready_reg <= ready_new;
-            end
+            ready_reg <= ready_new;
 
           if (siphash_valid_we)
-            begin
-              siphash_valid_reg <= siphash_valid_new;
-            end
+            siphash_valid_reg <= siphash_valid_new;
 
           if (loop_ctr_we)
-            begin
-              loop_ctr_reg <= loop_ctr_new;
-            end
+            loop_ctr_reg <= loop_ctr_new;
 
           if (dp_state_we)
-            begin
-              dp_state_reg <= dp_state_new;
-            end
+            dp_state_reg <= dp_state_new;
 
           if (siphash_ctrl_we)
-            begin
-              siphash_ctrl_reg <= siphash_ctrl_new;
-            end
+            siphash_ctrl_reg <= siphash_ctrl_new;
         end
     end // reg_update
 
@@ -225,18 +205,15 @@ module siphash_core(
   //----------------------------------------------------------------
   always @*
     begin : datapath_update
-      // Internal wires
       reg [63 : 0] add_0_res;
       reg [63 : 0] add_1_res;
       reg [63 : 0] add_2_res;
       reg [63 : 0] add_3_res;
-
       reg [63 : 0] v0_tmp;
       reg [63 : 0] v1_tmp;
       reg [63 : 0] v2_tmp;
       reg [63 : 0] v3_tmp;
 
-      // Default assignments
       v0_new    = 64'h0000000000000000;
       v0_we     = 0;
       v1_new    = 64'h0000000000000000;
@@ -246,7 +223,6 @@ module siphash_core(
       v3_new    = 64'h0000000000000000;
       v3_we     = 0;
 
-      // Main DP logic.
       if (dp_update)
         begin
           case (dp_state_reg)
@@ -337,7 +313,6 @@ module siphash_core(
   //----------------------------------------------------------------
   always @*
     begin : loop_ctr
-      // Defult assignments
       loop_ctr_new = 0;
       loop_ctr_we  = 0;
 
@@ -361,7 +336,6 @@ module siphash_core(
   //----------------------------------------------------------------
   always @*
     begin : siphash_ctrl_fsm
-      // Default assignments.
       loop_ctr_rst      = 0;
       loop_ctr_inc      = 0;
       dp_update         = 0;
