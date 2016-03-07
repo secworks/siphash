@@ -61,12 +61,10 @@ module tb_siphash();
 
   // DUT connections.
   reg           tb_cs;
-  reg           tb_wr_rd;
+  reg           tb_we;
   reg [7 : 0]   tb_addr;
   reg [31 : 0]  tb_write_data;
   wire [31 : 0] tb_read_data;
-  wire          tb_read_data_valid;
-  wire          tb_error;
 
 
   //----------------------------------------------------------------
@@ -78,12 +76,10 @@ module tb_siphash();
               .reset_n(tb_reset_n),
 
               .cs(tb_cs),
-              .wr_rd(tb_wr_rd),
+              .we(tb_we),
               .addr(tb_addr),
               .write_data(tb_write_data),
-              .read_data(tb_read_data),
-              .read_data_valid(tb_read_data_valid),
-              .error(tb_error)
+              .read_data(tb_read_data)
              );
 
 
@@ -157,7 +153,7 @@ module tb_siphash();
       // Set clock, reset and DUT input signals to
       // defined values at simulation start.
       tb_cs         = 1'b0;
-      tb_wr_rd      = 1'b0;
+      tb_we         = 1'b0;
       tb_addr       = 8'h00;
       tb_write_data = 32'h00000000;
 

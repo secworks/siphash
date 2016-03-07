@@ -41,27 +41,29 @@ module siphash(
                input wire           reset_n,
 
                input wire           cs,
-               input wire           wr_rd,
+               input wire           we,
                input wire [7 : 0]   addr,
                input wire [31 : 0]  write_data,
-               output wire [31 : 0] read_data,
-               output wire          read_data_valid,
-               output wire          error
+               output wire [31 : 0] read_data
               );
 
 
   //----------------------------------------------------------------
   // API and Symbolic names.
   //----------------------------------------------------------------
-  localparam SIPHASH_ADDR_CTRL      = 8'h00;
+  localparam ADDR_NAME0             = 8'h00;
+  localparam ADDR_NAME1             = 8'h01;
+  localparam ADDR_VERSION           = 8'h02;
+
+  localparam SIPHASH_ADDR_CTRL      = 8'h08;
   localparam SIPHASH_BIT_INITIALIZE = 0;
   localparam SIPHASH_BIT_COMPRESS   = 1;
   localparam SIPHASH_BIT_FINALIZE   = 2;
   localparam SIPHASH_BIT_LONG       = 3;
 
-  localparam SIPHASH_ADDR_STATUS    = 8'h01;
+  localparam SIPHASH_ADDR_STATUS    = 8'h09;
 
-  localparam SIPHASH_ADDR_PARAM     = 8'h02;
+  localparam SIPHASH_ADDR_PARAM     = 8'h0a;
   localparam SIPHASH_START_C        = 0;
   localparam SIPHASH_SIZE_C         = 4;
   localparam SIPHASH_DEFAULT_C      = 4'h2;
@@ -82,6 +84,10 @@ module siphash(
   localparam SIPHASH_ADDR_WORD1     = 8'h21;
   localparam SIPHASH_ADDR_WORD2     = 8'h22;
   localparam SIPHASH_ADDR_WORD3     = 8'h23;
+
+  localparam CORE_NAME0   = 32'h73697068; // "siph"
+  localparam CORE_NAME1   = 32'h61736820; // "ash "
+  localparam CORE_VERSION = 32'h312e3031; // "1.01"
 
 
   //----------------------------------------------------------------
@@ -120,9 +126,7 @@ module siphash(
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
-  reg [31 : 0]   read_data_out;
-  reg            read_data_valid_out;
-  reg            error_out;
+  reg [31 : 0]   tmp_read_data;
 
   wire           core_initalize;
   wire           core_compress;
@@ -140,9 +144,7 @@ module siphash(
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign read_data       = read_data_out;
-  assign read_data_valid = read_data_valid_out;
-  assign error           = error_out;
+  assign read_data       = tmp_read_data;
 
   assign core_initalize  = ctrl_reg[SIPHASH_BIT_INITIALIZE];
   assign core_compress   = ctrl_reg[SIPHASH_BIT_COMPRESS];
@@ -247,27 +249,20 @@ module siphash(
   //----------------------------------------------------------------
   always @*
     begin : api
-      // Default assignments
-      read_data_out       = 32'h00000000;
-      read_data_valid_out = 1'b0;
-      error_out           = 1'b0;
-
-      ctrl_we             = 1'b0;
-      param_we            = 1'b0;
-
-      key0_we             = 1'b0;
-      key1_we             = 1'b0;
-      key2_we             = 1'b0;
-      key3_we             = 1'b0;
-
-      mi0_we              = 1'b0;
-      mi1_we              = 1'b0;
+      tmp_read_data = 32'h00000000;
+      ctrl_we       = 1'b0;
+      param_we      = 1'b0;
+      key0_we       = 1'b0;
+      key1_we       = 1'b0;
+      key2_we       = 1'b0;
+      key3_we       = 1'b0;
+      mi0_we        = 1'b0;
+      mi1_we        = 1'b0;
 
       if (cs)
         begin
-          if (wr_rd)
+          if (we)
             begin
-              // Write operation.
               case (addr)
                 SIPHASH_ADDR_CTRL:
                   ctrl_we  = 1'b1;
@@ -295,97 +290,64 @@ module siphash(
 
                 default:
                   begin
-                    error_out = 1;
                   end
               endcase // case (addr)
             end
 
           else
             begin
-              // Read operation.
               case (addr)
+                ADDR_NAME0:
+                  tmp_read_data = CORE_NAME0;
+
+                ADDR_NAME1:
+                  tmp_read_data = CORE_NAME1;
+
+                ADDR_VERSION:
+                  tmp_read_data = CORE_VERSION;
+
                 SIPHASH_ADDR_CTRL:
-                  begin
-                    read_data_out       = {28'h0000000, ctrl_reg};
-                    read_data_valid_out = 1'b1;
-                  end
+                  tmp_read_data = {28'h0000000, ctrl_reg};
 
                 SIPHASH_ADDR_STATUS:
-                  begin
-                    read_data_out       = {30'h00000000, core_ready,
-                                           core_siphash_word_valid};
-                    read_data_valid_out = 1'b1;
-                  end
+                  tmp_read_data = {30'h00000000, core_ready,
+                                   core_siphash_word_valid};
 
                 SIPHASH_ADDR_PARAM:
-                  begin
-                    read_data_out       = {24'h000000, param_reg};
-                    read_data_valid_out = 1'b1;
-                  end
+                  tmp_read_data = {24'h000000, param_reg};
 
                 SIPHASH_ADDR_KEY0:
-                  begin
-                    read_data_out       = key0_reg;
-                    read_data_valid_out = 1'b1;
-                  end
+                  tmp_read_data = key0_reg;
 
                 SIPHASH_ADDR_KEY1:
-                  begin
-                    read_data_out       = key1_reg;
-                    read_data_valid_out = 1'b1;
-                  end
+                  tmp_read_data = key1_reg;
 
                 SIPHASH_ADDR_KEY2:
-                  begin
-                    read_data_out       = key2_reg;
-                    read_data_valid_out = 1'b1;
-                  end
+                  tmp_read_data = key2_reg;
 
                 SIPHASH_ADDR_KEY3:
-                  begin
-                    read_data_out       = key3_reg;
-                    read_data_valid_out = 1'b1;
-                  end
+                  tmp_read_data = key3_reg;
 
                 SIPHASH_ADDR_MI0:
-                  begin
-                    read_data_out       = mi0_reg;
-                    read_data_valid_out = 1'b1;
-                  end
+                  tmp_read_data = mi0_reg;
 
                 SIPHASH_ADDR_MI1:
-                  begin
-                    read_data_out       = mi1_reg;
-                    read_data_valid_out = 1'b1;
-                  end
+                    tmp_read_data = mi1_reg;
 
                 SIPHASH_ADDR_WORD0:
-                  begin
-                    read_data_out       = word0_reg;
-                    read_data_valid_out = 1'b1;
-                  end
+                  tmp_read_data = word0_reg;
 
                 SIPHASH_ADDR_WORD1:
-                  begin
-                    read_data_out       = word1_reg;
-                    read_data_valid_out = 1'b1;
-                  end
+                  tmp_read_data = word1_reg;
 
                 SIPHASH_ADDR_WORD2:
-                  begin
-                    read_data_out       = word2_reg;
-                    read_data_valid_out = 1'b1;
-                  end
+                    tmp_read_data = word2_reg;
 
                 SIPHASH_ADDR_WORD3:
-                  begin
-                    read_data_out       = word3_reg;
-                    read_data_valid_out = 1'b1;
-                  end
+                  tmp_read_data = word3_reg;
 
                 default:
                   begin
-                    error_out = 1;
                   end
               endcase // case (addr)
             end
