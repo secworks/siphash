@@ -51,43 +51,46 @@ module siphash(
   //----------------------------------------------------------------
   // API and Symbolic names.
   //----------------------------------------------------------------
-  localparam ADDR_NAME0             = 8'h00;
-  localparam ADDR_NAME1             = 8'h01;
-  localparam ADDR_VERSION           = 8'h02;
+  localparam ADDR_NAME0        = 8'h00;
+  localparam ADDR_NAME1        = 8'h01;
+  localparam ADDR_VERSION      = 8'h02;
 
-  localparam SIPHASH_ADDR_CTRL      = 8'h08;
-  localparam SIPHASH_BIT_INITIALIZE = 0;
-  localparam SIPHASH_BIT_COMPRESS   = 1;
-  localparam SIPHASH_BIT_FINALIZE   = 2;
-  localparam SIPHASH_BIT_LONG       = 3;
+  localparam ADDR_CTRL         = 8'h08;
+  localparam CTRL_INIT_BIT     = 0;
+  localparam CTRL_COMPRESS_BIT = 1;
+  localparam CTRL_FINALIZE_BIT = 2;
 
-  localparam SIPHASH_ADDR_STATUS    = 8'h09;
+  localparam ADDR_STATUS       = 8'h09;
+  localparam STATUS_READY_BIT  = 0;
+  localparam STATUS_VALID_BIT  = 1;
 
-  localparam SIPHASH_ADDR_PARAM     = 8'h0a;
-  localparam SIPHASH_START_C        = 0;
-  localparam SIPHASH_SIZE_C         = 4;
-  localparam SIPHASH_DEFAULT_C      = 4'h2;
+  localparam ADDR_CONFIG       = 8'h0a;
+  localparam CONFIG_LONG_BIT   = 0;
 
-  localparam SIPHASH_START_D        = 3;
-  localparam SIPHASH_SIZE_D         = 4;
-  localparam SIPHASH_DEFAULT_D      = 4'h4;
+  localparam ADDR_PARAM        = 8'h0b;
+  localparam SIPHASH_START_C   = 0;
+  localparam SIPHASH_SIZE_C    = 4;
+  localparam SIPHASH_DEFAULT_C = 4'h2;
+  localparam SIPHASH_START_D   = 3;
+  localparam SIPHASH_SIZE_D    = 4;
+  localparam SIPHASH_DEFAULT_D = 4'h4;
 
-  localparam SIPHASH_ADDR_KEY0      = 8'h10;
-  localparam SIPHASH_ADDR_KEY1      = 8'h11;
-  localparam SIPHASH_ADDR_KEY2      = 8'h12;
-  localparam SIPHASH_ADDR_KEY3      = 8'h13;
+  localparam ADDR_KEY0         = 8'h10;
+  localparam ADDR_KEY1         = 8'h11;
+  localparam ADDR_KEY2         = 8'h12;
+  localparam ADDR_KEY3         = 8'h13;
 
-  localparam SIPHASH_ADDR_MI0       = 8'h18;
-  localparam SIPHASH_ADDR_MI1       = 8'h19;
+  localparam ADDR_MI0          = 8'h18;
+  localparam ADDR_MI1          = 8'h19;
 
-  localparam SIPHASH_ADDR_WORD0     = 8'h20;
-  localparam SIPHASH_ADDR_WORD1     = 8'h21;
-  localparam SIPHASH_ADDR_WORD2     = 8'h22;
-  localparam SIPHASH_ADDR_WORD3     = 8'h23;
+  localparam ADDR_WORD0        = 8'h20;
+  localparam ADDR_WORD1        = 8'h21;
+  localparam ADDR_WORD2        = 8'h22;
+  localparam ADDR_WORD3        = 8'h23;
 
-  localparam CORE_NAME0   = 32'h73697068; // "siph"
-  localparam CORE_NAME1   = 32'h61736820; // "ash "
-  localparam CORE_VERSION = 32'h312e3031; // "1.01"
+  localparam CORE_NAME0        = 32'h73697068; // "siph"
+  localparam CORE_NAME1        = 32'h61736820; // "ash "
+  localparam CORE_VERSION      = 32'h312e3031; // "1.01"
 
 
   //----------------------------------------------------------------
@@ -95,6 +98,9 @@ module siphash(
   //----------------------------------------------------------------
   reg [3 : 0]  ctrl_reg;
   reg          ctrl_we;
+
+  reg          long_reg;
+  reg          long_we;
 
   reg [7 : 0]  param_reg;
   reg          param_we;
@@ -146,10 +152,10 @@ module siphash(
   //----------------------------------------------------------------
   assign read_data       = tmp_read_data;
 
-  assign core_initalize  = ctrl_reg[SIPHASH_BIT_INITIALIZE];
-  assign core_compress   = ctrl_reg[SIPHASH_BIT_COMPRESS];
-  assign core_finalize   = ctrl_reg[SIPHASH_BIT_FINALIZE];
-  assign core_long       = ctrl_reg[SIPHASH_BIT_LONG];
+  assign core_initalize  = ctrl_reg[CTRL_INIT_BIT];
+  assign core_compress   = ctrl_reg[CTRL_COMPRESS_BIT];
+  assign core_finalize   = ctrl_reg[CTRL_FINALIZE_BIT];
+  assign core_long       = long_reg;
   assign core_c          = param_reg[(SIPHASH_START_C + SIPHASH_SIZE_C - 1) :
                                      SIPHASH_START_C];
   assign core_d          = param_reg[(SIPHASH_START_D + SIPHASH_SIZE_D - 1) :
@@ -194,6 +200,7 @@ module siphash(
         begin
           // Reset all registers to defined values.
           ctrl_reg  <= 4'h0;
+          long_reg  <= 1'b0;
           param_reg <= {SIPHASH_DEFAULT_D, SIPHASH_DEFAULT_C};
           key0_reg  <= 32'h00000000;
           key1_reg  <= 32'h00000000;
@@ -209,7 +216,10 @@ module siphash(
       else
         begin
           if (ctrl_we)
-            ctrl_reg <= write_data[3 : 0];;
+            ctrl_reg <= write_data[3 : 0];
+
+          if (long_we)
+            long_reg <= write_data[CONFIG_LONG_BIT];
 
           if (param_we)
             param_reg <= write_data[7 : 0];
@@ -251,6 +261,7 @@ module siphash(
     begin : api
       tmp_read_data = 32'h00000000;
       ctrl_we       = 1'b0;
+      long_we       = 1'b0;
       param_we      = 1'b0;
       key0_we       = 1'b0;
       key1_we       = 1'b0;
@@ -264,28 +275,31 @@ module siphash(
           if (we)
             begin
               case (addr)
-                SIPHASH_ADDR_CTRL:
-                  ctrl_we  = 1'b1;
+                ADDR_CTRL:
+                  ctrl_we = 1'b1;
 
-                SIPHASH_ADDR_PARAM:
+                ADDR_CONFIG:
+                  long_we = 1'b1;
+
+                ADDR_PARAM:
                   param_we  = 1'b1;
 
-                SIPHASH_ADDR_KEY0:
+                ADDR_KEY0:
                   key0_we  = 1'b1;
 
-                SIPHASH_ADDR_KEY1:
+                ADDR_KEY1:
                   key1_we  = 1'b1;
 
-                SIPHASH_ADDR_KEY2:
+                ADDR_KEY2:
                   key2_we  = 1'b1;
 
-                SIPHASH_ADDR_KEY3:
+                ADDR_KEY3:
                   key3_we  = 1'b1;
 
-                SIPHASH_ADDR_MI0:
+                ADDR_MI0:
                   mi0_we  = 1'b1;
 
-                SIPHASH_ADDR_MI1:
+                ADDR_MI1:
                   mi1_we  = 1'b1;
 
                 default:
@@ -306,44 +320,44 @@ module siphash(
                 ADDR_VERSION:
                   tmp_read_data = CORE_VERSION;
 
-                SIPHASH_ADDR_CTRL:
+                ADDR_CTRL:
                   tmp_read_data = {28'h0000000, ctrl_reg};
 
-                SIPHASH_ADDR_STATUS:
+                ADDR_STATUS:
                   tmp_read_data = {30'h00000000, core_ready,
                                    core_siphash_word_valid};
 
-                SIPHASH_ADDR_PARAM:
+                ADDR_PARAM:
                   tmp_read_data = {24'h000000, param_reg};
 
-                SIPHASH_ADDR_KEY0:
+                ADDR_KEY0:
                   tmp_read_data = key0_reg;
 
-                SIPHASH_ADDR_KEY1:
+                ADDR_KEY1:
                   tmp_read_data = key1_reg;
 
-                SIPHASH_ADDR_KEY2:
+                ADDR_KEY2:
                   tmp_read_data = key2_reg;
 
-                SIPHASH_ADDR_KEY3:
+                ADDR_KEY3:
                   tmp_read_data = key3_reg;
 
-                SIPHASH_ADDR_MI0:
+                ADDR_MI0:
                   tmp_read_data = mi0_reg;
 
-                SIPHASH_ADDR_MI1:
+                ADDR_MI1:
                     tmp_read_data = mi1_reg;
 
-                SIPHASH_ADDR_WORD0:
+                ADDR_WORD0:
                   tmp_read_data = word0_reg;
 
-                SIPHASH_ADDR_WORD1:
+                ADDR_WORD1:
                   tmp_read_data = word1_reg;
 
-                SIPHASH_ADDR_WORD2:
+                ADDR_WORD2:
                     tmp_read_data = word2_reg;
 
-                SIPHASH_ADDR_WORD3:
+                ADDR_WORD3:
                   tmp_read_data = word3_reg;
 
                 default:
