@@ -430,15 +430,30 @@ def short_tests():
 
 
 #-------------------------------------------------------------------
+# siphash_paper_test()
+#
+# Run test with the test vectors given in Appedix A of the
+# SipHash paper: https://131002.net/siphash/siphash.pdf
+#-------------------------------------------------------------------
+def siphash_paper_test():
+    print("Running test with vectors from the SipHash paper.")
+
+    key = 0x0f0e0d0c0b0a09080706050403020100
+    block1 = 0x0706050403020100
+    block2 = 0x0f0e0d0c0b0a0908
+    expected = 0xa129ca6149be45e5
+
+    pass
+
+
+#-------------------------------------------------------------------
 # main()
 #-------------------------------------------------------------------
 def main():
     print("Testing the SipHash Python model")
-    print("--------------------------------")
-    print
-    print
+    print("--------------------------------\n")
 
-    print(gen_message(12))
+    siphash_paper_test()
 
 
 #-------------------------------------------------------------------
