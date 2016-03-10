@@ -360,7 +360,7 @@ module tb_siphash_core();
   // run_old_short_test_vector()
   //
   // Perform testing of short mac using the testvectors
-  // from the the SipHash paper Appendix.
+  // from the the SipHash paper Appendix A.
   //----------------------------------------------------------------
   task run_old_short_test_vector;
     begin
@@ -403,11 +403,11 @@ module tb_siphash_core();
 
       if (tb_siphash_word == 64'ha129ca6149be45e5)
         begin
-          $display("Correct digest for old old short test vector recieved.");
+          $display("Correct digest for old old short test vector received.");
         end
       else
         begin
-          $display("Error: incorrect digest for old old short test vector recieved.");
+          $display("Error: incorrect digest for old old short test vector received.");
           $display("Expected: 0x%016x", 64'ha129ca6149be45e5);
           $display("Recived:  0x%016x", tb_siphash_word);
         end
