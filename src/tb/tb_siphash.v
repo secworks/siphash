@@ -45,8 +45,51 @@ module tb_siphash();
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
+  parameter DEBUG = 0;
+
   parameter CLK_HALF_PERIOD = 2;
   parameter CLK_PERIOD      = 2 * CLK_HALF_PERIOD;
+
+  localparam ADDR_NAME0        = 8'h00;
+  localparam ADDR_NAME1        = 8'h01;
+  localparam ADDR_VERSION      = 8'h02;
+
+  localparam ADDR_CTRL         = 8'h08;
+  localparam CTRL_INIT_BIT     = 0;
+  localparam CTRL_COMPRESS_BIT = 1;
+  localparam CTRL_FINALIZE_BIT = 2;
+
+  localparam ADDR_STATUS       = 8'h09;
+  localparam STATUS_READY_BIT  = 0;
+  localparam STATUS_VALID_BIT  = 1;
+
+  localparam ADDR_CONFIG       = 8'h0a;
+  localparam CONFIG_LONG_BIT   = 0;
+
+  localparam ADDR_PARAM        = 8'h0b;
+  localparam SIPHASH_START_C   = 0;
+  localparam SIPHASH_SIZE_C    = 4;
+  localparam SIPHASH_DEFAULT_C = 4'h2;
+  localparam SIPHASH_START_D   = 3;
+  localparam SIPHASH_SIZE_D    = 4;
+  localparam SIPHASH_DEFAULT_D = 4'h4;
+
+  localparam ADDR_KEY0         = 8'h10;
+  localparam ADDR_KEY1         = 8'h11;
+  localparam ADDR_KEY2         = 8'h12;
+  localparam ADDR_KEY3         = 8'h13;
+
+  localparam ADDR_MI0          = 8'h18;
+  localparam ADDR_MI1          = 8'h19;
+
+  localparam ADDR_WORD0        = 8'h20;
+  localparam ADDR_WORD1        = 8'h21;
+  localparam ADDR_WORD2        = 8'h22;
+  localparam ADDR_WORD3        = 8'h23;
+
+  localparam CORE_NAME0        = 32'h73697068; // "siph"
+  localparam CORE_NAME1        = 32'h61736820; // "ash "
+  localparam CORE_VERSION      = 32'h312e3031; // "1.01"
 
 
   //----------------------------------------------------------------
@@ -66,6 +109,10 @@ module tb_siphash();
   reg [31 : 0]  tb_write_data;
   wire [31 : 0] tb_read_data;
 
+  reg [7 : 0]   tb_address;
+  wire          tb_error;
+
+  reg [31 : 0]  read_data;
 
   //----------------------------------------------------------------
   // siphash device under test.
@@ -140,6 +187,83 @@ module tb_siphash();
       $display("");
     end
   endtask // dump_state
+
+
+  //----------------------------------------------------------------
+  // read_word()
+  //
+  // Read a data word from the given address in the DUT.
+  // the word read will be available in the global variable
+  // read_data.
+  //----------------------------------------------------------------
+  task read_word(input [7 : 0]  address);
+    begin
+      tb_address = address;
+      tb_cs = 1;
+      tb_we = 0;
+      #(CLK_PERIOD);
+      read_data = tb_read_data;
+      tb_cs = 0;
+
+      if (DEBUG)
+        begin
+          $display("*** Reading 0x%08x from 0x%02x.", read_data, address);
+          $display("");
+        end
+    end
+  endtask // read_word
+
+
+  //----------------------------------------------------------------
+  // write_word()
+  //
+  // Write the given word to the DUT using the DUT interface.
+  //----------------------------------------------------------------
+  task write_word(input [7 : 0]  address,
+                  input [31 : 0] word);
+    begin
+      if (DEBUG)
+        begin
+          $display("*** Writing 0x%08x to 0x%02x.", word, address);
+          $display("");
+        end
+
+      tb_address = address;
+      tb_write_data = word;
+      tb_cs = 1;
+      tb_we = 1;
+      #(CLK_PERIOD);
+      tb_cs = 0;
+      tb_we = 0;
+    end
+  endtask // write_word
+
+
+  //----------------------------------------------------------------
+  // check_name_version()
+  //
+  // Read the name and version from the DUT.
+  //----------------------------------------------------------------
+  task check_name_version;
+    reg [31 : 0] name0;
+    reg [31 : 0] name1;
+    reg [31 : 0] version;
+    begin
+
+      read_word(ADDR_NAME0);
+      name0 = read_data;
+      read_word(ADDR_NAME1);
+      name1 = read_data;
+      read_word(ADDR_VERSION);
+      version = read_data;
+
+      $display("DUT name: %c%c%c%c%c%c%c%c",
+               name0[31 : 24], name0[23 : 16], name0[15 : 8], name0[7 : 0],
+               name1[31 : 24], name1[23 : 16], name1[15 : 8], name1[7 : 0]);
+      $display("DUT version: %c%c%c%c",
+               version[31 : 24], version[23 : 16], version[15 : 8], version[7 : 0]);
+    end
+  endtask // check_name_version
 
 
   //----------------------------------------------------------------
