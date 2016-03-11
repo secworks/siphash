@@ -143,6 +143,65 @@ module tb_siphash();
 
 
   //----------------------------------------------------------------
+  // run_old_short_test_vector()
+  //
+  // Perform testing of short mac using the testvectors
+  // from the the SipHash paper Appendix A.
+  //----------------------------------------------------------------
+  task run_old_short_test_vector;
+    begin
+      #(10 * CLK_PERIOD);
+      // tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
+      // tb_initalize = 1;
+      #(CLK_PERIOD);
+      // tb_initalize = 0;
+      dump_outputs();
+
+      // Add first block.
+      #(CLK_PERIOD);
+      // tb_compress = 1;
+      // tb_mi = 64'h0706050403020100;
+      #(CLK_PERIOD);
+      // tb_compress = 0;
+      dump_state();
+      dump_outputs();
+
+      // Wait a number of cycle and
+      // try and start the next iteration.
+      #(50 * CLK_PERIOD);
+      dump_outputs();
+      // tb_compress = 1;
+      // tb_mi = 64'h0f0e0d0c0b0a0908;
+      #(CLK_PERIOD);
+      // tb_compress = 0;
+      dump_state();
+      dump_outputs();
+
+      // Wait a number of cycles and
+      // and pull finalizaition.
+      #(50 * CLK_PERIOD);
+      dump_outputs();
+      // tb_finalize = 1;
+      #(CLK_PERIOD);
+      // tb_finalize = 0;
+      dump_state();
+      dump_outputs();
+
+//      if (tb_siphash_word == 64'ha129ca6149be45e5)
+//        begin
+//          $display("Correct digest for old old short test vector received.");
+//        end
+//      else
+//        begin
+//          $display("Error: incorrect digest for old old short test vector received.");
+//          $display("Expected: 0x%016x", 64'ha129ca6149be45e5);
+//          $display("Recived:  0x%016x", tb_siphash_word);
+//        end
+    end
+  endtask // run_old_short_test_vector
+
+
+  //----------------------------------------------------------------
   // siphash_test
   // The main test functionality.
   //----------------------------------------------------------------
