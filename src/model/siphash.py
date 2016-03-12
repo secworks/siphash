@@ -70,7 +70,7 @@ class SipHash():
         self.x = [0] * 16
         self.rounds = rounds
         self.verbose = verbose
-        self.set_key_iv(key, iv)
+        self.key = key
 
 
     #---------------------------------------------------------------
@@ -439,11 +439,12 @@ def siphash_paper_test():
     print("Running test with vectors from the SipHash paper.")
 
     key = 0x0f0e0d0c0b0a09080706050403020100
+    iv = 0x0f0e0d0c0b0a09080706050403020100
     block1 = 0x0706050403020100
     block2 = 0x0f0e0d0c0b0a0908
     expected = 0xa129ca6149be45e5
 
-    pass
+    my_siphash = SipHash(key, iv, rounds=4, verbose=2)
 
 
 #-------------------------------------------------------------------
