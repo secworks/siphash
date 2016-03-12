@@ -140,7 +140,7 @@ class SipHash():
     # Print the internal state.
     #---------------------------------------------------------------
     def _print_state(self):
-        print("v0 = 0x%08x, v1 = 0x%08x, v2 = 0x%08x, v3 = 0x%08x" %
+        print("v0 = 0x%016x, v1 = 0x%016x, v2 = 0x%016x, v3 = 0x%016x" %
                   (self.v[0], self.v[1], self.v[2], self.v[3]))
         print("")
 
