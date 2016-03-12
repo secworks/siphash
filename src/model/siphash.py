@@ -74,6 +74,8 @@ class SipHash():
 
     #---------------------------------------------------------------
     # set_key()
+    #
+    # Initalize the hash state based on the given key.
     #---------------------------------------------------------------
     def set_key(self, key):
         self.v[0] = key[0] ^ 0x736f6d6570736575
@@ -87,10 +89,28 @@ class SipHash():
 
 
     #---------------------------------------------------------------
-    # next()
+    # compression()
+    #
+    # Process the message word m
     #---------------------------------------------------------------
-    def next(self, data_in):
-        pass
+    def compression(self, m):
+        self.v[3] ^= m
+        for i in range(self.crounds):
+            self._siphash_round()
+        self.v[0] ^= m
+
+
+    #---------------------------------------------------------------
+    # finalization()
+    #
+    # Do the finalization processing and return the hash value.
+    #---------------------------------------------------------------
+    def finalization(self):
+        self.v[2] ^= 0x00000000000000ff
+        for i in range(self.frounds):
+            self._siphash_round()
+        return self.v[0] ^ self.v[1] ^ self.v[2] ^ self.v[3]
+
 
     #---------------------------------------------------------------
     # _siphash_round()
