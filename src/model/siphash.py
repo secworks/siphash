@@ -65,22 +65,25 @@ class SipHash():
     # are used. Accepts a list of either 16 or 32 bytes as key.
     # Accepts a list of 8 bytes as IV.
     #---------------------------------------------------------------
-    def __init__(self, key, iv, rounds = 8, verbose = 0):
-        self.state = [0] * 16
-        self.x = [0] * 16
-        self.rounds = rounds
+    def __init__(self, crounds = 2, frounds = 4, verbose = 0):
+        self.v = [0] * 4
+        self.crounds = crounds
+        self.frounds = frounds
         self.verbose = verbose
-        self.key = key
 
 
     #---------------------------------------------------------------
     # set_key()
     #---------------------------------------------------------------
     def set_key(self, key):
-        self.v0 = k[0] ^ 0x736f6d6570736575
-        self.v1 = k[1] ^ 0x646f72616e646f6d
-        self.v2 = k[0] ^ 0x6c7967656e657261
-        self.v3 = k[1] ^ 0x7465646279746573
+        self.v[0] = key[0] ^ 0x736f6d6570736575
+        self.v[1] = key[1] ^ 0x646f72616e646f6d
+        self.v[2] = key[0] ^ 0x6c7967656e657261
+        self.v[3] = key[1] ^ 0x7465646279746573
+
+        if self.verbose > 0:
+            print("State after set_key:")
+            self._print_state()
 
 
     #---------------------------------------------------------------
@@ -278,14 +281,8 @@ class SipHash():
     # Print the internal state.
     #---------------------------------------------------------------
     def _print_state(self):
-        print(" 0: 0x%08x,  1: 0x%08x,  2: 0x%08x,  3: 0x%08x" %\
-              (self.state[0], self.state[1], self.state[2], self.state[3]))
-        print(" 4: 0x%08x,  5: 0x%08x,  6: 0x%08x,  7: 0x%08x" %\
-              (self.state[4], self.state[5], self.state[6], self.state[7]))
-        print(" 8: 0x%08x,  9: 0x%08x, 10: 0x%08x, 11: 0x%08x" %\
-              (self.state[8], self.state[9], self.state[10], self.state[11]))
-        print("12: 0x%08x, 13: 0x%08x, 14: 0x%08x, 15: 0x%08x" %\
-              (self.state[12], self.state[13], self.state[14], self.state[15]))
+        print("v0 = 0x%08x, v1 = 0x%08x, v2 = 0x%08x, v3 = 0x%08x" %
+                  (self.v[0], self.v[1], self.v[2], self.v[3]))
         print("")
 
 
@@ -438,13 +435,14 @@ def short_tests():
 def siphash_paper_test():
     print("Running test with vectors from the SipHash paper.")
 
-    key = 0x0f0e0d0c0b0a09080706050403020100
+    key = [0x0f0e0d0c0b0a0908, 0x0706050403020100]
     iv = 0x0f0e0d0c0b0a09080706050403020100
     block1 = 0x0706050403020100
     block2 = 0x0f0e0d0c0b0a0908
     expected = 0xa129ca6149be45e5
 
-    my_siphash = SipHash(key, iv, rounds=4, verbose=2)
+    my_siphash = SipHash(verbose=2)
+    my_siphash.set_key(key)
 
 
 #-------------------------------------------------------------------
