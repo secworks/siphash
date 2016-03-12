@@ -50,7 +50,7 @@ import sys
 #-------------------------------------------------------------------
 TAU   = [0x61707865, 0x3120646e, 0x79622d36, 0x6b206574]
 SIGMA = [0x61707865, 0x3320646e, 0x79622d32, 0x6b206574]
-
+MAX64 = 2**64 - 1
 
 #-------------------------------------------------------------------
 # SipHash()
@@ -114,9 +114,24 @@ class SipHash():
 
     #---------------------------------------------------------------
     # _siphash_round()
+    # The state updating round function used in compression as
+    # well as in finalization operations.
     #---------------------------------------------------------------
     def _siphash_round(self):
-        pass
+        self.v[0] += self.v[1] % MAX64
+        self.v[2] += self.v[3] % MAX64
+        self.v[1] << 13 % MAX64
+        self.v[3] << 16 % MAX64
+        self.v[1] ^= self.v[0]
+        self.v[3] ^= self.v[2]
+        self.v[0] << 32 % MAX64
+        self.v[2] += self.v[1] % MAX64
+        self.v[0] += self.v[3] % MAX64
+        self.v[1] << 17 % MAX64
+        self.v[3] << 21 % MAX64
+        self.v[1] ^= self.v[2]
+        self.v[3] ^= self.v[0]
+        self.v[2] << 32 % MAX64
 
 
     #---------------------------------------------------------------
