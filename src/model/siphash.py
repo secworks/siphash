@@ -95,6 +95,11 @@ class SipHash():
     #---------------------------------------------------------------
     def compression(self, m):
         self.v[3] ^= m
+
+        if self.verbose > 0:
+            print("State after v3 init in compression:")
+            self._print_state()
+
         for i in range(self.crounds):
             self._siphash_round()
         self.v[0] ^= m
