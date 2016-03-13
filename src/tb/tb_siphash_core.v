@@ -45,6 +45,8 @@ module tb_siphash_core();
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
+  parameter DEBUG = 0;
+
   parameter CLK_HALF_PERIOD = 2;
   parameter CLK_PERIOD      = 2 * CLK_HALF_PERIOD;
 
@@ -117,7 +119,8 @@ module tb_siphash_core();
     begin : dut_monitor
       cycle_ctr = cycle_ctr + 1;
 
-      $display("cycle = %8x:", cycle_ctr);
+      if (DEBUG)
+        $display("cycle = %8x:", cycle_ctr);
       // $display("v0_reg = %016x, v1_reg = %016x", dut.v0_reg, dut.v1_reg);
       // $display("v2_reg = %016x, v3_reg = %016x", dut.v2_reg, dut.v3_reg);
       // $display("loop_ctr = %02x, dp_state = %02x, fsm_state = %02x",
@@ -369,7 +372,9 @@ module tb_siphash_core();
       tb_initalize = 1;
       #(CLK_PERIOD);
       tb_initalize = 0;
-      dump_outputs();
+      #(2 * CLK_PERIOD);
+      $display("State after key init.");
+      dump_state();
 
       // Add first block.
       #(CLK_PERIOD);
@@ -377,27 +382,29 @@ module tb_siphash_core();
       tb_mi = 64'h0706050403020100;
       #(CLK_PERIOD);
       tb_compress = 0;
+      #(2 * CLK_PERIOD);
+      $display("State after key block 1.");
       dump_state();
-      dump_outputs();
 
       // Wait a number of cycle and
       // try and start the next iteration.
       #(50 * CLK_PERIOD);
-      dump_outputs();
       tb_compress = 1;
       tb_mi = 64'h0f0e0d0c0b0a0908;
       #(CLK_PERIOD);
       tb_compress = 0;
+      #(2 * CLK_PERIOD);
+      $display("State after key block 2.");
       dump_state();
-      dump_outputs();
 
       // Wait a number of cycles and
       // and pull finalizaition.
       #(50 * CLK_PERIOD);
-      dump_outputs();
       tb_finalize = 1;
       #(CLK_PERIOD);
       tb_finalize = 0;
+      #(10 * CLK_PERIOD);
+      $display("State after finalization.");
       dump_state();
       dump_outputs();
 
