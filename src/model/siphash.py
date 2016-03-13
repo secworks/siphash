@@ -254,7 +254,6 @@ def short_tests():
 def siphash_paper_test():
     print("Running test with vectors from the SipHash paper.")
 
-
     my_siphash = SipHash(verbose=2)
     key = [0x0706050403020100, 0x0f0e0d0c0b0a0908]
     my_siphash.set_key(key)
@@ -268,7 +267,10 @@ def siphash_paper_test():
     result = my_siphash.finalization()
     expected = 0xa129ca6149be45e5
 
-    print("Result: 0x%016x  Expected 0x%016x" % (result, expected))
+    if result == expected:
+        print("Correct result 0x%016x generated." % result)
+    else:
+        print("Incorrect result 0x%016x generated, expected 0x%016x." % (result, expected))
 
 
 #-------------------------------------------------------------------
