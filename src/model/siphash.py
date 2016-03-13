@@ -127,20 +127,20 @@ class SipHash():
     # well as in finalization operations.
     #---------------------------------------------------------------
     def _siphash_round(self):
-        self.v[0] += self.v[1] % MAX64
-        self.v[2] += self.v[3] % MAX64
-        self.v[1] << 13 % MAX64
-        self.v[3] << 16 % MAX64
-        self.v[1] ^= self.v[0]
-        self.v[3] ^= self.v[2]
-        self.v[0] << 32 % MAX64
-        self.v[2] += self.v[1] % MAX64
-        self.v[0] += self.v[3] % MAX64
-        self.v[1] << 17 % MAX64
-        self.v[3] << 21 % MAX64
-        self.v[1] ^= self.v[2]
-        self.v[3] ^= self.v[0]
-        self.v[2] << 32 % MAX64
+        self.v[0] = (self.v[0] + self.v[1]) & MAX64
+        self.v[2] = (self.v[2] + self.v[3]) & MAX64
+        self.v[1] = ((self.v[1] << 13) & MAX64) | (self.v[1] >> 51 & MAX64)
+        self.v[3] = ((self.v[3] << 16) & MAX64) | (self.v[3] >> 48 & MAX64)
+        self.v[1] = self.v[1] ^ self.v[0]
+        self.v[3] = self.v[3] ^self.v[2]
+        self.v[0] = ((self.v[0] << 32) & MAX64) | (self.v[0] >> 32 & MAX64)
+        self.v[2] = (self.v[2] + self.v[1]) & MAX64
+        self.v[0] = (self.v[0] + self.v[3]) & MAX64
+        self.v[1] = ((self.v[1] << 17) % MAX64) | (self.v[1] >> 47 % MAX64)
+        self.v[3] = ((self.v[3] << 21) % MAX64) | (self.v[3] >> 43 % MAX64)
+        self.v[1] = self.v[1] ^ self.v[2]
+        self.v[3] = self.v[3] ^ self.v[0]
+        self.v[2] = ((self.v[2] << 32) % MAX64) | (self.v[2] >> 32 % MAX64)
 
 
     #---------------------------------------------------------------
