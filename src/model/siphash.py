@@ -249,18 +249,21 @@ def short_tests():
 def siphash_paper_test():
     print("Running test with vectors from the SipHash paper.")
 
-    key = [0x0f0e0d0c0b0a0908, 0x0706050403020100]
-    m1 = 0x0706050403020100
-    m2 = 0x0f0e0d0c0b0a0908
-    expected = 0xa129ca6149be45e5
 
     my_siphash = SipHash(verbose=2)
+    key = [0x0706050403020100, 0x0f0e0d0c0b0a0908]
     my_siphash.set_key(key)
-    my_siphash.compression(m1)
-    my_siphash.compression(m2)
-    result = my_siphash.finalization()
 
-    print("0x%016x" % result)
+    m1 = 0x0706050403020100
+    my_siphash.compression(m1)
+
+    m2 = 0x0f0e0d0c0b0a0908
+    my_siphash.compression(m2)
+
+    result = my_siphash.finalization()
+    expected = 0xa129ca6149be45e5
+
+    print("Result: 0x%016x  Expected 0x%016x" % (result, expected))
 
 
 #-------------------------------------------------------------------
