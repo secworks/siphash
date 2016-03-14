@@ -89,6 +89,16 @@ class SipHash():
 
 
     #---------------------------------------------------------------
+    # hash_message(key, message)
+    #
+    # hash_message and return the result.
+    #---------------------------------------------------------------
+    def hash_message(self, key, m):
+        self.set_key(key)
+        return 0x55aa55aadeadbeef
+
+
+    #---------------------------------------------------------------
     # compression()
     #
     # Process the message word m
@@ -155,15 +165,6 @@ class SipHash():
 
 
 #-------------------------------------------------------------------
-# gen_message()
-#
-# Generate a message of n bytes with the contents 0x00, 0x01,...
-#-------------------------------------------------------------------
-def gen_message(n):
-    return [i for i in range(n)]
-
-
-#-------------------------------------------------------------------
 # long_tests()
 #-------------------------------------------------------------------
 def long_tests():
@@ -202,9 +203,14 @@ def long_tests():
 
 
 #-------------------------------------------------------------------
-# short_tests()
+# siphash_short_test()
+#
+# Runs 64 test with siphash in short mode, i.e. with
+# 64 bit digest output. This also tests the message padding
+# since the generated input varies in size from zero to
+# 63 bytes.
 #-------------------------------------------------------------------
-def short_tests():
+def siphash_short_test():
     expected = [0x310e0edd47db6f72, 0xfd67dc93c539f874,
                 0x5a4fa9d909806c0d, 0x2d7efbd796666785,
                 0xb7877127e09427cf, 0x8da699cd64557618,
@@ -238,11 +244,13 @@ def short_tests():
                 0xe1915f5cb1eca46c, 0xf325965ca16d629f,
                 0x575ff28e60381be5, 0x724506eb4c328a95]
 
-
-    for i in len(64):
-        message = gen_message(i)
-        my_siphash = SipHash()
-        my_siphash.set_key([0x010203040, 0x05060708])
+    my_siphash = SipHash()
+    key = [0x010203040, 0x05060708]
+    for inlen in range(64):
+        message = [hex(i) for i in range(inlen)]
+        result = my_siphash.hash_message(key, message)
+        print("Generated: 0x%016x, expected: 0x%016x" %
+                  (result, expected[inlen]))
 
 
 #-------------------------------------------------------------------
@@ -281,6 +289,7 @@ def main():
     print("--------------------------------\n")
 
     siphash_paper_test()
+    siphash_short_test()
 
 
 #-------------------------------------------------------------------
