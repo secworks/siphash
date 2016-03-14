@@ -74,6 +74,8 @@ module tb_siphash_core();
   wire [127 : 0] tb_siphash_word;
   wire           tb_siphash_word_valid;
 
+  reg            display_state;
+
 
   //----------------------------------------------------------------
   // siphash_core device under test.
@@ -119,13 +121,11 @@ module tb_siphash_core();
     begin : dut_monitor
       cycle_ctr = cycle_ctr + 1;
 
-      if (DEBUG)
-        $display("cycle = %8x:", cycle_ctr);
-      // $display("v0_reg = %016x, v1_reg = %016x", dut.v0_reg, dut.v1_reg);
-      // $display("v2_reg = %016x, v3_reg = %016x", dut.v2_reg, dut.v3_reg);
-      // $display("loop_ctr = %02x, dp_state = %02x, fsm_state = %02x",
-      // dut.loop_ctr_reg, dut.dp_state_reg, dut.siphash_ctrl_reg);
-      // $display("");
+      if (display_state)
+        begin
+          $display("cycle %08x:", cycle_ctr);
+          dump_state();
+        end
     end // dut_monitor
 
 
@@ -141,6 +141,7 @@ module tb_siphash_core();
       $display("reset = %b, c = %02x, d = %02x, mi = %08x",
                tb_reset_n, tb_c, tb_d, tb_mi);
       $display("");
+      #(CLK_PERIOD);
     end
   endtask // dump_inputs
 
@@ -156,6 +157,7 @@ module tb_siphash_core();
       $display("siphash_word = 0x%032x, valid = %d",
                tb_siphash_word, tb_siphash_word_valid);
       $display("");
+      #(CLK_PERIOD);
     end
   endtask // dump_inputs
 
@@ -173,11 +175,15 @@ module tb_siphash_core();
       $display("loop_ctr = %02x, dp_state = %02x, fsm_state = %02x",
                dut.loop_ctr_reg, dut.dp_state_reg, dut.siphash_ctrl_reg);
       $display("");
+      #(CLK_PERIOD);
     end
   endtask // dump_state
 
 
   //----------------------------------------------------------------
+  // run_long_test()
+  //
+  // Run a specific long test.
   //----------------------------------------------------------------
   task run_long_test(
                       input reg [063 : 0] block,
@@ -269,6 +275,9 @@ module tb_siphash_core();
 
 
   //----------------------------------------------------------------
+  // run_short_test()
+  //
+  // Run a specific short test.
   //----------------------------------------------------------------
   task run_short_test(
                       input reg [07 : 0] length,
@@ -380,6 +389,9 @@ module tb_siphash_core();
 
       // Add first block.
       #(CLK_PERIOD);
+      display_state = 0;
+      $display("State before block 1.");
+      dump_state();
       tb_compress = 1;
       tb_mi = 64'h0706050403020100;
       #(CLK_PERIOD);
@@ -391,6 +403,10 @@ module tb_siphash_core();
       // Wait a number of cycle and
       // try and start the next iteration.
       #(50 * CLK_PERIOD);
+      display_state = 0;
+      $display("State before block 2.");
+      dump_state();
+      #(2 * CLK_PERIOD);
       tb_compress = 1;
       tb_mi = 64'h0f0e0d0c0b0a0908;
       #(CLK_PERIOD);
@@ -398,6 +414,7 @@ module tb_siphash_core();
       #(2 * CLK_PERIOD);
       $display("State after block 2.");
       dump_state();
+      #(2 * CLK_PERIOD);
 
       // Wait a number of cycles and
       // and pull finalizaition.
@@ -442,11 +459,12 @@ module tb_siphash_core();
       tb_compress  = 0;
       tb_finalize  = 0;
       tb_long      = 0;
-
       cycle_ctr    = 0;
       tb_clk       = 0;
       tb_reset_n   = 0;
       dump_state();
+
+      display_state = 0;
 
       // Wait ten clock cycles and release reset.
       #(10 * CLK_PERIOD);
