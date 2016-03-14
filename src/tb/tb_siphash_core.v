@@ -367,8 +367,10 @@ module tb_siphash_core();
   //----------------------------------------------------------------
   task run_old_short_test_vector;
     begin
-      #(10 * CLK_PERIOD);
       tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
+      $display("Running test with vectors from the SipHash paper.");
+      $display("Key: 0x%016x", tb_key);
+
       tb_initalize = 1;
       #(CLK_PERIOD);
       tb_initalize = 0;
@@ -383,7 +385,7 @@ module tb_siphash_core();
       #(CLK_PERIOD);
       tb_compress = 0;
       #(2 * CLK_PERIOD);
-      $display("State after key block 1.");
+      $display("State after block 1.");
       dump_state();
 
       // Wait a number of cycle and
@@ -394,7 +396,7 @@ module tb_siphash_core();
       #(CLK_PERIOD);
       tb_compress = 0;
       #(2 * CLK_PERIOD);
-      $display("State after key block 2.");
+      $display("State after block 2.");
       dump_state();
 
       // Wait a number of cycles and
@@ -410,11 +412,11 @@ module tb_siphash_core();
 
       if (tb_siphash_word == 64'ha129ca6149be45e5)
         begin
-          $display("Correct digest for old old short test vector received.");
+          $display("Correct digest for old short test vector received.");
         end
       else
         begin
-          $display("Error: incorrect digest for old old short test vector received.");
+          $display("Error: incorrect digest for old short test vector received.");
           $display("Expected: 0x%016x", 64'ha129ca6149be45e5);
           $display("Recived:  0x%016x", tb_siphash_word);
         end
