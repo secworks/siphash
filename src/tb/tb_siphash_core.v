@@ -388,8 +388,8 @@ module tb_siphash_core();
       dump_state();
 
       // Add first block.
+      display_state = 1;
       #(CLK_PERIOD);
-      display_state = 0;
       $display("State before block 1.");
       dump_state();
       tb_compress = 1;
@@ -399,6 +399,7 @@ module tb_siphash_core();
       #(2 * CLK_PERIOD);
       $display("State after block 1.");
       dump_state();
+      display_state = 0;
 
       // Wait a number of cycle and
       // try and start the next iteration.
