@@ -396,48 +396,48 @@ module tb_siphash_core();
       tb_mi = 64'h0706050403020100;
       #(CLK_PERIOD);
       tb_compress = 0;
-      #(2 * CLK_PERIOD);
+      #(10 * CLK_PERIOD);
       $display("State after block 1.");
       dump_state();
       display_state = 0;
 
-      // Wait a number of cycle and
-      // try and start the next iteration.
-      #(50 * CLK_PERIOD);
-      display_state = 0;
-      $display("State before block 2.");
-      dump_state();
-      #(2 * CLK_PERIOD);
-      tb_compress = 1;
-      tb_mi = 64'h0f0e0d0c0b0a0908;
-      #(CLK_PERIOD);
-      tb_compress = 0;
-      #(2 * CLK_PERIOD);
-      $display("State after block 2.");
-      dump_state();
-      #(2 * CLK_PERIOD);
-
-      // Wait a number of cycles and
-      // and pull finalizaition.
-      #(50 * CLK_PERIOD);
-      tb_finalize = 1;
-      #(CLK_PERIOD);
-      tb_finalize = 0;
-      #(10 * CLK_PERIOD);
-      $display("State after finalization.");
-      dump_state();
-      dump_outputs();
-
-      if (tb_siphash_word == 64'ha129ca6149be45e5)
-        begin
-          $display("Correct digest for old short test vector received.");
-        end
-      else
-        begin
-          $display("Error: incorrect digest for old short test vector received.");
-          $display("Expected: 0x%016x", 64'ha129ca6149be45e5);
-          $display("Recived:  0x%016x", tb_siphash_word);
-        end
+//      // Wait a number of cycle and
+//      // try and start the next iteration.
+//      #(50 * CLK_PERIOD);
+//      display_state = 0;
+//      $display("State before block 2.");
+//      dump_state();
+//      #(2 * CLK_PERIOD);
+//      tb_compress = 1;
+//      tb_mi = 64'h0f0e0d0c0b0a0908;
+//      #(CLK_PERIOD);
+//      tb_compress = 0;
+//      #(2 * CLK_PERIOD);
+//      $display("State after block 2.");
+//      dump_state();
+//      #(2 * CLK_PERIOD);
+//
+//      // Wait a number of cycles and
+//      // and pull finalizaition.
+//      #(50 * CLK_PERIOD);
+//      tb_finalize = 1;
+//      #(CLK_PERIOD);
+//      tb_finalize = 0;
+//      #(10 * CLK_PERIOD);
+//      $display("State after finalization.");
+//      dump_state();
+//      dump_outputs();
+//
+//      if (tb_siphash_word == 64'ha129ca6149be45e5)
+//        begin
+//          $display("Correct digest for old short test vector received.");
+//        end
+//      else
+//        begin
+//          $display("Error: incorrect digest for old short test vector received.");
+//          $display("Expected: 0x%016x", 64'ha129ca6149be45e5);
+//          $display("Recived:  0x%016x", tb_siphash_word);
+//        end
     end
   endtask // run_old_short_test_vector
 
