@@ -101,33 +101,30 @@ module siphash_core(
   reg [63 : 0] mi_reg;
   reg          mi_we;
 
-  reg [3 : 0] loop_ctr_reg;
-  reg [3 : 0] loop_ctr_new;
-  reg         loop_ctr_we;
-  reg         loop_ctr_inc;
-  reg         loop_ctr_rst;
+  reg [3 : 0]  loop_ctr_reg;
+  reg [3 : 0]  loop_ctr_new;
+  reg          loop_ctr_we;
+  reg          loop_ctr_inc;
+  reg          loop_ctr_rst;
 
-  reg ready_reg;
-  reg ready_new;
-  reg ready_we;
+  reg          ready_reg;
+  reg          ready_new;
+  reg          ready_we;
 
-  reg siphash_valid_reg;
-  reg siphash_valid_new;
-  reg siphash_valid_we;
+  reg          siphash_valid_reg;
+  reg          siphash_valid_new;
+  reg          siphash_valid_we;
 
-  reg [2 : 0] dp_state_reg;
-  reg [2 : 0] dp_state_new;
-  reg         dp_state_we;
-
-  reg [2 : 0] siphash_ctrl_reg;
-  reg [2 : 0] siphash_ctrl_new;
-  reg         siphash_ctrl_we;
+  reg [2 : 0]  siphash_ctrl_reg;
+  reg [2 : 0]  siphash_ctrl_new;
+  reg          siphash_ctrl_we;
 
 
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
-  reg dp_update;
+  reg         dp_update;
+  reg [2 : 0] dp_mode;
 
 
   //----------------------------------------------------------------
@@ -157,7 +154,6 @@ module siphash_core(
           ready_reg         <= 1;
           siphash_valid_reg <= 0;
           loop_ctr_reg      <= 4'h0;
-          dp_state_reg      <= DP_INITIALIZAION;
           siphash_ctrl_reg  <= CTRL_IDLE;
         end
       else
@@ -185,9 +181,6 @@ module siphash_core(
 
           if (loop_ctr_we)
             loop_ctr_reg <= loop_ctr_new;
-
-          if (dp_state_we)
-            dp_state_reg <= dp_state_new;
 
           if (siphash_ctrl_we)
             siphash_ctrl_reg <= siphash_ctrl_new;
@@ -225,7 +218,7 @@ module siphash_core(
 
       if (dp_update)
         begin
-          case (dp_state_reg)
+          case (dp_mode)
             DP_INITIALIZAION:
               begin
                 if (long)
@@ -317,10 +310,7 @@ module siphash_core(
       loop_ctr_we  = 0;
 
       if (loop_ctr_rst)
-        begin
-          loop_ctr_new = 0;
-          loop_ctr_we  = 1;
-        end
+        loop_ctr_we  = 1;
 
       if (loop_ctr_inc)
         begin
@@ -339,8 +329,7 @@ module siphash_core(
       loop_ctr_rst      = 0;
       loop_ctr_inc      = 0;
       dp_update         = 0;
-      dp_state_new      = DP_INITIALIZAION;
-      dp_state_we       = 0;
+      dp_mode           = DP_INITIALIZAION;
       mi_we             = 0;
       ready_new         = 0;
       ready_we          = 0;
@@ -355,8 +344,7 @@ module siphash_core(
             if (initalize)
               begin
                 dp_update         = 1;
-                dp_state_new      = DP_INITIALIZAION;
-                dp_state_we       = 1;
+                dp_mode           = DP_INITIALIZAION;
                 siphash_valid_new = 0;
                 siphash_valid_we  = 1;
               end
@@ -368,8 +356,7 @@ module siphash_core(
                 ready_new         = 0;
                 ready_we          = 1;
                 dp_update         = 1;
-                dp_state_new      = DP_COMPRESSION_START;
-                dp_state_we       = 1;
+                dp_mode           = DP_COMPRESSION_START;
                 siphash_ctrl_new  = CTRL_COMP_0;
                 siphash_ctrl_we   = 1;
               end
@@ -380,8 +367,7 @@ module siphash_core(
                 ready_new         = 0;
                 ready_we          = 1;
                 dp_update         = 1;
-                dp_state_new      = DP_FINALIZATION;
-                dp_state_we       = 1;
+                dp_mode           = DP_FINALIZATION;
                 siphash_ctrl_new  = CTRL_FINAL_0;
                 siphash_ctrl_we   = 1;
               end
@@ -390,8 +376,7 @@ module siphash_core(
         CTRL_COMP_0:
           begin
             dp_update        = 1;
-            dp_state_new     = DP_SIPROUND;
-            dp_state_we      = 1;
+            dp_mode          = DP_SIPROUND;
             siphash_ctrl_new = CTRL_COMP_1;
             siphash_ctrl_we  = 1;
           end
@@ -407,8 +392,7 @@ module siphash_core(
               begin
                 loop_ctr_inc = 1;
                 dp_update    = 1;
-                dp_state_new = DP_SIPROUND;
-                dp_state_we  = 1;
+                dp_mode      = DP_SIPROUND;
               end
           end
 
@@ -417,8 +401,7 @@ module siphash_core(
             ready_new        = 1;
             ready_we         = 1;
             dp_update        = 1;
-            dp_state_new     = DP_COMPRESSION_END;
-            dp_state_we      = 1;
+            dp_mode          = DP_COMPRESSION_END;
             siphash_ctrl_new = CTRL_IDLE;
             siphash_ctrl_we  = 1;
           end
@@ -426,8 +409,7 @@ module siphash_core(
         CTRL_FINAL_0:
           begin
             dp_update         = 1;
-            dp_state_new      = DP_SIPROUND;
-            dp_state_we       = 1;
+            dp_mode           = DP_SIPROUND;
             siphash_ctrl_new  = CTRL_FINAL_1;
             siphash_ctrl_we   = 1;
           end
@@ -449,8 +431,7 @@ module siphash_core(
               begin
                 loop_ctr_inc = 1;
                 dp_update    = 1;
-                dp_state_new = DP_SIPROUND;
-                dp_state_we  = 1;
+                dp_mode      = DP_SIPROUND;
               end
           end
 

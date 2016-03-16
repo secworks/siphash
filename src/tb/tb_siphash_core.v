@@ -172,8 +172,8 @@ module tb_siphash_core();
       $display("v0_reg = %016x, v1_reg = %016x", dut.v0_reg, dut.v1_reg);
       $display("v2_reg = %016x, v3_reg = %016x", dut.v2_reg, dut.v3_reg);
       $display("mi_reg = %016x", dut.mi_reg);
-      $display("loop_ctr = %02x, dp_update = %01x, dp_state = %02x, fsm_state = %02x",
-               dut.loop_ctr_reg, dut.dp_update, dut.dp_state_reg, dut.siphash_ctrl_reg);
+      $display("loop_ctr = %02x, dp_update = %01x, dp_mode = %02x, fsm_state = %02x",
+               dut.loop_ctr_reg, dut.dp_update, dut.dp_mode, dut.siphash_ctrl_reg);
       $display("");
       #(CLK_PERIOD);
     end
