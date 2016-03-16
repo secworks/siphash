@@ -172,8 +172,8 @@ module tb_siphash_core();
       $display("v0_reg = %016x, v1_reg = %016x", dut.v0_reg, dut.v1_reg);
       $display("v2_reg = %016x, v3_reg = %016x", dut.v2_reg, dut.v3_reg);
       $display("mi_reg = %016x", dut.mi_reg);
-      $display("loop_ctr = %02x, dp_state = %02x, fsm_state = %02x",
-               dut.loop_ctr_reg, dut.dp_state_reg, dut.siphash_ctrl_reg);
+      $display("loop_ctr = %02x, dp_update = %01x, dp_state = %02x, fsm_state = %02x",
+               dut.loop_ctr_reg, dut.dp_update, dut.dp_state_reg, dut.siphash_ctrl_reg);
       $display("");
       #(CLK_PERIOD);
     end
@@ -376,10 +376,10 @@ module tb_siphash_core();
   //----------------------------------------------------------------
   task run_old_short_test_vector;
     begin
+      display_state = 1;
       tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
       $display("Running test with vectors from the SipHash paper.");
       $display("Key: 0x%016x", tb_key);
-
       tb_initalize = 1;
       #(CLK_PERIOD);
       tb_initalize = 0;
@@ -388,7 +388,6 @@ module tb_siphash_core();
       dump_state();
 
       // Add first block.
-      display_state = 1;
       #(CLK_PERIOD);
       $display("State before block 1.");
       dump_state();
@@ -399,7 +398,6 @@ module tb_siphash_core();
       #(10 * CLK_PERIOD);
       $display("State after block 1.");
       dump_state();
-      display_state = 0;
 
 //      // Wait a number of cycle and
 //      // try and start the next iteration.
