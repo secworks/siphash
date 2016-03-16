@@ -367,8 +367,6 @@ module siphash_core(
                 loop_ctr_rst      = 1;
                 ready_new         = 0;
                 ready_we          = 1;
-                siphash_valid_new = 0;
-                siphash_valid_we  = 1;
                 dp_update         = 1;
                 dp_state_new      = DP_COMPRESSION_START;
                 dp_state_we       = 1;
@@ -381,8 +379,6 @@ module siphash_core(
                 loop_ctr_rst      = 1;
                 ready_new         = 0;
                 ready_we          = 1;
-                siphash_valid_new = 0;
-                siphash_valid_we  = 1;
                 dp_update         = 1;
                 dp_state_new      = DP_FINALIZATION;
                 dp_state_we       = 1;
