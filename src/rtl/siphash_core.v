@@ -71,12 +71,12 @@ module siphash_core(
   localparam DP_FINALIZATION      = 3'h3;
   localparam DP_SIPROUND          = 3'h4;
 
-  localparam CTRL_IDLE    = 3'h0;
-  localparam CTRL_COMP_0  = 3'h1;
-  localparam CTRL_COMP_1  = 3'h2;
-  localparam CTRL_COMP_2  = 3'h3;
-  localparam CTRL_FINAL_0 = 3'h4;
-  localparam CTRL_FINAL_1 = 3'h5;
+  localparam CTRL_IDLE       = 3'h0;
+  localparam CTRL_COMP_START = 3'h1;
+  localparam CTRL_COMP_LOOP  = 3'h2;
+  localparam CTRL_COMP_END   = 3'h3;
+  localparam CTRL_FINAL_0    = 3'h4;
+  localparam CTRL_FINAL_1    = 3'h5;
 
 
   //----------------------------------------------------------------
@@ -355,9 +355,7 @@ module siphash_core(
                 loop_ctr_rst      = 1;
                 ready_new         = 0;
                 ready_we          = 1;
-                dp_update         = 1;
-                dp_mode           = DP_COMPRESSION_START;
-                siphash_ctrl_new  = CTRL_COMP_0;
+                siphash_ctrl_new  = CTRL_COMP_START;
                 siphash_ctrl_we   = 1;
               end
 
@@ -373,30 +371,27 @@ module siphash_core(
               end
           end
 
-        CTRL_COMP_0:
+        CTRL_COMP_START:
           begin
             dp_update        = 1;
-            dp_mode          = DP_SIPROUND;
-            siphash_ctrl_new = CTRL_COMP_1;
+            dp_mode          = DP_COMPRESSION_START;
+            siphash_ctrl_new = CTRL_COMP_LOOP;
             siphash_ctrl_we  = 1;
           end
 
-        CTRL_COMP_1:
+        CTRL_COMP_LOOP:
           begin
+            loop_ctr_inc = 1;
+            dp_update    = 1;
+            dp_mode      = DP_SIPROUND;
             if (loop_ctr_reg == (compression_rounds - 1))
               begin
-                siphash_ctrl_new  = CTRL_COMP_2;
+                siphash_ctrl_new  = CTRL_COMP_END;
                 siphash_ctrl_we   = 1;
-              end
-            else
-              begin
-                loop_ctr_inc = 1;
-                dp_update    = 1;
-                dp_mode      = DP_SIPROUND;
               end
           end
 
-        CTRL_COMP_2:
+        CTRL_COMP_END:
           begin
             ready_new        = 1;
             ready_we         = 1;
