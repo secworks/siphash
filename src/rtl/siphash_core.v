@@ -43,13 +43,13 @@
 
 module siphash_core(
                     // Clock and reset.
-                    input wire           clk,
-                    input wire           reset_n,
+                    input wire            clk,
+                    input wire            reset_n,
 
-                    input wire           initalize,
-                    input wire           compress,
-                    input wire           finalize,
-                    input wire           long,
+                    input wire            initalize,
+                    input wire            compress,
+                    input wire            finalize,
+                    input wire            long,
 
                     input wire [3 : 0]    compression_rounds,
                     input wire [3 : 0]    final_rounds,
@@ -71,11 +71,11 @@ module siphash_core(
   localparam DP_FINALIZATION      = 3'h3;
   localparam DP_SIPROUND          = 3'h4;
 
-  localparam CTRL_IDLE       = 3'h0;
-  localparam CTRL_COMP_LOOP  = 3'h2;
-  localparam CTRL_COMP_END   = 3'h3;
-  localparam CTRL_FINAL_0    = 3'h4;
-  localparam CTRL_FINAL_1    = 3'h5;
+  localparam CTRL_IDLE      = 3'h0;
+  localparam CTRL_COMP_LOOP = 3'h2;
+  localparam CTRL_COMP_END  = 3'h3;
+  localparam CTRL_FINAL_0   = 3'h4;
+  localparam CTRL_FINAL_1   = 3'h5;
 
 
   //----------------------------------------------------------------
