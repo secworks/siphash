@@ -4,7 +4,7 @@
 #
 # siphash.py
 # ---------
-# Simple model of the Siphash stream cipher. Used as a reference for
+# Simple model of the Siphash shor-input PRF. Used as a reference for
 # the HW implementation. The code follows the structure of the
 # HW implementation as much as possible.
 #
@@ -59,11 +59,6 @@ class SipHash():
 
     #---------------------------------------------------------------
     # __init__()
-    #
-    # Given the key, iv initializes the state of the cipher.
-    # The number of rounds used can be set. By default 8 rounds
-    # are used. Accepts a list of either 16 or 32 bytes as key.
-    # Accepts a list of 8 bytes as IV.
     #---------------------------------------------------------------
     def __init__(self, crounds = 2, frounds = 4, mode = "short", verbose = 0):
         self.v = [0] * 4
