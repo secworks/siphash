@@ -69,6 +69,17 @@ class SipHash():
 
 
     #---------------------------------------------------------------
+    # hash_message(key, message)
+    #
+    # hash_message and return the result.
+    #---------------------------------------------------------------
+    def hash_message(self, key, m):
+        blocks = self._m2blocks(m)
+        self.set_key(key)
+        return 0x55aa55aadeadbeef
+
+
+    #---------------------------------------------------------------
     # set_key()
     #
     # Initalize the hash state based on the given key.
@@ -82,16 +93,6 @@ class SipHash():
         if self.verbose > 0:
             print("State after set_key:")
             self._print_state()
-
-
-    #---------------------------------------------------------------
-    # hash_message(key, message)
-    #
-    # hash_message and return the result.
-    #---------------------------------------------------------------
-    def hash_message(self, key, m):
-        self.set_key(key)
-        return 0x55aa55aadeadbeef
 
 
     #---------------------------------------------------------------
@@ -147,6 +148,16 @@ class SipHash():
         self.v[1] = self.v[1] ^ self.v[2]
         self.v[3] = self.v[3] ^ self.v[0]
         self.v[2] = ((self.v[2] << 32) % MAX64) | (self.v[2] >> 32 % MAX64)
+
+
+    #---------------------------------------------------------------
+    # _m2blocks()
+    #
+    # Divide the message m into a set of blocks including padding
+    # of the final block.
+    #---------------------------------------------------------------
+    def _m2blocks(self, m):
+        return m
 
 
     #---------------------------------------------------------------
@@ -241,8 +252,9 @@ def siphash_short_test():
                 0x575ff28e60381be5, 0x724506eb4c328a95]
 
     print("\nRunning test with siphash in short digest mode.")
+    key = [0x0706050403020100, 0x0f0e0d0c0b0a0908]
     my_siphash = SipHash()
-    key = [0x010203040, 0x05060708]
+
     for inlen in range(64):
         message = [hex(i) for i in range(inlen)]
         result = my_siphash.hash_message(key, message)
