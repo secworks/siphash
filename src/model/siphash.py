@@ -240,6 +240,7 @@ def siphash_short_test():
                 0xe1915f5cb1eca46c, 0xf325965ca16d629f,
                 0x575ff28e60381be5, 0x724506eb4c328a95]
 
+    print("\nRunning test with siphash in short digest mode.")
     my_siphash = SipHash()
     key = [0x010203040, 0x05060708]
     for inlen in range(64):
@@ -247,6 +248,7 @@ def siphash_short_test():
         result = my_siphash.hash_message(key, message)
         print("Generated: 0x%016x, expected: 0x%016x" %
                   (result, expected[inlen]))
+    print("")
 
 
 #-------------------------------------------------------------------
