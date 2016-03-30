@@ -65,17 +65,17 @@ module siphash_core(
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
-  localparam DP_INITIALIZAION     = 3'h0;
-  localparam DP_COMPRESSION_START = 3'h1;
-  localparam DP_COMPRESSION_END   = 3'h2;
-  localparam DP_FINALIZATION      = 3'h3;
-  localparam DP_SIPROUND          = 3'h4;
+  localparam DP_INIT        = 3'h0;
+  localparam DP_COMP_START  = 3'h1;
+  localparam DP_COMP_END    = 3'h2;
+  localparam DP_FINAL_START = 3'h3;
+  localparam DP_SIPROUND    = 3'h5;
 
-  localparam CTRL_IDLE      = 3'h0;
-  localparam CTRL_COMP_LOOP = 3'h2;
-  localparam CTRL_COMP_END  = 3'h3;
-  localparam CTRL_FINAL_0   = 3'h4;
-  localparam CTRL_FINAL_1   = 3'h5;
+  localparam CTRL_IDLE       = 3'h0;
+  localparam CTRL_COMP_LOOP  = 3'h2;
+  localparam CTRL_COMP_END   = 3'h3;
+  localparam CTRL_FINAL_LOOP = 3'h4;
+  localparam CTRL_FINAL_END  = 3'h5;
 
 
   //----------------------------------------------------------------
@@ -110,6 +110,10 @@ module siphash_core(
   reg          ready_new;
   reg          ready_we;
 
+  reg [63 : 0] siphash_word_reg;
+  reg [63 : 0] siphash_word_new;
+  reg          siphash_word_we;
+
   reg          siphash_valid_reg;
   reg          siphash_valid_new;
   reg          siphash_valid_we;
@@ -130,7 +134,7 @@ module siphash_core(
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
   assign ready              = ready_reg;
-  assign siphash_word       = {v0_reg ^ v1_reg, v2_reg ^ v3_reg};
+  assign siphash_word       = siphash_word_reg;
   assign siphash_word_valid = siphash_valid_reg;
 
 
@@ -149,6 +153,7 @@ module siphash_core(
           v1_reg            <= 64'h0000000000000000;
           v2_reg            <= 64'h0000000000000000;
           v3_reg            <= 64'h0000000000000000;
+          siphash_word_reg  <= 64'h0000000000000000;
           mi_reg            <= 64'h0000000000000000;
           ready_reg         <= 1;
           siphash_valid_reg <= 0;
@@ -157,6 +162,9 @@ module siphash_core(
         end
       else
         begin
+          if (siphash_word_we)
+            siphash_word_reg <= siphash_word_new;
+
           if (v0_we)
             v0_reg <= v0_new;
 
@@ -215,10 +223,12 @@ module siphash_core(
       v3_new    = 64'h0000000000000000;
       v3_we     = 0;
 
+      siphash_word_new = v0_reg ^ v1_reg ^ v2_reg ^ v3_reg;
+
       if (dp_update)
         begin
           case (dp_mode)
-            DP_INITIALIZAION:
+            DP_INIT:
               begin
                 if (long)
                   begin
@@ -244,19 +254,19 @@ module siphash_core(
                   end
               end
 
-            DP_COMPRESSION_START:
+            DP_COMP_START:
               begin
                 v3_new = v3_reg ^ mi;
                 v3_we = 1;
               end
 
-            DP_COMPRESSION_END:
+            DP_COMP_END:
               begin
                 v0_new = v0_reg ^ mi_reg;
                 v0_we = 1;
               end
 
-            DP_FINALIZATION:
+            DP_FINAL_START:
               begin
                 v2_new = {{v2_reg[63:8]}, {v2_reg[7:0] ^ 8'hff}};
                 v2_we = 1;
@@ -328,10 +338,11 @@ module siphash_core(
       loop_ctr_rst      = 0;
       loop_ctr_inc      = 0;
       dp_update         = 0;
-      dp_mode           = DP_INITIALIZAION;
+      dp_mode           = DP_INIT;
       mi_we             = 0;
       ready_new         = 0;
       ready_we          = 0;
+      siphash_word_we   = 0;
       siphash_valid_new = 0;
       siphash_valid_we  = 0;
       siphash_ctrl_new  = CTRL_IDLE;
@@ -343,7 +354,7 @@ module siphash_core(
             if (initalize)
               begin
                 dp_update         = 1;
-                dp_mode           = DP_INITIALIZAION;
+                dp_mode           = DP_INIT;
                 siphash_valid_new = 0;
                 siphash_valid_we  = 1;
               end
@@ -355,7 +366,7 @@ module siphash_core(
                 ready_new        = 0;
                 ready_we         = 1;
                 dp_update        = 1;
-                dp_mode          = DP_COMPRESSION_START;
+                dp_mode          = DP_COMP_START;
                 siphash_ctrl_new = CTRL_COMP_LOOP;
                 siphash_ctrl_we  = 1;
               end
@@ -366,8 +377,8 @@ module siphash_core(
                 ready_new         = 0;
                 ready_we          = 1;
                 dp_update         = 1;
-                dp_mode           = DP_FINALIZATION;
-                siphash_ctrl_new  = CTRL_FINAL_0;
+                dp_mode           = DP_FINAL_START;
+                siphash_ctrl_new  = CTRL_FINAL_LOOP;
                 siphash_ctrl_we   = 1;
               end
           end
@@ -389,38 +400,32 @@ module siphash_core(
             ready_new        = 1;
             ready_we         = 1;
             dp_update        = 1;
-            dp_mode          = DP_COMPRESSION_END;
+            dp_mode          = DP_COMP_END;
             siphash_ctrl_new = CTRL_IDLE;
             siphash_ctrl_we  = 1;
           end
 
-        CTRL_FINAL_0:
+        CTRL_FINAL_LOOP:
           begin
-            dp_update         = 1;
-            dp_mode           = DP_SIPROUND;
-            siphash_ctrl_new  = CTRL_FINAL_1;
-            siphash_ctrl_we   = 1;
-          end
-
-        CTRL_FINAL_1:
-          begin
+            loop_ctr_inc = 1;
+            dp_update    = 1;
+            dp_mode      = DP_SIPROUND;
             if (loop_ctr_reg == (final_rounds - 1))
               begin
-                // Done.
-                ready_new         = 1;
-                ready_we          = 1;
-                dp_update         = 1;
-                siphash_valid_new = 1;
-                siphash_valid_we  = 1;
-                siphash_ctrl_new  = CTRL_IDLE;
+                siphash_ctrl_new  = CTRL_FINAL_END;
                 siphash_ctrl_we   = 1;
               end
-            else
-              begin
-                loop_ctr_inc = 1;
-                dp_update    = 1;
-                dp_mode      = DP_SIPROUND;
-              end
+          end
+
+        CTRL_FINAL_END:
+          begin
+            ready_new         = 1;
+            ready_we          = 1;
+            siphash_word_we   = 1;
+            siphash_valid_new = 1;
+            siphash_valid_we  = 1;
+            siphash_ctrl_new  = CTRL_IDLE;
+            siphash_ctrl_we   = 1;
           end
 
         default:

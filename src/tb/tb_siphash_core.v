@@ -172,10 +172,12 @@ module tb_siphash_core();
       $display("v0_reg = %016x, v1_reg = %016x", dut.v0_reg, dut.v1_reg);
       $display("v2_reg = %016x, v3_reg = %016x", dut.v2_reg, dut.v3_reg);
       $display("mi_reg = %016x", dut.mi_reg);
+      $display("siphash_word_reg = %016x", dut.siphash_word_reg);
       $display("initalize = 0x%01x, compress = 0x%01x, finalize = 0x%01x, long = 0x%01x",
                dut.initalize, dut.compress, dut.finalize, dut.long);
       $display("loop_ctr = %02x, dp_update = %01x, dp_mode = %02x, fsm_state = %02x",
                dut.loop_ctr_reg, dut.dp_update, dut.dp_mode, dut.siphash_ctrl_reg);
+      $display("ready = %d, valid = %d", tb_ready, tb_siphash_word_valid);
       $display("");
       #(CLK_PERIOD);
     end
@@ -378,7 +380,7 @@ module tb_siphash_core();
   //----------------------------------------------------------------
   task run_old_short_test_vector;
     begin
-      display_state = 1;
+      display_state = 0;
       tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
       $display("Running test with vectors from the SipHash paper.");
       $display("Key: 0x%016x", tb_key);
@@ -401,43 +403,44 @@ module tb_siphash_core();
       $display("State after block 1.");
       dump_state();
 
-//      // Wait a number of cycle and
-//      // try and start the next iteration.
-//      #(50 * CLK_PERIOD);
-//      display_state = 0;
-//      $display("State before block 2.");
-//      dump_state();
-//      #(2 * CLK_PERIOD);
-//      tb_compress = 1;
-//      tb_mi = 64'h0f0e0d0c0b0a0908;
-//      #(CLK_PERIOD);
-//      tb_compress = 0;
-//      #(2 * CLK_PERIOD);
-//      $display("State after block 2.");
-//      dump_state();
-//      #(2 * CLK_PERIOD);
-//
-//      // Wait a number of cycles and
-//      // and pull finalizaition.
-//      #(50 * CLK_PERIOD);
-//      tb_finalize = 1;
-//      #(CLK_PERIOD);
-//      tb_finalize = 0;
-//      #(10 * CLK_PERIOD);
-//      $display("State after finalization.");
-//      dump_state();
-//      dump_outputs();
-//
-//      if (tb_siphash_word == 64'ha129ca6149be45e5)
-//        begin
-//          $display("Correct digest for old short test vector received.");
-//        end
-//      else
-//        begin
-//          $display("Error: incorrect digest for old short test vector received.");
-//          $display("Expected: 0x%016x", 64'ha129ca6149be45e5);
-//          $display("Recived:  0x%016x", tb_siphash_word);
-//        end
+      // Wait a number of cycle and
+      // try and start the next iteration.
+      #(50 * CLK_PERIOD);
+      display_state = 0;
+      $display("State before block 2.");
+      dump_state();
+      #(2 * CLK_PERIOD);
+      tb_compress = 1;
+      tb_mi = 64'h0f0e0d0c0b0a0908;
+      #(CLK_PERIOD);
+      tb_compress = 0;
+      #(10 * CLK_PERIOD);
+      $display("State after block 2.");
+      dump_state();
+      #(2 * CLK_PERIOD);
+
+      // Wait a number of cycles and
+      // and pull finalizaition.
+      #(4 * CLK_PERIOD);
+      $display("State before finalization.");
+      dump_state();
+      tb_finalize = 1;
+      #(CLK_PERIOD);
+      tb_finalize = 0;
+      #(20 * CLK_PERIOD);
+      $display("State after finalization.");
+      dump_state();
+
+      if (tb_siphash_word == 64'ha129ca6149be45e5)
+        begin
+          $display("Correct digest for siphash paper test vector received.");
+        end
+      else
+        begin
+          $display("Error: incorrect digest for siphash paper test vector received.");
+          $display("Expected: 0x%016x", 64'ha129ca6149be45e5);
+          $display("Recived:  0x%016x", tb_siphash_word);
+        end
     end
   endtask // run_old_short_test_vector
 
