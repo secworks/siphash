@@ -134,7 +134,7 @@ module siphash_core(
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
   assign ready              = ready_reg;
-  assign siphash_word       = siphash_word_reg;
+  assign siphash_word       = {64'h0, siphash_word_reg};
   assign siphash_word_valid = siphash_valid_reg;
 
 
