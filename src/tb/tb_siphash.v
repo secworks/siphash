@@ -267,24 +267,25 @@ module tb_siphash();
 
 
   //----------------------------------------------------------------
-  // run_old_short_test_vector()
+  // run_paper_test_vector()
   //
   // Perform testing of short mac using the testvectors
   // from the the SipHash paper Appendix A.
   //----------------------------------------------------------------
-  task run_old_short_test_vector;
+  task run_paper_test_vector;
     begin
+      $display("Testing with test vectors from SipHash paper.");
       #(10 * CLK_PERIOD);
-      // tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
-      // tb_initalize = 1;
+      //tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
+      //tb_initalize = 1;
       #(CLK_PERIOD);
       // tb_initalize = 0;
       dump_outputs();
 
       // Add first block.
       #(CLK_PERIOD);
-      // tb_compress = 1;
-      // tb_mi = 64'h0706050403020100;
+      //tb_compress = 1;
+      //tb_mi = 64'h0706050403020100;
       #(CLK_PERIOD);
       // tb_compress = 0;
       dump_state();
@@ -351,9 +352,11 @@ module tb_siphash();
       tb_reset_n = 1;
       // dump_state();
 
+      run_paper_test_vector();
+
       // Wait some cycles.
       #(100 * CLK_PERIOD);
-      $display("Processing done..");
+      $display("Test of siphash done..");
       // dump_state();
       // dump_outputs();
 
