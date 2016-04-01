@@ -97,6 +97,8 @@ module tb_siphash();
   //----------------------------------------------------------------
   // Cycle counter.
   reg [31 : 0] cycle_ctr;
+  reg [31 : 0] test_ctr;
+  reg [31 : 0] error_ctr;
 
   // Clock and reset.
   reg tb_clk;
@@ -149,8 +151,29 @@ module tb_siphash();
     begin : dut_monitor
       cycle_ctr = cycle_ctr + 1;
 
-      $display("cycle = %8x:", cycle_ctr);
+      if (DEBUG)
+        $display("cycle = %8x:", cycle_ctr);
     end // dut_monitor
+
+
+  //----------------------------------------------------------------
+  // inc_test_ctr
+  //----------------------------------------------------------------
+  task inc_test_ctr;
+    begin
+      test_ctr = test_ctr +1;
+    end
+  endtask // inc_test_ctr
+
+
+  //----------------------------------------------------------------
+  // inc_error_ctr
+  //----------------------------------------------------------------
+  task inc_error_ctr;
+    begin
+      error_ctr = error_ctr +1;
+    end
+  endtask // inc_error_ctr
 
 
   //----------------------------------------------------------------
@@ -187,6 +210,45 @@ module tb_siphash();
       $display("");
     end
   endtask // dump_state
+
+
+  //----------------------------------------------------------------
+  // tb_init
+  // Initialize varibles, dut inputs at start.
+  //----------------------------------------------------------------
+  task tb_init;
+    begin
+      test_ctr      = 0;
+      error_ctr     = 0;
+      cycle_ctr     = 0;
+      tb_clk        = 0;
+      tb_reset_n    = 1;
+      tb_cs         = 1'b0;
+      tb_we         = 1'b0;
+      tb_addr       = 8'h00;
+      tb_write_data = 32'h00000000;
+    end
+  endtask // tb_init
+
+
+  //----------------------------------------------------------------
+  // toggle_reset
+  // Toggle the reset.
+  //----------------------------------------------------------------
+  task toggle_reset;
+    begin
+      $display("Toggling reset.");
+      #(2 * CLK_PERIOD);
+      tb_reset_n = 0;
+      #(10 * CLK_PERIOD);
+      @(negedge tb_clk)
+      tb_reset_n = 1;
+
+      if (DEBUG)
+        dump_state();
+      $display("Toggling of reset done.");
+    end
+  endtask // toggle_reset
 
 
   //----------------------------------------------------------------
@@ -249,6 +311,9 @@ module tb_siphash();
     reg [31 : 0] name1;
     reg [31 : 0] version;
     begin
+      inc_test_ctr();
+
+      $display("Trying to read out name and version.");
 
       read_word(ADDR_NAME0);
       name0 = read_data;
@@ -257,11 +322,24 @@ module tb_siphash();
       read_word(ADDR_VERSION);
       version = read_data;
 
-      $display("DUT name: %c%c%c%c%c%c%c%c",
-               name0[31 : 24], name0[23 : 16], name0[15 : 8], name0[7 : 0],
-               name1[31 : 24], name1[23 : 16], name1[15 : 8], name1[7 : 0]);
-      $display("DUT version: %c%c%c%c",
-               version[31 : 24], version[23 : 16], version[15 : 8], version[7 : 0]);
+      if ((name0 == CORE_NAME0) && (name1 == CORE_NAME1) && (version == CORE_VERSION))
+        $display("Correct name and version read from dut.");
+      else
+        begin
+          inc_error_ctr();
+          $display("Error:");
+          $display("Got name:      %c%c%c%c%c%c%c%c",
+                   name0[31 : 24], name0[23 : 16], name0[15 : 8], name0[7 : 0],
+                   name1[31 : 24], name1[23 : 16], name1[15 : 8], name1[7 : 0]);
+          $display("Expected name: %c%c%c%c%c%c%c%c",
+                   CORE_NAME0[31 : 24], CORE_NAME0[23 : 16], CORE_NAME0[15 : 8], CORE_NAME0[7 : 0],
+                   CORE_NAME1[31 : 24], CORE_NAME1[23 : 16], CORE_NAME1[15 : 8], CORE_NAME1[7 : 0]);
+
+          $display("Got version:      %c%c%c%c",
+                   version[31 : 24], version[23 : 16], version[15 : 8], version[7 : 0]);
+          $display("Expected version: %c%c%c%c",
+                   CORE_VERSION[31 : 24], CORE_VERSION[23 : 16], CORE_VERSION[15 : 8], CORE_VERSION[7 : 0]);
+        end
     end
   endtask // check_name_version
 
@@ -332,36 +410,17 @@ module tb_siphash();
   //----------------------------------------------------------------
   initial
     begin : siphash_test
-      $display("   -- Testbench for siphash wrapper started --");
+      $display("   -- Test of SipHash top level wrapper started --");
 
-      // Set clock, reset and DUT input signals to
-      // defined values at simulation start.
-      tb_cs         = 1'b0;
-      tb_we         = 1'b0;
-      tb_addr       = 8'h00;
-      tb_write_data = 32'h00000000;
+      tb_init();
+      toggle_reset();
+      check_name_version();
+//      run_paper_test_vector();
 
-      cycle_ctr    = 0;
-      tb_clk       = 0;
-      tb_reset_n   = 0;
-      // dump_state();
-
-      // Wait ten clock cycles and release reset.
-      #(10 * CLK_PERIOD);
-      @(negedge tb_clk)
-      tb_reset_n = 1;
-      // dump_state();
-
-      run_paper_test_vector();
-
-      // Wait some cycles.
-      #(100 * CLK_PERIOD);
-      $display("Test of siphash done..");
-      // dump_state();
-      // dump_outputs();
-
-      // Finish in style.
-      $display("siphash simulation done.");
+      $display("");
+      $display("   -- Test of SipHash top level wrapper completed --");
+      $display("Tests executed: %04d", test_ctr);
+      $display("Tests failed:   %04d", error_ctr);
       $finish;
     end // siphash_test
 
