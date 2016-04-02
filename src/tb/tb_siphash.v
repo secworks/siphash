@@ -206,7 +206,15 @@ module tb_siphash();
   //----------------------------------------------------------------
   task dump_state;
     begin
-      $display("Internal state:");
+      $display("Internal top state:");
+      $display("key0_reg = 0x%08x, key1_reg = 0x%08x", dut.key0_reg, dut.key1_reg);
+      $display("key2_reg = 0x%08x, key3_reg = 0x%08x", dut.key2_reg, dut.key3_reg);
+      $display("mi0_reg  = 0x%08x, mi1_reg  = 0x%08x", dut.mi0_reg, dut.mi1_reg);
+      $display("");
+
+      $display("Internal core state:");
+      $display("v0_reg = 0x%016x, v1_reg = 0x%016x", dut.core.v0_reg, dut.core.v1_reg);
+      $display("v2_reg = 0x%016x, v3_reg = 0x%016x", dut.core.v2_reg, dut.core.v3_reg);
       $display("");
     end
   endtask // dump_state
@@ -244,8 +252,7 @@ module tb_siphash();
       @(negedge tb_clk)
       tb_reset_n = 1;
 
-      if (DEBUG)
-        dump_state();
+      dump_state();
       $display("Toggling of reset done.");
     end
   endtask // toggle_reset
