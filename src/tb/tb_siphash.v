@@ -100,30 +100,24 @@ module tb_siphash();
   reg [31 : 0] test_ctr;
   reg [31 : 0] error_ctr;
 
-  // Clock and reset.
   reg tb_clk;
   reg tb_reset_n;
 
-  // DUT connections.
   reg           tb_cs;
   reg           tb_we;
   reg [7 : 0]   tb_addr;
   reg [31 : 0]  tb_write_data;
   wire [31 : 0] tb_read_data;
-
-  reg [7 : 0]   tb_address;
   wire          tb_error;
-
   reg [31 : 0]  read_data;
+
 
   //----------------------------------------------------------------
   // siphash device under test.
   //----------------------------------------------------------------
   siphash dut(
-              // Clock and reset.
               .clk(tb_clk),
               .reset_n(tb_reset_n),
-
               .cs(tb_cs),
               .we(tb_we),
               .addr(tb_addr),
@@ -267,7 +261,7 @@ module tb_siphash();
   //----------------------------------------------------------------
   task read_word(input [7 : 0]  address);
     begin
-      tb_address = address;
+      tb_addr = address;
       tb_cs = 1;
       tb_we = 0;
       #(CLK_PERIOD);
@@ -297,7 +291,7 @@ module tb_siphash();
           $display("");
         end
 
-      tb_address = address;
+      tb_addr = address;
       tb_write_data = word;
       tb_cs = 1;
       tb_we = 1;
