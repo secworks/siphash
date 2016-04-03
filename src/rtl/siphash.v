@@ -39,7 +39,6 @@
 module siphash(
                input wire           clk,
                input wire           reset_n,
-
                input wire           cs,
                input wire           we,
                input wire [7 : 0]   addr,
