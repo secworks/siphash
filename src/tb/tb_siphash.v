@@ -353,41 +353,34 @@ module tb_siphash();
   //----------------------------------------------------------------
   task run_paper_test_vector;
     begin
+      inc_test_ctr();
       $display("Testing with test vectors from SipHash paper.");
+
+      write_word(ADDR_KEY0, 32'h03020100);
+      write_word(ADDR_KEY1, 32'h07060504);
+      write_word(ADDR_KEY2, 32'h0b0a0908);
+      write_word(ADDR_KEY3, 32'h0f0e0d0c);
+      write_word(ADDR_CTRL, 3'h01);
+      #(2 * CLK_PERIOD);
+      dump_state();
+      dump_outputs();
+
+      write_word(ADDR_MI0, 32'h03020100);
+      write_word(ADDR_MI1, 32'h07060504);
+      write_word(ADDR_CTRL, 3'h02);
+      #(4 * CLK_PERIOD);
+      dump_state();
+      dump_outputs();
+
+      write_word(ADDR_MI0, 32'h0b0a0908);
+      write_word(ADDR_MI1, 32'h0f0e0d0c);
+      write_word(ADDR_CTRL, 3'h02);
+      #(4 * CLK_PERIOD);
+      dump_state();
+      dump_outputs();
+
+      write_word(ADDR_CTRL, 3'h04);
       #(10 * CLK_PERIOD);
-      //tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
-      //tb_initalize = 1;
-      #(CLK_PERIOD);
-      // tb_initalize = 0;
-      dump_outputs();
-
-      // Add first block.
-      #(CLK_PERIOD);
-      //tb_compress = 1;
-      //tb_mi = 64'h0706050403020100;
-      #(CLK_PERIOD);
-      // tb_compress = 0;
-      dump_state();
-      dump_outputs();
-
-      // Wait a number of cycle and
-      // try and start the next iteration.
-      #(50 * CLK_PERIOD);
-      dump_outputs();
-      // tb_compress = 1;
-      // tb_mi = 64'h0f0e0d0c0b0a0908;
-      #(CLK_PERIOD);
-      // tb_compress = 0;
-      dump_state();
-      dump_outputs();
-
-      // Wait a number of cycles and
-      // and pull finalizaition.
-      #(50 * CLK_PERIOD);
-      dump_outputs();
-      // tb_finalize = 1;
-      #(CLK_PERIOD);
-      // tb_finalize = 0;
       dump_state();
       dump_outputs();
 
@@ -416,7 +409,7 @@ module tb_siphash();
       tb_init();
       toggle_reset();
       check_name_version();
-//      run_paper_test_vector();
+      run_paper_test_vector();
 
       $display("");
       $display("   -- Test of SipHash top level wrapper completed --");
