@@ -95,8 +95,8 @@ module siphash(
   //----------------------------------------------------------------
   // Registers including update variables and write enable.
   //----------------------------------------------------------------
-  reg [3 : 0]  ctrl_reg;
-  reg          ctrl_we;
+  reg [2 : 0]  ctrl_reg;
+  reg [2 : 0]  ctrl_new;
 
   reg          long_reg;
   reg          long_we;
@@ -197,24 +197,23 @@ module siphash(
       if (!reset_n)
         begin
           // Reset all registers to defined values.
-          ctrl_reg  <= 4'h0;
+          ctrl_reg  <= 3'h0;
           long_reg  <= 1'b0;
           param_reg <= {SIPHASH_DEFAULT_D, SIPHASH_DEFAULT_C};
-          key0_reg  <= 32'h00000000;
-          key1_reg  <= 32'h00000000;
-          key2_reg  <= 32'h00000000;
-          key3_reg  <= 32'h00000000;
-          mi0_reg   <= 32'h00000000;
-          mi1_reg   <= 32'h00000000;
-          word0_reg <= 32'h00000000;
-          word1_reg <= 32'h00000000;
-          word2_reg <= 32'h00000000;
-          word3_reg <= 32'h00000000;
+          key0_reg  <= 32'h0;
+          key1_reg  <= 32'h0;
+          key2_reg  <= 32'h0;
+          key3_reg  <= 32'h0;
+          mi0_reg   <= 32'h0;
+          mi1_reg   <= 32'h0;
+          word0_reg <= 32'h0;
+          word1_reg <= 32'h0;
+          word2_reg <= 32'h0;
+          word3_reg <= 32'h0;
         end
       else
         begin
-          if (ctrl_we)
-            ctrl_reg <= write_data[3 : 0];
+          ctrl_reg <= ctrl_new;
 
           if (long_we)
             long_reg <= write_data[CONFIG_LONG_BIT];
@@ -257,8 +256,8 @@ module siphash(
   //----------------------------------------------------------------
   always @*
     begin : api
-      tmp_read_data = 32'h00000000;
-      ctrl_we       = 1'b0;
+      tmp_read_data = 32'h0;
+      ctrl_new      = 3'h0;
       long_we       = 1'b0;
       param_we      = 1'b0;
       key0_we       = 1'b0;
@@ -274,7 +273,7 @@ module siphash(
             begin
               case (addr)
                 ADDR_CTRL:
-                  ctrl_we = 1'b1;
+                  ctrl_new = write_data[2 : 0];
 
                 ADDR_CONFIG:
                   long_we = 1'b1;
@@ -319,14 +318,14 @@ module siphash(
                   tmp_read_data = CORE_VERSION;
 
                 ADDR_CTRL:
-                  tmp_read_data = {28'h0000000, ctrl_reg};
+                  tmp_read_data = {29'h0, ctrl_reg};
 
                 ADDR_STATUS:
-                  tmp_read_data = {30'h00000000, core_ready,
+                  tmp_read_data = {30'h0, core_ready,
                                    core_siphash_word_valid};
 
                 ADDR_PARAM:
-                  tmp_read_data = {24'h000000, param_reg};
+                  tmp_read_data = {24'h0, param_reg};
 
                 ADDR_KEY0:
                   tmp_read_data = key0_reg;
