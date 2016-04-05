@@ -360,7 +360,7 @@ module tb_siphash();
       write_word(ADDR_KEY1, 32'h07060504);
       write_word(ADDR_KEY2, 32'h0b0a0908);
       write_word(ADDR_KEY3, 32'h0f0e0d0c);
-      write_word(ADDR_CTRL, 3'h01);
+      write_word(ADDR_CTRL, 3'h1);
       #(2 * CLK_PERIOD);
       $display("State after key based init.");
       dump_state();
@@ -368,7 +368,7 @@ module tb_siphash();
 
       write_word(ADDR_MI0, 32'h03020100);
       write_word(ADDR_MI1, 32'h07060504);
-      write_word(ADDR_CTRL, 3'h02);
+      write_word(ADDR_CTRL, 3'h2);
       #(8 * CLK_PERIOD);
       $display("State after compression of first block.");
       dump_state();
@@ -376,13 +376,13 @@ module tb_siphash();
 
       write_word(ADDR_MI0, 32'h0b0a0908);
       write_word(ADDR_MI1, 32'h0f0e0d0c);
-      write_word(ADDR_CTRL, 3'h02);
+      write_word(ADDR_CTRL, 3'h2);
       #(8 * CLK_PERIOD);
       $display("State after compression of second block.");
       dump_state();
       dump_outputs();
 
-      write_word(ADDR_CTRL, 3'h04);
+      write_word(ADDR_CTRL, 3'h4);
       #(10 * CLK_PERIOD);
       $display("State after finalization.");
       dump_state();
