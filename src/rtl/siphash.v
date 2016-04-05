@@ -159,7 +159,7 @@ module siphash(
                                      SIPHASH_START_C];
   assign core_d          = param_reg[(SIPHASH_START_D + SIPHASH_SIZE_D - 1) :
                                      SIPHASH_START_D];
-  assign core_k          = {key0_reg, key1_reg, key2_reg, key3_reg};
+  assign core_k          = {key3_reg, key2_reg, key1_reg, key0_reg};
   assign core_mi         = {mi0_reg, mi1_reg};
 
 
