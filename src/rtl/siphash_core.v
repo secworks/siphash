@@ -149,12 +149,12 @@ module siphash_core(
       if (!reset_n)
         begin
           // Reset all registers to defined values.
-          v0_reg            <= 64'h0000000000000000;
-          v1_reg            <= 64'h0000000000000000;
-          v2_reg            <= 64'h0000000000000000;
-          v3_reg            <= 64'h0000000000000000;
-          siphash_word_reg  <= 64'h0000000000000000;
-          mi_reg            <= 64'h0000000000000000;
+          v0_reg            <= 64'h0;
+          v1_reg            <= 64'h0;
+          v2_reg            <= 64'h0;
+          v3_reg            <= 64'h0;
+          siphash_word_reg  <= 64'h0;
+          mi_reg            <= 64'h0;
           ready_reg         <= 1;
           siphash_valid_reg <= 0;
           loop_ctr_reg      <= 4'h0;
