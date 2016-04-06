@@ -110,7 +110,7 @@ Note: MD5 processing takes at least 64 cycles for a message block.
 
 ## Status ##
 
-*** (2016-04-06) ***
+**(2016-04-06)**
 
 The core has now actually been debugged and generates the correct result
 for the test vectors in the SipHash paper. Amazing that I actually
@@ -125,7 +125,7 @@ There has been substantial cleanup work done to the core. It is now much
 more compact and readable. I guess one learn by doing stuff...
 
 
-*** (2015-01-24) ***
+**(2015-01-24)**
 
 The core now includes the first parts of a beta implementation of the
 long version with 128 bit digest.
