@@ -103,14 +103,30 @@ resources:
 
   - Number of LEs: 1883
   - Number of regs: 910
-  - Max frequency:   62 MHz
+  - Max frequency:  62 MHz
 
 Note: MD5 processing takes at least 64 cycles for a message block.
 
 
 ## Status ##
 
+*** (2016-04-06) ***
+
+The core has now actually been debugged and generates the correct result
+for the test vectors in the SipHash paper. Amazing that I actually
+haven't done this before.
+
+The top level wrapper generates the correct results, but not the way I
+expect it too. There is also the beginnings of support for the long
+digest mode in the test benches, but core and top lacks functionality
+for it.
+
+There has been substantial cleanup work done to the core. It is now much
+more compact and readable. I guess one learn by doing stuff...
+
+
 *** (2015-01-24) ***
+
 The core now includes the first parts of a beta implementation of the
 long version with 128 bit digest.
 
