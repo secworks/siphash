@@ -210,7 +210,8 @@ module tb_siphash();
       $display("v0_reg = 0x%016x, v1_reg = 0x%016x", dut.core.v0_reg, dut.core.v1_reg);
       $display("v2_reg = 0x%016x, v3_reg = 0x%016x", dut.core.v2_reg, dut.core.v3_reg);
       $display("sword  = 0x%016x", dut.core.siphash_word);
-      $display("ready  = 0x%1x, valid = 0x%1x", dut.core.ready, dut.core.siphash_word_valid);
+      $display("state  = 0x%02x, ready  = 0x%1x, valid = 0x%1x",
+               dut.core.siphash_ctrl_reg, dut.core.ready, dut.core.siphash_word_valid);
       $display("");
     end
   endtask // dump_state
