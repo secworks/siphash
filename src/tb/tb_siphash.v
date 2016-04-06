@@ -209,6 +209,8 @@ module tb_siphash();
       $display("Internal core state:");
       $display("v0_reg = 0x%016x, v1_reg = 0x%016x", dut.core.v0_reg, dut.core.v1_reg);
       $display("v2_reg = 0x%016x, v3_reg = 0x%016x", dut.core.v2_reg, dut.core.v3_reg);
+      $display("sword  = 0x%016x", dut.core.siphash_word);
+      $display("ready  = 0x%1x, valid = 0x%1x", dut.core.ready, dut.core.siphash_word_valid);
       $display("");
     end
   endtask // dump_state
@@ -240,12 +242,12 @@ module tb_siphash();
   task toggle_reset;
     begin
       $display("Toggling reset.");
+      dump_state();
       #(2 * CLK_PERIOD);
       tb_reset_n = 0;
       #(10 * CLK_PERIOD);
       @(negedge tb_clk)
       tb_reset_n = 1;
-
       dump_state();
       $display("Toggling of reset done.");
     end
@@ -314,7 +316,7 @@ module tb_siphash();
     begin
       inc_test_ctr();
 
-      $display("Trying to read out name and version.");
+      $display("\nTC1: Reading name and version from dut.");
 
       read_word(ADDR_NAME0);
       name0 = read_data;
@@ -354,7 +356,7 @@ module tb_siphash();
   task run_paper_test_vector;
     begin
       inc_test_ctr();
-      $display("Testing with test vectors from SipHash paper.");
+      $display("\nTC2: Testing with test vectors from SipHash paper.");
 
       write_word(ADDR_KEY0, 32'h03020100);
       write_word(ADDR_KEY1, 32'h07060504);
@@ -370,7 +372,7 @@ module tb_siphash();
       write_word(ADDR_MI1, 32'h07060504);
       write_word(ADDR_CTRL, 3'h2);
       #(8 * CLK_PERIOD);
-      $display("State after compression of first block.");
+      $display("\nState after compression of first block.");
       dump_state();
       dump_outputs();
 
@@ -378,13 +380,13 @@ module tb_siphash();
       write_word(ADDR_MI1, 32'h0f0e0d0c);
       write_word(ADDR_CTRL, 3'h2);
       #(8 * CLK_PERIOD);
-      $display("State after compression of second block.");
+      $display("\nState after compression of second block.");
       dump_state();
       dump_outputs();
 
       write_word(ADDR_CTRL, 3'h4);
       #(10 * CLK_PERIOD);
-      $display("State after finalization.");
+      $display("\nState after finalization.");
       dump_state();
       dump_outputs();
 
