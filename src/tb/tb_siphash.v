@@ -361,6 +361,7 @@ module tb_siphash();
       inc_test_ctr();
       $display("\nTC2: Testing with test vectors from SipHash paper.");
 
+      $display("Starting key based init.");
       write_word(ADDR_KEY0, 32'h03020100);
       write_word(ADDR_KEY1, 32'h07060504);
       write_word(ADDR_KEY2, 32'h0b0a0908);
@@ -369,29 +370,28 @@ module tb_siphash();
       #(2 * CLK_PERIOD);
       $display("State after key based init.");
       dump_state();
-      dump_outputs();
 
+      $display("\nStarting compression of first block.");
       write_word(ADDR_MI0, 32'h03020100);
       write_word(ADDR_MI1, 32'h07060504);
       write_word(ADDR_CTRL, 3'h2);
       #(8 * CLK_PERIOD);
-      $display("\nState after compression of first block.");
+      $display("State after compression of first block.");
       dump_state();
-      dump_outputs();
 
+      $display("\nStarting compression of second block.");
       write_word(ADDR_MI0, 32'h0b0a0908);
       write_word(ADDR_MI1, 32'h0f0e0d0c);
       write_word(ADDR_CTRL, 3'h2);
       #(8 * CLK_PERIOD);
-      $display("\nState after compression of second block.");
+      $display("State after compression of second block.");
       dump_state();
-      dump_outputs();
 
+      $display("\nStarting finalization.");
       write_word(ADDR_CTRL, 3'h4);
       #(10 * CLK_PERIOD);
-      $display("\nState after finalization.");
+      $display("State after finalization.");
       dump_state();
-      dump_outputs();
 
 //      if (tb_siphash_word == 64'ha129ca6149be45e5)
 //        begin
