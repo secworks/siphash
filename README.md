@@ -1,7 +1,4 @@
 # SipHash Core #
-(This repo has been moved to Github from Gitorious.)
-
-
 ## Introduction ##
 
 This is a hardware implementation of the SipHash [1] keyed hash
@@ -42,9 +39,9 @@ to processing a key dependent initalization. Initalization is done by
 setting the key port (k) and assering the (initalize) flag for at least
 one cycle and then deassert the flag.
 
-There is no default number of SipRounds for compression nor
-finalization. The user must therefor set the c and d values before using
-the core.
+There is default number of SipRounds for compression and
+finalization. The default values corresponds to the SipHash-2-4
+described in the SipHash paper.
 
 Processing a message block is done by assigning the block to the message
 block port (mi) and asserting the (compress) flag.
@@ -79,6 +76,12 @@ block using SipHash-2-4 is:
 
 In total: 10 cycles or 1.25 cycles/Byte.
 For long messages, the latency is asymptotically 0.5 cycles/Byte.
+
+The repo contains both the core itself ([siphash_core.v](https://github.com/secworks/siphash/blob/master/src/rtl/siphash_core.v)) and
+a top level wrapper
+([siphash.v](https://github.com/secworks/siphash/blob/master/src/rtl/siphash.v)). The
+wrapper provides a simple 32-bit interface for the core for easy
+integration into a system on chip.
 
 
 ## Implementation results ##
