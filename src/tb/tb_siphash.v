@@ -207,6 +207,8 @@ module tb_siphash();
       $display("");
 
       $display("Internal core state:");
+      $display("key    = 0x%016x", dut.core.key);
+      $display("mi     = 0x%016x", dut.core.mi);
       $display("v0_reg = 0x%016x, v1_reg = 0x%016x", dut.core.v0_reg, dut.core.v1_reg);
       $display("v2_reg = 0x%016x, v3_reg = 0x%016x", dut.core.v2_reg, dut.core.v3_reg);
       $display("sword  = 0x%016x", dut.core.siphash_word);
