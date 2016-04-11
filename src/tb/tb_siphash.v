@@ -308,6 +308,25 @@ module tb_siphash();
 
 
   //----------------------------------------------------------------
+  // wait_ready()
+  //
+  // Wait for ready word to be set in the DUT API.
+  //----------------------------------------------------------------
+  task wait_ready;
+    reg ready;
+    begin
+      ready = 0;
+
+      while (ready == 0)
+        begin
+          read_word(ADDR_STATUS);
+          ready = read_data & 32'h00000001;
+        end
+    end
+  endtask // read_word
+
+
+  //----------------------------------------------------------------
   // check_name_version()
   //
   // Read the name and version from the DUT.
@@ -367,7 +386,7 @@ module tb_siphash();
       write_word(ADDR_KEY2, 32'h0b0a0908);
       write_word(ADDR_KEY3, 32'h0f0e0d0c);
       write_word(ADDR_CTRL, 3'h1);
-      #(2 * CLK_PERIOD);
+      wait_ready();
       $display("State after key based init.");
       dump_state();
 
@@ -375,7 +394,7 @@ module tb_siphash();
       write_word(ADDR_MI0, 32'h03020100);
       write_word(ADDR_MI1, 32'h07060504);
       write_word(ADDR_CTRL, 3'h2);
-      #(8 * CLK_PERIOD);
+      wait_ready();
       $display("State after compression of first block.");
       dump_state();
 
@@ -383,13 +402,13 @@ module tb_siphash();
       write_word(ADDR_MI0, 32'h0b0a0908);
       write_word(ADDR_MI1, 32'h0f0e0d0c);
       write_word(ADDR_CTRL, 3'h2);
-      #(8 * CLK_PERIOD);
+      wait_ready();
       $display("State after compression of second block.");
       dump_state();
 
       $display("\nStarting finalization.");
       write_word(ADDR_CTRL, 3'h4);
-      #(10 * CLK_PERIOD);
+      wait_ready();
       $display("State after finalization.");
       dump_state();
 
