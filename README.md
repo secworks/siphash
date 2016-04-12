@@ -110,6 +110,16 @@ Note: MD5 processing takes at least 64 cycles for a message block.
 
 ## Status ##
 
+**(2016-04-12)**
+
+The top level now generates tje correct result for the SipHash paper
+test vectors. The top level test bench contains self checking test cases
+for name and version of the DUT as well as for the SipHash paper test
+vector test case.
+
+Next up is fixing the long mode.
+
+
 **(2016-04-06)**
 
 The core has now actually been debugged and generates the correct result
