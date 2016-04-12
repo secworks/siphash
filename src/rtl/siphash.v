@@ -70,7 +70,7 @@ module siphash(
   localparam SIPHASH_START_C   = 0;
   localparam SIPHASH_SIZE_C    = 4;
   localparam SIPHASH_DEFAULT_C = 4'h2;
-  localparam SIPHASH_START_D   = 3;
+  localparam SIPHASH_START_D   = 4;
   localparam SIPHASH_SIZE_D    = 4;
   localparam SIPHASH_DEFAULT_D = 4'h4;
 
@@ -321,8 +321,8 @@ module siphash(
                   tmp_read_data = {29'h0, ctrl_reg};
 
                 ADDR_STATUS:
-                  tmp_read_data = {30'h0, core_ready,
-                                   core_siphash_word_valid};
+                  tmp_read_data = {30'h0, core_siphash_word_valid,
+                                   core_ready};
 
                 ADDR_PARAM:
                   tmp_read_data = {24'h0, param_reg};
