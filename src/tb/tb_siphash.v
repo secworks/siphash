@@ -376,6 +376,7 @@ module tb_siphash();
   // from the the SipHash paper Appendix A.
   //----------------------------------------------------------------
   task run_paper_test_vector;
+    reg [127 : 0] result;
     begin
       inc_test_ctr();
       $display("\nTC2: Testing with test vectors from SipHash paper.");
@@ -387,43 +388,46 @@ module tb_siphash();
       write_word(ADDR_KEY3, 32'h0f0e0d0c);
       write_word(ADDR_CTRL, 3'h1);
       wait_ready();
-      $display("State after key based init.");
-      dump_state();
 
       $display("\nStarting compression of first block.");
       write_word(ADDR_MI0, 32'h03020100);
       write_word(ADDR_MI1, 32'h07060504);
       write_word(ADDR_CTRL, 3'h2);
       wait_ready();
-      $display("State after compression of first block.");
-      dump_state();
 
       $display("\nStarting compression of second block.");
       write_word(ADDR_MI0, 32'h0b0a0908);
       write_word(ADDR_MI1, 32'h0f0e0d0c);
       write_word(ADDR_CTRL, 3'h2);
       wait_ready();
-      $display("State after compression of second block.");
-      dump_state();
 
       $display("\nStarting finalization.");
       write_word(ADDR_CTRL, 3'h4);
       wait_ready();
-      $display("State after finalization.");
-      dump_state();
 
-//      if (tb_siphash_word == 64'ha129ca6149be45e5)
-//        begin
-//          $display("Correct digest for old old short test vector received.");
-//        end
-//      else
-//        begin
-//          $display("Error: incorrect digest for old old short test vector received.");
-//          $display("Expected: 0x%016x", 64'ha129ca6149be45e5);
-//          $display("Recived:  0x%016x", tb_siphash_word);
-//        end
+      $display("\nReading out digest.");
+      read_word(ADDR_WORD0);
+      result[031 : 000] = read_data;
+      read_word(ADDR_WORD1);
+      result[063 : 032] = read_data;
+      read_word(ADDR_WORD2);
+      result[095 : 064] = read_data;
+      read_word(ADDR_WORD3);
+      result[127 : 096] = read_data;
+
+      if (result == 128'h0000000000000000a129ca6149be45e5)
+        begin
+          $display("Correct digest for SipHash paper test vector received.");
+        end
+      else
+        begin
+          inc_error_ctr();
+          $display("Error: incorrect digest for SipHash paper test vector received.");
+          $display("Expected: 0x%016x", 128'h0000000000000000a129ca6149be45e5);
+          $display("Recived:  0x%016x", result);
+        end
     end
-  endtask // run_old_short_test_vector
+  endtask // run_paper_test_vector
 
 
   //----------------------------------------------------------------
