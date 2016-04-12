@@ -455,8 +455,8 @@ module tb_siphash_core();
 
       // Set clock, reset and DUT input signals to
       // defined values at simulation start.
-      tb_c         = 8'h02;
-      tb_d         = 8'h04;
+      tb_c         = 4'h2;
+      tb_d         = 4'h4;
       tb_mi        = 64'h0;
       tb_key       = 128'h0;
       tb_initalize = 0;
