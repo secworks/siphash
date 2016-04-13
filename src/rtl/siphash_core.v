@@ -230,28 +230,18 @@ module siphash_core(
           case (dp_mode)
             DP_INIT:
               begin
+                v0_new = key[063 : 000] ^ 64'h736f6d6570736575;
+                v2_new = key[063 : 000] ^ 64'h6c7967656e657261;
+                v3_new = key[127 : 064] ^ 64'h7465646279746573;
+                v0_we  = 1;
+                v1_we  = 1;
+                v2_we  = 1;
+                v3_we  = 1;
                 if (long)
-                  begin
-                    v0_new = key[063 : 000] ^ 64'h736f6d6570736575;
-                    v1_new = key[127 : 064] ^ 64'h646f72616e646f6d;
-                    v2_new = key[063 : 000] ^ 64'h6c7967656e657261;
-                    v3_new = key[127 : 064] ^ 64'h7465646279746573;
-                    v0_we  = 1;
-                    v1_we  = 1;
-                    v2_we  = 1;
-                    v3_we  = 1;
-                  end
+                  v1_new = key[127 : 064] ^ 64'h646f72616e646f6d
+                           ^ 64'h00000000000000ee;
                 else
-                  begin
-                    v0_new = key[063 : 000] ^ 64'h736f6d6570736575;
-                    v1_new = key[127 : 064] ^ 64'h646f72616e646f6d;
-                    v2_new = key[063 : 000] ^ 64'h6c7967656e657261;
-                    v3_new = key[127 : 064] ^ 64'h7465646279746573;
-                    v0_we  = 1;
-                    v1_we  = 1;
-                    v2_we  = 1;
-                    v3_we  = 1;
-                  end
+                  v1_new = key[127 : 064] ^ 64'h646f72616e646f6d;
               end
 
             DP_COMP_START:
@@ -268,8 +258,11 @@ module siphash_core(
 
             DP_FINAL_START:
               begin
-                v2_new = {{v2_reg[63:8]}, {v2_reg[7:0] ^ 8'hff}};
                 v2_we = 1;
+                if (long)
+                  v2_new = v2_reg ^ 64'h00000000000000ee;
+                else
+                  v2_new = v2_reg ^ 64'h00000000000000ff;
               end
 
             DP_SIPROUND:
