@@ -110,9 +110,9 @@ module siphash_core(
   reg          ready_new;
   reg          ready_we;
 
-  reg [63 : 0] siphash_word_reg;
-  reg [63 : 0] siphash_word_new;
-  reg          siphash_word_we;
+  reg [127 : 0] siphash_word_reg;
+  reg [127 : 0] siphash_word_new;
+  reg           siphash_word_we;
 
   reg          siphash_valid_reg;
   reg          siphash_valid_new;
@@ -134,7 +134,7 @@ module siphash_core(
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
   assign ready              = ready_reg;
-  assign siphash_word       = {64'h0, siphash_word_reg};
+  assign siphash_word       = siphash_word_reg;
   assign siphash_word_valid = siphash_valid_reg;
 
 
@@ -153,7 +153,7 @@ module siphash_core(
           v1_reg            <= 64'h0;
           v2_reg            <= 64'h0;
           v3_reg            <= 64'h0;
-          siphash_word_reg  <= 64'h0;
+          siphash_word_reg  <= 128'h0;
           mi_reg            <= 64'h0;
           ready_reg         <= 1;
           siphash_valid_reg <= 0;
@@ -223,7 +223,7 @@ module siphash_core(
       v3_new    = 64'h0000000000000000;
       v3_we     = 0;
 
-      siphash_word_new = v0_reg ^ v1_reg ^ v2_reg ^ v3_reg;
+      siphash_word_new = {64'h0, v0_reg ^ v1_reg ^ v2_reg ^ v3_reg};
 
       if (dp_update)
         begin
