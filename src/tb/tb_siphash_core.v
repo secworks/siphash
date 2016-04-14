@@ -172,7 +172,8 @@ module tb_siphash_core();
       $display("v0_reg = %016x, v1_reg = %016x", dut.v0_reg, dut.v1_reg);
       $display("v2_reg = %016x, v3_reg = %016x", dut.v2_reg, dut.v3_reg);
       $display("mi_reg = %016x", dut.mi_reg);
-      $display("siphash_word_reg = %016x", dut.siphash_word_reg);
+      $display("siphash_word1_reg = %016x, siphash_word0_reg = %016x",
+               dut.siphash_word1_reg, dut.siphash_word0_reg);
       $display("initalize = 0x%01x, compress = 0x%01x, finalize = 0x%01x, long = 0x%01x",
                dut.initalize, dut.compress, dut.finalize, dut.long);
       $display("loop_ctr = %02x, dp_update = %01x, dp_mode = %02x, fsm_state = %02x",

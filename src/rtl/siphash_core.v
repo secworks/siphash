@@ -110,9 +110,11 @@ module siphash_core(
   reg          ready_new;
   reg          ready_we;
 
-  reg [127 : 0] siphash_word_reg;
-  reg [127 : 0] siphash_word_new;
-  reg           siphash_word_we;
+  reg [63 : 0] siphash_word0_reg;
+  reg [63 : 0] siphash_word1_reg;
+  reg [63 : 0] siphash_word_new;
+  reg          siphash_word0_we;
+  reg          siphash_word1_we;
 
   reg          siphash_valid_reg;
   reg          siphash_valid_new;
@@ -134,7 +136,7 @@ module siphash_core(
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
   assign ready              = ready_reg;
-  assign siphash_word       = siphash_word_reg;
+  assign siphash_word       = {siphash_word1_reg, siphash_word0_reg};
   assign siphash_word_valid = siphash_valid_reg;
 
 
@@ -153,7 +155,8 @@ module siphash_core(
           v1_reg            <= 64'h0;
           v2_reg            <= 64'h0;
           v3_reg            <= 64'h0;
-          siphash_word_reg  <= 128'h0;
+          siphash_word0_reg <= 64'h0;
+          siphash_word1_reg <= 64'h0;
           mi_reg            <= 64'h0;
           ready_reg         <= 1;
           siphash_valid_reg <= 0;
@@ -162,8 +165,11 @@ module siphash_core(
         end
       else
         begin
-          if (siphash_word_we)
-            siphash_word_reg <= siphash_word_new;
+          if (siphash_word0_we)
+            siphash_word0_reg <= siphash_word_new;
+
+          if (siphash_word1_we)
+            siphash_word1_reg <= siphash_word_new;
 
           if (v0_we)
             v0_reg <= v0_new;
@@ -214,16 +220,16 @@ module siphash_core(
       reg [63 : 0] v2_tmp;
       reg [63 : 0] v3_tmp;
 
-      v0_new    = 64'h0000000000000000;
+      v0_new    = 64'h0;
       v0_we     = 0;
-      v1_new    = 64'h0000000000000000;
+      v1_new    = 64'h0;
       v1_we     = 0;
-      v2_new    = 64'h0000000000000000;
+      v2_new    = 64'h0;
       v2_we     = 0;
-      v3_new    = 64'h0000000000000000;
+      v3_new    = 64'h0;
       v3_we     = 0;
 
-      siphash_word_new = {64'h0, v0_reg ^ v1_reg ^ v2_reg ^ v3_reg};
+      siphash_word_new = v0_reg ^ v1_reg ^ v2_reg ^ v3_reg;
 
       if (dp_update)
         begin
@@ -335,7 +341,8 @@ module siphash_core(
       mi_we             = 0;
       ready_new         = 0;
       ready_we          = 0;
-      siphash_word_we   = 0;
+      siphash_word0_we  = 0;
+      siphash_word1_we  = 0;
       siphash_valid_new = 0;
       siphash_valid_we  = 0;
       siphash_ctrl_new  = CTRL_IDLE;
@@ -414,7 +421,7 @@ module siphash_core(
           begin
             ready_new         = 1;
             ready_we          = 1;
-            siphash_word_we   = 1;
+            siphash_word0_we  = 1;
             siphash_valid_new = 1;
             siphash_valid_we  = 1;
             siphash_ctrl_new  = CTRL_IDLE;
