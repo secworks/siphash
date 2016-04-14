@@ -69,13 +69,13 @@ module siphash_core(
   localparam DP_COMP_START  = 3'h1;
   localparam DP_COMP_END    = 3'h2;
   localparam DP_FINAL_START = 3'h3;
-  localparam DP_SIPROUND    = 3'h5;
+  localparam DP_SIPROUND    = 3'h4;
 
   localparam CTRL_IDLE       = 3'h0;
-  localparam CTRL_COMP_LOOP  = 3'h2;
-  localparam CTRL_COMP_END   = 3'h3;
-  localparam CTRL_FINAL_LOOP = 3'h4;
-  localparam CTRL_FINAL_END  = 3'h5;
+  localparam CTRL_COMP_LOOP  = 3'h1;
+  localparam CTRL_COMP_END   = 3'h2;
+  localparam CTRL_FINAL_LOOP = 3'h3;
+  localparam CTRL_FINAL_END  = 3'h4;
 
 
   //----------------------------------------------------------------
@@ -244,8 +244,7 @@ module siphash_core(
                 v2_we  = 1;
                 v3_we  = 1;
                 if (long)
-                  v1_new = key[127 : 064] ^ 64'h646f72616e646f6d
-                           ^ 64'h00000000000000ee;
+                  v1_new = key[127 : 064] ^ 64'h646f72616e646f6d ^ 64'hee;
                 else
                   v1_new = key[127 : 064] ^ 64'h646f72616e646f6d;
               end
@@ -266,9 +265,9 @@ module siphash_core(
               begin
                 v2_we = 1;
                 if (long)
-                  v2_new = v2_reg ^ 64'h00000000000000ee;
+                  v2_new = v2_reg ^ 64'hee;
                 else
-                  v2_new = v2_reg ^ 64'h00000000000000ff;
+                  v2_new = v2_reg ^ 64'hff;
               end
 
             DP_SIPROUND:
