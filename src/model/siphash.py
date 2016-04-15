@@ -212,6 +212,29 @@ def long_tests():
                 0x5853542321f567a005d547a4f04759bd, 0x5150d1772f50834a503e069a973fbd7c]
 
 def load_test_vectors(filename):
+    test_vectors = []
+
+    tc_num = 0
+    message = []
+    digest = 0
+
+    with open(filename) as tc_file:
+        for line in tc_file:
+            if "Siphash called" in line:
+                if tc_num > 0:
+                    test_vectors = (message, digest)
+                tc_num += 1
+                message = []
+                digest = 0
+
+            if "final block:" or "message block" in line:
+                print(line.split(":"))
+                # message += line.split(":")[1]
+
+            if "Digest" in line:
+                message = line.split(":")[1]
+
+#    print(test_vectors)
     return [([0x0706050403020100, 0x0f0e0d0c0b0a0908], 0xa129ca6149be45e5)]
 
 
