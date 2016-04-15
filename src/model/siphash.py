@@ -73,10 +73,11 @@ class SipHash():
     #
     # hash_message and return the result.
     #---------------------------------------------------------------
-    def hash_message(self, key, m):
-        blocks = self._m2blocks(m)
+    def hash_message(self, key, message):
         self.set_key(key)
-        return 0x55aa55aadeadbeef
+        for block in message:
+            self.compression(block)
+        return self.finalization()
 
 
     #---------------------------------------------------------------
@@ -175,67 +176,44 @@ class SipHash():
 
 
 #-------------------------------------------------------------------
-# long_tests()
+# load_test_vectors()
+#
+# Loads test vectors from a given file and return them as a
+# list with tuples where each tuple contains the number of
+# elements in the message, the message as a list of words
+# and the digest that should be generated.
 #-------------------------------------------------------------------
-def long_tests():
-    expected = [0xa3817f04ba25a8e66df67214c7550293, 0xda87c1d86b99af44347659119b22fc45,
-                0x8177228da4a45dc7fca38bdef60affe4, 0x9c70b60c5267a94e5f33b6b02985ed51,
-                0xf88164c12d9c8faf7d0f6e7c7bcd5579, 0x1368875980776f8854527a07690e9627,
-                0x14eeca338b208613485ea0308fd7a15e, 0xa1f1ebbed8dbc153c0b84aa61ff08239,
-                0x3b62a9ba6258f5610f83e264f31497b4, 0x264499060ad9baabc47f8b02bb6d71ed,
-                0x00110dc378146956c95447d3f3d0fbba, 0x0151c568386b6677a2b4dc6f81e5dc18,
-                0xd626b266905ef35882634df68532c125, 0x9869e247e9c08b10d029934fc4b952f7,
-                0x31fcefac66d7de9c7ec7485fe4494902, 0x5493e99933b0a8117e08ec0f97cfc3d9,
-                0x6ee2a4ca67b054bbfd3315bf85230577, 0x473d06e8738db89854c066c47ae47740,
-                0xa426e5e423bf4885294da481feaef723, 0x78017731cf65fab074d5208952512eb1,
-                0x9e25fc833f2290733e9344a5e83839eb, 0x568e495abe525a218a2214cd3e071d12,
-                0x4a29b54552d16b9a469c10528eff0aae, 0xc9d184ddd5a9f5e0cf8ce29a9abf691c,
-                0x2db479ae78bd50d8882a8a178a6132ad, 0x8ece5f042d5e447b5051b9eacb8d8f6f,
-                0x9c0b53b4b3c307e87eaee08678141f66, 0xabf248af69a6eae4bfd3eb2f129eeb94,
-                0x0664da1668574b88b935f3027358aef4, 0xaa4b9dc4bf337de90cd4fd3c467c6ab7,
-                0xea5c7f471faf6bde2b1ad7d4686d2287, 0x2939b0183223fafc1723de4f52c43d35,
-                0x7c3956ca5eeafc3e363e9d556546eb68, 0x77c6077146f01c32b6b69d5f4ea9ffcf,
-                0x37a6986cb8847edf0925f0f1309b54de, 0xa705f0e69da9a8f907241a2e923c8cc8,
-                0x3dc47d1f29c448461e9e76ed904f6711, 0x0d62bf01e6fc0e1a0d3c4751c5d3692b,
-                0x8c03468bca7c669ee4fd5e084bbee7b5, 0x528a5bb93baf2c9c4473cce5d0d22bd9,
-                0xdf6a301e95c95dad97ae0cc8c6913bd8, 0x801189902c857f39e73591285e70b6db,
-                0xe617346ac9c231bb3650ae34ccca0c5b, 0x27d93437efb721aa401821dcec5adf89,
-                0x89237d9ded9c5e78d8b1c9b166cc7342, 0x4a6d8091bf5e7d651189fa94a250b14c,
-                0x0e33f96055e7ae893ffc0e3dcf492902, 0xe61c432b720b19d18ec8d84bdc63151b,
-                0xf7e5aef549f782cf379055a608269b16, 0x438d030fd0b7a54fa837f2ad201a6403,
-                0xa590d3ee4fbf04e3247e0d27f286423f, 0x5fe2c1a172fe93c4b15cd37caef9f538,
-                0x2c97325cbd06b36eb2133dd08b3a017c, 0x92c814227a6bca949ff0659f002ad39e,
-                0xdce850110bd8328cfbd50841d6911d87, 0x67f14984c7da791248e32bb5922583da,
-                0x1938f2cf72d54ee97e94166fa91d2a36, 0x74481e9646ed49fe0f6224301604698e,
-                0x57fca5de98a9d6d8006438d0583d8a1d, 0x9fecde1cefdc1cbed4763674d9575359,
-                0xe3040c00eb28f15366ca73cbd872e740, 0x7697009a6a831dfecca91c5993670f7a,
-                0x5853542321f567a005d547a4f04759bd, 0x5150d1772f50834a503e069a973fbd7c]
-
 def load_test_vectors(filename):
     test_vectors = []
-
-    tc_num = 0
-    message = []
+    message_blocks = []
+    length = 0
     digest = 0
+    first = True
 
     with open(filename) as tc_file:
         for line in tc_file:
             if "Siphash called" in line:
-                if tc_num > 0:
-                    test_vectors = (message, digest)
-                tc_num += 1
-                message = []
-                digest = 0
+                if not first:
+                    test_vectors.append((length, message_blocks, digest))
+                    message_blocks = []
+                    digest = 0
+                    length += 1
+                else:
+                    first = False
 
-            if "final block:" or "message block" in line:
-                print(line.split(":"))
-                # message += line.split(":")[1]
+            if "message block" in line:
+                message_blocks += [int(line.split(":")[1][1 : -1], 16)]
+
+            if "final block" in line:
+                message_blocks += [int(line.split(":")[1][3 : -1], 16)]
 
             if "Digest" in line:
-                message = line.split(":")[1]
+                digest = int(line.split(":")[1][8:-1], 16)
 
-#    print(test_vectors)
-    return [([0x0706050403020100, 0x0f0e0d0c0b0a0908], 0xa129ca6149be45e5)]
+        # The final set of test vectors.
+        test_vectors.append((length, message_blocks, digest))
+
+    return test_vectors
 
 
 #-------------------------------------------------------------------
@@ -248,15 +226,23 @@ def load_test_vectors(filename):
 #-------------------------------------------------------------------
 def siphash_short_test():
     print("Running test with test vectors for 64 bit digest.")
+    errors = 0
     key = [0x0706050403020100, 0x0f0e0d0c0b0a0908]
     my_siphash = SipHash()
 
     test_vectors = load_test_vectors("short_test_vectors.txt")
     for test_vector in test_vectors:
-        print(test_vector)
-        (message, digest) = test_vector
+        (length, message, digest) = test_vector
         result = my_siphash.hash_message(key, message)
-        print("Generated: 0x%016x, expected: 0x%016x" % (result, digest))
+
+        if result != digest:
+            print("Incorrect result: 0x%016x, expected 0x%0x016x" % result, digest)
+            errors += 1
+        else:
+            print("Correct result: 0x%016x" % result)
+
+    if errors == 0:
+        print("All test short test vectors ok.")
     print("")
 
 
