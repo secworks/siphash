@@ -211,6 +211,9 @@ def long_tests():
                 0xe3040c00eb28f15366ca73cbd872e740, 0x7697009a6a831dfecca91c5993670f7a,
                 0x5853542321f567a005d547a4f04759bd, 0x5150d1772f50834a503e069a973fbd7c]
 
+def load_test_vectors(filename):
+    return [([0x0706050403020100, 0x0f0e0d0c0b0a0908], 0xa129ca6149be45e5)]
+
 
 #-------------------------------------------------------------------
 # siphash_short_test()
@@ -221,55 +224,16 @@ def long_tests():
 # 63 bytes.
 #-------------------------------------------------------------------
 def siphash_short_test():
-    expected = [0x310e0edd47db6f72, 0xfd67dc93c539f874,
-                0x5a4fa9d909806c0d, 0x2d7efbd796666785,
-                0xb7877127e09427cf, 0x8da699cd64557618,
-                0xcee3fe586e46c9cb, 0x37d1018bf50002ab,
-                0x6224939a79f5f593, 0xb0e4a90bdf82009e,
-                0xf3b9dd94c5bb5d7a, 0xa7ad6b22462fb3f4,
-                0xfbe50e86bc8f1e75, 0x903d84c02756ea14,
-                0xeef27a8e90ca23f7, 0xe545be4961ca29a1,
-                0xdb9bc2577fcc2a3f, 0x9447be2cf5e99a69,
-                0x9cd38d96f0b3c14b, 0xbd6179a71dc96dbb,
-                0x98eea21af25cd6be, 0xc7673b2eb0cbf2d0,
-                0x883ea3e395675393, 0xc8ce5ccd8c030ca8,
-                0x94af49f6c650adb8, 0xeab8858ade92e1bc,
-                0xf315bb5bb835d817, 0xadcf6b0763612e2f,
-                0xa5c91da7acaa4dde, 0x716595876650a2a6,
-                0x28ef495c53a387ad, 0x42c341d8fa92d832,
-                0xce7cf2722f512771, 0xe37859f94623f3a7,
-                0x381205bb1ab0e012, 0xae97a10fd434e015,
-                0xb4a31508beff4d31, 0x81396229f0907902,
-                0x4d0cf49ee5d4dcca, 0x5c73336a76d8bf9a,
-                0xd0a704536ba93e0e, 0x925958fcd6420cad,
-                0xa915c29bc8067318, 0x952b79f3bc0aa6d4,
-                0xf21df2e41d4535f9, 0x87577519048f53a9,
-                0x10a56cf5dfcd9adb, 0xeb75095ccd986cd0,
-                0x51a9cb9ecba312e6, 0x96afadfc2ce666c7,
-                0x72fe52975a4364ee, 0x5a1645b276d592a1,
-                0xb274cb8ebf87870a, 0x6f9bb4203de7b381,
-                0xeaecb2a30b22a87f, 0x9924a43cc1315724,
-                0xbd838d3aafbf8db7, 0x0b1a2a3265d51aea,
-                0x135079a3231ce660, 0x932b2846e4d70666,
-                0xe1915f5cb1eca46c, 0xf325965ca16d629f,
-                0x575ff28e60381be5, 0x724506eb4c328a95]
-
-    print("\nRunning test with siphash in short digest mode.")
+    print("Running test with test vectors for 64 bit digest.")
     key = [0x0706050403020100, 0x0f0e0d0c0b0a0908]
     my_siphash = SipHash()
-    message = []
 
-    for inlen in range(64):
-        if inlen > 0:
-            # Generate one or message blocks.
-            message = [hex(i) for i in range(inlen)]
-
-        # Generate the final padding block.
-        message += [0x00000000]
-
+    test_vectors = load_test_vectors("short_test_vectors.txt")
+    for test_vector in test_vectors:
+        print(test_vector)
+        (message, digest) = test_vector
         result = my_siphash.hash_message(key, message)
-        print("Generated: 0x%016x, expected: 0x%016x" %
-                  (result, expected[inlen]))
+        print("Generated: 0x%016x, expected: 0x%016x" % (result, digest))
     print("")
 
 
@@ -299,6 +263,7 @@ def siphash_paper_test():
         print("Correct result 0x%016x generated." % result)
     else:
         print("Incorrect result 0x%016x generated, expected 0x%016x." % (result, expected))
+    print("")
 
 
 #-------------------------------------------------------------------
