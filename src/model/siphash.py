@@ -257,9 +257,16 @@ def siphash_short_test():
     print("\nRunning test with siphash in short digest mode.")
     key = [0x0706050403020100, 0x0f0e0d0c0b0a0908]
     my_siphash = SipHash()
+    message = []
 
     for inlen in range(64):
-        message = [hex(i) for i in range(inlen)]
+        if inlen > 0:
+            # Generate one or message blocks.
+            message = [hex(i) for i in range(inlen)]
+
+        # Generate the final padding block.
+        message += [0x00000000]
+
         result = my_siphash.hash_message(key, message)
         print("Generated: 0x%016x, expected: 0x%016x" %
                   (result, expected[inlen]))
