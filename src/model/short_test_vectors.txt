@@ -1,0 +1,609 @@
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 00): 0x
+final block:   0x0000000000000000
+Digest:        0x726fdb47dd0e0e31
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 01): 0x00
+final block:   0x0100000000000000
+Digest:        0x74f839c593dc67fd
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 02): 0x0001
+final block:   0x0200000000000100
+Digest:        0x0d6c8009d9a94f5a
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 03): 0x000102
+final block:   0x0300000000020100
+Digest:        0x85676696d7fb7e2d
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 04): 0x00010203
+final block:   0x0400000003020100
+Digest:        0xcf2794e0277187b7
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 05): 0x0001020304
+final block:   0x0500000403020100
+Digest:        0x18765564cd99a68d
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 06): 0x000102030405
+final block:   0x0600050403020100
+Digest:        0xcbc9466e58fee3ce
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 07): 0x00010203040506
+final block:   0x0706050403020100
+Digest:        0xab0200f58b01d137
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 08): 0x0001020304050607
+message block: 0x0706050403020100
+final block:   0x0800000000000000
+Digest:        0x93f5f5799a932462
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 09): 0x000102030405060708
+message block: 0x0706050403020100
+final block:   0x0900000000000008
+Digest:        0x9e0082df0ba9e4b0
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 0a): 0x00010203040506070809
+message block: 0x0706050403020100
+final block:   0x0a00000000000908
+Digest:        0x7a5dbbc594ddb9f3
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 0b): 0x000102030405060708090a
+message block: 0x0706050403020100
+final block:   0x0b000000000a0908
+Digest:        0xf4b32f46226bada7
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 0c): 0x000102030405060708090a0b
+message block: 0x0706050403020100
+final block:   0x0c0000000b0a0908
+Digest:        0x751e8fbc860ee5fb
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 0d): 0x000102030405060708090a0b0c
+message block: 0x0706050403020100
+final block:   0x0d00000c0b0a0908
+Digest:        0x14ea5627c0843d90
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 0e): 0x000102030405060708090a0b0c0d
+message block: 0x0706050403020100
+final block:   0x0e000d0c0b0a0908
+Digest:        0xf723ca908e7af2ee
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 0f): 0x000102030405060708090a0b0c0d0e
+message block: 0x0706050403020100
+final block:   0x0f0e0d0c0b0a0908
+Digest:        0xa129ca6149be45e5
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 10): 0x000102030405060708090a0b0c0d0e0f
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+final block:   0x1000000000000000
+Digest:        0x3f2acc7f57c29bdb
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 11): 0x000102030405060708090a0b0c0d0e0f10
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+final block:   0x1100000000000010
+Digest:        0x699ae9f52cbe4794
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 12): 0x000102030405060708090a0b0c0d0e0f1011
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+final block:   0x1200000000001110
+Digest:        0x4bc1b3f0968dd39c
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 13): 0x000102030405060708090a0b0c0d0e0f101112
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+final block:   0x1300000000121110
+Digest:        0xbb6dc91da77961bd
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 14): 0x000102030405060708090a0b0c0d0e0f10111213
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+final block:   0x1400000013121110
+Digest:        0xbed65cf21aa2ee98
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 15): 0x000102030405060708090a0b0c0d0e0f1011121314
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+final block:   0x1500001413121110
+Digest:        0xd0f2cbb02e3b67c7
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 16): 0x000102030405060708090a0b0c0d0e0f101112131415
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+final block:   0x1600151413121110
+Digest:        0x93536795e3a33e88
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 17): 0x000102030405060708090a0b0c0d0e0f10111213141516
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+final block:   0x1716151413121110
+Digest:        0xa80c038ccd5ccec8
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 18): 0x000102030405060708090a0b0c0d0e0f1011121314151617
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+final block:   0x1800000000000000
+Digest:        0xb8ad50c6f649af94
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 19): 0x000102030405060708090a0b0c0d0e0f101112131415161718
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+final block:   0x1900000000000018
+Digest:        0xbce192de8a85b8ea
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 1a): 0x000102030405060708090a0b0c0d0e0f10111213141516171819
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+final block:   0x1a00000000001918
+Digest:        0x17d835b85bbb15f3
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 1b): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+final block:   0x1b000000001a1918
+Digest:        0x2f2e6163076bcfad
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 1c): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+final block:   0x1c0000001b1a1918
+Digest:        0xde4daaaca71dc9a5
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 1d): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+final block:   0x1d00001c1b1a1918
+Digest:        0xa6a2506687956571
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 1e): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+final block:   0x1e001d1c1b1a1918
+Digest:        0xad87a3535c49ef28
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 1f): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+final block:   0x1f1e1d1c1b1a1918
+Digest:        0x32d892fad841c342
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 20): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+final block:   0x2000000000000000
+Digest:        0x7127512f72f27cce
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 21): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+final block:   0x2100000000000020
+Digest:        0xa7f32346f95978e3
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 22): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+final block:   0x2200000000002120
+Digest:        0x12e0b01abb051238
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 23): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+final block:   0x2300000000222120
+Digest:        0x15e034d40fa197ae
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 24): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+final block:   0x2400000023222120
+Digest:        0x314dffbe0815a3b4
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 25): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+final block:   0x2500002423222120
+Digest:        0x027990f029623981
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 26): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+final block:   0x2600252423222120
+Digest:        0xcadcd4e59ef40c4d
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 27): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223242526
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+final block:   0x2726252423222120
+Digest:        0x9abfd8766a33735c
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 28): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324252627
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+final block:   0x2800000000000000
+Digest:        0x0e3ea96b5304a7d0
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 29): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+final block:   0x2900000000000028
+Digest:        0xad0c42d6fc585992
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 2a): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223242526272829
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+final block:   0x2a00000000002928
+Digest:        0x187306c89bc215a9
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 2b): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+final block:   0x2b000000002a2928
+Digest:        0xd4a60abcf3792b95
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 2c): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+final block:   0x2c0000002b2a2928
+Digest:        0xf935451de4f21df2
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 2d): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+final block:   0x2d00002c2b2a2928
+Digest:        0xa9538f0419755787
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 2e): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+final block:   0x2e002d2c2b2a2928
+Digest:        0xdb9acddff56ca510
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 2f): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+final block:   0x2f2e2d2c2b2a2928
+Digest:        0xd06c98cd5c0975eb
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 30): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+final block:   0x3000000000000000
+Digest:        0xe612a3cb9ecba951
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 31): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f30
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+final block:   0x3100000000000030
+Digest:        0xc766e62cfcadaf96
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 32): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+final block:   0x3200000000003130
+Digest:        0xee64435a9752fe72
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 33): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+final block:   0x3300000000323130
+Digest:        0xa192d576b245165a
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 34): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f30313233
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+final block:   0x3400000033323130
+Digest:        0x0a8787bf8ecb74b2
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 35): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+final block:   0x3500003433323130
+Digest:        0x81b3e73d20b49b6f
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 36): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+final block:   0x3600353433323130
+Digest:        0x7fa8220ba3b2ecea
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 37): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f30313233343536
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+final block:   0x3736353433323130
+Digest:        0x245731c13ca42499
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 38): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+message block: 0x3736353433323130
+final block:   0x3800000000000000
+Digest:        0xb78dbfaf3a8d83bd
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 39): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+message block: 0x3736353433323130
+final block:   0x3900000000000038
+Digest:        0xea1ad565322a1a0b
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 3a): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f30313233343536373839
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+message block: 0x3736353433323130
+final block:   0x3a00000000003938
+Digest:        0x60e61c23a3795013
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 3b): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+message block: 0x3736353433323130
+final block:   0x3b000000003a3938
+Digest:        0x6606d7e446282b93
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 3c): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+message block: 0x3736353433323130
+final block:   0x3c0000003b3a3938
+Digest:        0x6ca4ecb15c5f91e1
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 3d): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+message block: 0x3736353433323130
+final block:   0x3d00003c3b3a3938
+Digest:        0x9f626da15c9625f3
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 3e): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+message block: 0x3736353433323130
+final block:   0x3e003d3c3b3a3938
+Digest:        0xe51b38608ef25f57
+
+Siphash called with parameters:
+key:           0x000102030405060708090a0b0c0d0e0f
+m (length 3f): 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e
+message block: 0x0706050403020100
+message block: 0x0f0e0d0c0b0a0908
+message block: 0x1716151413121110
+message block: 0x1f1e1d1c1b1a1918
+message block: 0x2726252423222120
+message block: 0x2f2e2d2c2b2a2928
+message block: 0x3736353433323130
+final block:   0x3f3e3d3c3b3a3938
+Digest:        0x958a324ceb064572
+test vector ok
