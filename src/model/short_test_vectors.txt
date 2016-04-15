@@ -605,4 +605,3 @@ message block: 0x2f2e2d2c2b2a2928
 message block: 0x3736353433323130
 final block:   0x3f3e3d3c3b3a3938
 Digest:        0x958a324ceb064572
-test vector ok
