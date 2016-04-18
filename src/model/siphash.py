@@ -91,6 +91,9 @@ class SipHash():
         self.v[2] = key[0] ^ 0x6c7967656e657261
         self.v[3] = key[1] ^ 0x7465646279746573
 
+        if self.mode == "long":
+            self.v[1] = self.v[1] ^ 0x00000000000000ee
+
         if self.verbose > 0:
             print("State after set_key:")
             self._print_state()
@@ -123,10 +126,27 @@ class SipHash():
     # Do the finalization processing and return the hash value.
     #---------------------------------------------------------------
     def finalization(self):
-        self.v[2] ^= 0x00000000000000ff
+        if self.mode == "long":
+            self.v[2] ^= 0x00000000000000ee
+
+        else:
+            self.v[2] ^= 0x00000000000000ff
+
         for i in range(self.frounds):
             self._siphash_round()
-        return self.v[0] ^ self.v[1] ^ self.v[2] ^ self.v[3]
+
+        if self.mode == "short":
+            return self.v[0] ^ self.v[1] ^ self.v[2] ^ self.v[3]
+
+        else:
+            first = self.v[0] ^ self.v[1] ^ self.v[2] ^ self.v[3]
+            self.v[1] = self.v[1] ^ 0x00000000000000dd
+
+            for i in range(self.frounds):
+                self._siphash_round()
+
+            second = self.v[0] ^ self.v[1] ^ self.v[2] ^ self.v[3]
+        return (second, first)
 
 
     #---------------------------------------------------------------
