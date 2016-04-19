@@ -239,10 +239,19 @@ def load_test_vectors(filename):
 #-------------------------------------------------------------------
 # siphash_short_test()
 #
+# Runs 64 test with siphash in long mode, i.e. with
+# 128 bit digest output.
+#-------------------------------------------------------------------
+def siphash_long_test():
+    print("Running test with test vectors for 128 bit digest.")
+
+
+
+#-------------------------------------------------------------------
+# siphash_short_test()
+#
 # Runs 64 test with siphash in short mode, i.e. with
-# 64 bit digest output. This also tests the message padding
-# since the generated input varies in size from zero to
-# 63 bytes.
+# 64 bit digest output.
 #-------------------------------------------------------------------
 def siphash_short_test():
     print("Running test with test vectors for 64 bit digest.")
@@ -304,6 +313,7 @@ def main():
 
     siphash_paper_test()
     siphash_short_test()
+    siphash_long_test()
 
 
 #-------------------------------------------------------------------
