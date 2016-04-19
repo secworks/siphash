@@ -1,4 +1,5 @@
-
+Test vectors for Siphash with 128 bit (long) digest
+---------------------------------------------------
 Siphash called with parameters:
 key:           0x000102030405060708090a0b0c0d0e0f
 m (length 00): 0x

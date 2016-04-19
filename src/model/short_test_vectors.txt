@@ -1,4 +1,5 @@
-Siphash called with parameters:
+Test vectors for Siphash with 64 bit (short) digest
+---------------------------------------------------
 key:           0x000102030405060708090a0b0c0d0e0f
 m (length 00): 0x
 final block:   0x0000000000000000
