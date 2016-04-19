@@ -146,7 +146,7 @@ class SipHash():
                 self._siphash_round()
 
             second = self.v[0] ^ self.v[1] ^ self.v[2] ^ self.v[3]
-        return (second, first)
+        return ((second << 64) + first)
 
 
     #---------------------------------------------------------------
@@ -245,6 +245,24 @@ def load_test_vectors(filename):
 def siphash_long_test():
     print("Running test with test vectors for 128 bit digest.")
 
+    errors = 0
+    key = [0x0706050403020100, 0x0f0e0d0c0b0a0908]
+    my_siphash = SipHash(mode = "long")
+
+    test_vectors = load_test_vectors("long_test_vectors.txt")
+    for test_vector in test_vectors:
+        (length, message, digest) = test_vector
+        result = my_siphash.hash_message(key, message)
+
+        if result != digest:
+            print("Incorrect result: 0x%032x, expected 0x%032x" % (result, digest))
+            errors += 1
+        else:
+            print("Correct result: 0x%032x" % result)
+
+    if errors == 0:
+        print("All long test vectors ok.")
+    print("")
 
 
 #-------------------------------------------------------------------
@@ -271,7 +289,7 @@ def siphash_short_test():
             print("Correct result: 0x%016x" % result)
 
     if errors == 0:
-        print("All test short test vectors ok.")
+        print("All short test vectors ok.")
     print("")
 
 
