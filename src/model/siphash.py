@@ -172,19 +172,6 @@ class SipHash():
 
 
     #---------------------------------------------------------------
-    # _m2blocks()
-    #
-    # Divide the message m into a set of blocks including padding
-    # of the final block.
-    #---------------------------------------------------------------
-    def _m2blocks(self, m):
-        mbits = len(m) * 8
-        nblocks = int(mbits / 64)
-        print(mbits, nblocks)
-        return m
-
-
-    #---------------------------------------------------------------
     # _print_state()
     #
     # Print the internal state.
