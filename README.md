@@ -110,6 +110,27 @@ Note: MD5 processing takes at least 64 cycles for a message block.
 
 ## Status ##
 
+**(2016-04-20)**
+
+The core now supports 128-bit long hashes as well as 64-bit hashes. The
+core generates expected results. There is a first test case for long
+hashes in the core testbench.
+
+The Python model supports short and long hashes and uses all test cases
+from ([the reference code by Aumasson](https://github.com/veorq/SipHash))
+
+What is left to do:
+
+  - Implement long hash test case in the top level testbench and verify
+    that it works
+  - Implement all test cases in core and top level testbenches
+  - Do test implementations for different FPGAs and update resource and
+    performance information
+  - Do a real test implementation on a FPGA dev board.
+
+Then the core is really done.
+
+
 **(2016-04-12)**
 
 The top level now generates tje correct result for the SipHash paper
