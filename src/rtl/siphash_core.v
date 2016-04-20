@@ -65,17 +65,21 @@ module siphash_core(
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
-  localparam DP_INIT        = 3'h0;
-  localparam DP_COMP_START  = 3'h1;
-  localparam DP_COMP_END    = 3'h2;
-  localparam DP_FINAL_START = 3'h3;
-  localparam DP_SIPROUND    = 3'h4;
+  localparam DP_INIT         = 3'h0;
+  localparam DP_COMP_START   = 3'h1;
+  localparam DP_COMP_END     = 3'h2;
+  localparam DP_FINAL0_START = 3'h3;
+  localparam DP_FINAL1_START = 3'h4;
+  localparam DP_SIPROUND     = 3'h5;
 
-  localparam CTRL_IDLE       = 3'h0;
-  localparam CTRL_COMP_LOOP  = 3'h1;
-  localparam CTRL_COMP_END   = 3'h2;
-  localparam CTRL_FINAL_LOOP = 3'h3;
-  localparam CTRL_FINAL_END  = 3'h4;
+  localparam CTRL_IDLE         = 3'h0;
+  localparam CTRL_COMP_LOOP    = 3'h1;
+  localparam CTRL_COMP_END     = 3'h2;
+  localparam CTRL_FINAL0_LOOP  = 3'h3;
+  localparam CTRL_FINAL0_END   = 3'h4;
+  localparam CTRL_FINAL1_START = 3'h5;
+  localparam CTRL_FINAL1_LOOP  = 3'h6;
+  localparam CTRL_FINAL1_END   = 3'h7;
 
 
   //----------------------------------------------------------------
@@ -261,7 +265,7 @@ module siphash_core(
                 v0_we = 1;
               end
 
-            DP_FINAL_START:
+            DP_FINAL0_START:
               begin
                 v2_we = 1;
                 if (long)
@@ -270,9 +274,14 @@ module siphash_core(
                   v2_new = v2_reg ^ 64'hff;
               end
 
+            DP_FINAL1_START:
+              begin
+                v1_new = v1_reg ^ 64'hdd;
+                v1_we  = 1;
+              end
+
             DP_SIPROUND:
               begin
-                // First two adders.
                 add_0_res = v0_reg + v1_reg;
                 add_1_res = v2_reg + v3_reg;
 
@@ -281,7 +290,6 @@ module siphash_core(
                 v2_tmp = add_1_res;
                 v3_tmp = {v3_reg[47:0], v3_reg[63:48]} ^ add_1_res;
 
-                // Second pair of adders.
                 add_2_res = v1_tmp + v2_tmp;
                 add_3_res = v0_tmp + v3_tmp;
 
@@ -376,8 +384,8 @@ module siphash_core(
                 ready_new         = 0;
                 ready_we          = 1;
                 dp_update         = 1;
-                dp_mode           = DP_FINAL_START;
-                siphash_ctrl_new  = CTRL_FINAL_LOOP;
+                dp_mode           = DP_FINAL0_START;
+                siphash_ctrl_new  = CTRL_FINAL0_LOOP;
                 siphash_ctrl_we   = 1;
               end
           end
@@ -404,23 +412,64 @@ module siphash_core(
             siphash_ctrl_we  = 1;
           end
 
-        CTRL_FINAL_LOOP:
+        CTRL_FINAL0_LOOP:
           begin
             loop_ctr_inc = 1;
             dp_update    = 1;
             dp_mode      = DP_SIPROUND;
             if (loop_ctr_reg == (final_rounds - 1))
               begin
-                siphash_ctrl_new  = CTRL_FINAL_END;
-                siphash_ctrl_we   = 1;
+                if (long)
+                  begin
+                    siphash_ctrl_new  = CTRL_FINAL1_START;
+                    siphash_ctrl_we   = 1;
+                  end
+                else
+                  begin
+                    siphash_ctrl_new  = CTRL_FINAL0_END;
+                    siphash_ctrl_we   = 1;
+                  end
               end
           end
 
-        CTRL_FINAL_END:
+        CTRL_FINAL0_END:
           begin
             ready_new         = 1;
             ready_we          = 1;
             siphash_word0_we  = 1;
+            siphash_valid_new = 1;
+            siphash_valid_we  = 1;
+            siphash_ctrl_new  = CTRL_IDLE;
+            siphash_ctrl_we   = 1;
+          end
+
+        CTRL_FINAL1_START:
+          begin
+            siphash_word0_we = 1;
+            loop_ctr_rst     = 1;
+            dp_update        = 1;
+            dp_mode          = DP_FINAL1_START;
+            siphash_ctrl_new = CTRL_FINAL1_LOOP;
+            siphash_ctrl_we  = 1;
+          end
+
+        CTRL_FINAL1_LOOP:
+          begin
+            loop_ctr_inc = 1;
+            dp_update    = 1;
+            dp_mode      = DP_SIPROUND;
+            if (loop_ctr_reg == (final_rounds - 1))
+              begin
+                siphash_ctrl_new  = CTRL_FINAL1_END;
+                siphash_ctrl_we   = 1;
+              end
+          end
+
+        CTRL_FINAL1_END:
+          begin
+            ready_new         = 1;
+            ready_we          = 1;
+            siphash_word1_we  = 1;
             siphash_valid_new = 1;
             siphash_valid_we  = 1;
             siphash_ctrl_new  = CTRL_IDLE;
