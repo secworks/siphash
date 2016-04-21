@@ -73,9 +73,12 @@ block using SipHash-2-4 is:
  - 1 cycle for initialization
  - 1 + 2 + 1 = 4 cycles for compression
  - 4 + 1 = 5 cycles for finalization
+ - 1 + 4 = 5 cycles more for long mode
 
 In total: 10 cycles or 1.25 cycles/Byte.
+For long mode 15 cycles or 1.875 cycles/Byte.
 For long messages, the latency is asymptotically 0.5 cycles/Byte.
+
 
 The repo contains both the core itself ([siphash_core.v](https://github.com/secworks/siphash/blob/master/src/rtl/siphash_core.v)) and
 a top level wrapper
@@ -86,29 +89,29 @@ integration into a system on chip.
 
 ## Implementation results ##
 
-A test implementation of the core for Altera Cyclone IV GX has been done
-using the Altera Quartus 12 design tool. The resource usage for the core
-is:
+**(Altera Cyclone V)***
 
-  - Number of LEs: 1088
-  - Number of regs: 337
-  - Max frequency:  98 MHz
-
-Note: Quartus might add three regs due to FSM encoding.
-
-
-As a comparison, building the OpenCores MD5 core [2] using the same
-tools and for the same target device requires the following amount of
-resources:
-
-  - Number of LEs: 1883
-  - Number of regs: 910
-  - Max frequency:  62 MHz
-
-Note: MD5 processing takes at least 64 cycles for a message block.
+- Specific device: 5CGXFC7D6F31C7
+- ALMs: 657
+- Regs: 867
+- No memory blocks, DSPs allocated
+- 116 MHz max, slow 85c model
 
 
 ## Status ##
+
+**(2016-04-21)**
+
+The testbench for the top now tests long hash mode, which simulates
+correctly. Now we have a core that works for short and long hash modes
+and testbenches that perform self checking tests of both modes at core
+and top level. Finally a Python model with a good number of tests to
+drive verification of the core.
+
+There is also implementation results, see above.
+
+This core is now DONE.
+
 
 **(2016-04-20)**
 
