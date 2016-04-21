@@ -370,6 +370,70 @@ module tb_siphash();
 
 
   //----------------------------------------------------------------
+  // run_long_test()
+  //
+  // Perform testing of long hash based on the reference model.
+  //----------------------------------------------------------------
+  task run_long_test;
+    reg [127 : 0] result;
+    begin
+      inc_test_ctr();
+      $display("\nTC2: Testing long hash.");
+
+      $display("Setting long hash mode..");
+      write_word(ADDR_CONFIG, 32'h01);
+      wait_ready();
+
+      $display("Starting key based init.");
+      write_word(ADDR_KEY0, 32'h03020100);
+      write_word(ADDR_KEY1, 32'h07060504);
+      write_word(ADDR_KEY2, 32'h0b0a0908);
+      write_word(ADDR_KEY3, 32'h0f0e0d0c);
+      write_word(ADDR_CTRL, 3'h1);
+      wait_ready();
+
+      $display("\nStarting compression of first block.");
+      write_word(ADDR_MI0, 32'h03020100);
+      write_word(ADDR_MI1, 32'h07060504);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of second block.");
+      write_word(ADDR_MI0, 32'h0b0a0908);
+      write_word(ADDR_MI1, 32'h0f0e0d0c);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting finalization.");
+      write_word(ADDR_CTRL, 3'h4);
+      wait_ready();
+
+      $display("\nReading out digest.");
+      read_word(ADDR_WORD0);
+      result[031 : 000] = read_data;
+      read_word(ADDR_WORD1);
+      result[063 : 032] = read_data;
+      read_word(ADDR_WORD2);
+      result[095 : 064] = read_data;
+      read_word(ADDR_WORD3);
+      result[127 : 096] = read_data;
+
+      if (result == 128'hd9c3cf970fec087e11a8b03399e99354)
+        begin
+          $display("Correct hash for long test received.");
+        end
+      else
+        begin
+          inc_error_ctr();
+          $display("Error: incorrect hash for long test received.");
+          $display("Expected: 0x%016x", 128'hd9c3cf970fec087e11a8b03399e99354);
+          $display("Recived:  0x%016x", result);
+        end
+    end
+  endtask // run_long_test
+
+
+  //----------------------------------------------------------------
   // run_paper_test_vector()
   //
   // Perform testing of short mac using the testvectors
@@ -442,6 +506,7 @@ module tb_siphash();
       toggle_reset();
       check_name_version();
       run_paper_test_vector();
+      run_long_test();
 
       $display("");
       $display("   -- Test of SipHash top level wrapper completed --");
