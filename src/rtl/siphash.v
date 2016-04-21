@@ -89,7 +89,7 @@ module siphash(
 
   localparam CORE_NAME0        = 32'h73697068; // "siph"
   localparam CORE_NAME1        = 32'h61736820; // "ash "
-  localparam CORE_VERSION      = 32'h312e3031; // "1.01"
+  localparam CORE_VERSION      = 32'h322e3030; // "2.00"
 
 
   //----------------------------------------------------------------

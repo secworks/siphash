@@ -110,7 +110,7 @@ drive verification of the core.
 
 There is also implementation results, see above.
 
-This core is now DONE.
+This core is now DONE. Core version has been updated to 2.00.
 
 
 **(2016-04-20)**
