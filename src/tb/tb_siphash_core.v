@@ -52,16 +52,14 @@ module tb_siphash_core();
 
 
   //----------------------------------------------------------------
-  // Register and Wire declarations.
+  // Register and wire declarations.
   //----------------------------------------------------------------
-  // Cycle counter.
   reg [31 : 0] cycle_ctr;
+  reg [31 : 0] test_ctr;
+  reg [31 : 0] error_ctr;
 
-  // Clock and reset.
-  reg tb_clk;
-  reg tb_reset_n;
-
-  // DUT connections.
+  reg            tb_clk;
+  reg            tb_reset_n;
   reg            tb_initalize;
   reg            tb_compress;
   reg            tb_finalize;
@@ -81,11 +79,9 @@ module tb_siphash_core();
   // siphash_core device under test.
   //----------------------------------------------------------------
   siphash_core dut(
-                   // Clock and reset.
                    .clk(tb_clk),
                    .reset_n(tb_reset_n),
 
-                   // Control
                    .initalize(tb_initalize),
                    .compress(tb_compress),
                    .finalize(tb_finalize),
@@ -127,6 +123,26 @@ module tb_siphash_core();
           dump_state();
         end
     end // dut_monitor
+
+
+  //----------------------------------------------------------------
+  // inc_test_ctr
+  //----------------------------------------------------------------
+  task inc_test_ctr;
+    begin
+      test_ctr = test_ctr +1;
+    end
+  endtask // inc_test_ctr
+
+
+  //----------------------------------------------------------------
+  // inc_error_ctr
+  //----------------------------------------------------------------
+  task inc_error_ctr;
+    begin
+      error_ctr = error_ctr +1;
+    end
+  endtask // inc_error_ctr
 
 
   //----------------------------------------------------------------
@@ -186,12 +202,37 @@ module tb_siphash_core();
 
 
   //----------------------------------------------------------------
+  // tb_init
+  // Initialize varibles, dut inputs at start.
+  //----------------------------------------------------------------
+  task tb_init;
+    begin
+      test_ctr     = 0;
+      error_ctr    = 0;
+      cycle_ctr    = 0;
+      tb_c         = 4'h2;
+      tb_d         = 4'h4;
+      tb_mi        = 64'h0;
+      tb_key       = 128'h0;
+      tb_initalize = 0;
+      tb_compress  = 0;
+      tb_finalize  = 0;
+      tb_long      = 0;
+      cycle_ctr    = 0;
+      tb_clk       = 0;
+      tb_reset_n   = 0;
+    end
+  endtask // tb_init
+
+
+  //----------------------------------------------------------------
   // run_long_test()
   //
   // Run a specific long test.
   //----------------------------------------------------------------
   task run_long_test;
     begin
+      inc_test_ctr();
       tb_long =  1;
       display_state = 0;
       tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
@@ -250,6 +291,7 @@ module tb_siphash_core();
         end
       else
         begin
+          inc_error_ctr();
           $display("Error: incorrect hash for siphash long hash received.");
           $display("Expected: 0x%016x", 128'hd9c3cf970fec087e11a8b03399e99354);
           $display("Recived:  0x%016x", tb_siphash_word);
@@ -266,6 +308,7 @@ module tb_siphash_core();
   //----------------------------------------------------------------
   task run_old_short_test_vector;
     begin
+      inc_test_ctr();
       display_state = 0;
       tb_key = 128'h0f0e0d0c0b0a09080706050403020100;
       $display("Running test with vectors from the SipHash paper.");
@@ -323,6 +366,7 @@ module tb_siphash_core();
         end
       else
         begin
+          inc_error_ctr();
           $display("Error: incorrect digest for siphash paper test vector received.");
           $display("Expected: 0x%016x", 64'ha129ca6149be45e5);
           $display("Recived:  0x%016x", tb_siphash_word);
@@ -337,21 +381,8 @@ module tb_siphash_core();
   //----------------------------------------------------------------
   initial
     begin : siphash_core_test
-      $display("   -- Testbench for siphash_core started --");
-
-      // Set clock, reset and DUT input signals to
-      // defined values at simulation start.
-      tb_c         = 4'h2;
-      tb_d         = 4'h4;
-      tb_mi        = 64'h0;
-      tb_key       = 128'h0;
-      tb_initalize = 0;
-      tb_compress  = 0;
-      tb_finalize  = 0;
-      tb_long      = 0;
-      cycle_ctr    = 0;
-      tb_clk       = 0;
-      tb_reset_n   = 0;
+      $display("   -- Test of siphash core started --");
+      tb_init();
 
       dump_state();
       display_state = 0;
@@ -373,8 +404,10 @@ module tb_siphash_core();
       dump_state();
       dump_outputs();
 
-      // Finish in style.
-      $display("siphash_core simulation done.");
+      $display("");
+      $display("   -- Test of siphash core completed --");
+      $display("Tests executed: %04d", test_ctr);
+      $display("Tests failed:   %04d", error_ctr);
       $finish;
     end // siphash_core_test
 
