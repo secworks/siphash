@@ -89,7 +89,7 @@ integration into a system on chip.
 
 ## Implementation results ##
 
-**(Altera Cyclone V)***
+**(Altera Cyclone V)**
 
 - Specific device: 5CGXFC7D6F31C7
 - ALMs: 657
