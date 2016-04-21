@@ -95,7 +95,6 @@ module tb_siphash();
   //----------------------------------------------------------------
   // Register and Wire declarations.
   //----------------------------------------------------------------
-  // Cycle counter.
   reg [31 : 0] cycle_ctr;
   reg [31 : 0] test_ctr;
   reg [31 : 0] error_ctr;
