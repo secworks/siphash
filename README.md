@@ -98,7 +98,30 @@ integration into a system on chip.
 - 116 MHz max, slow 85c model
 
 
+**(Altera Cyclone IV E)**
+
+- Specific device: EP4CE6F17C6
+- LEs: 1576
+- Regs: 794
+- No memory blocks, DSPs allocated
+- 101 MHz max, slow 85c model
+
+As a comparison, building the OpenCores MD5 core [2] using the same tools and for the same target device requires the following amount of resources:
+
+- Number of LEs: 1883
+- Number of regs: 910
+- Max frequency: 62 MHz
+
+Note: MD5 processing takes at least 64 cycles for a message block.
+
+
 ## Status ##
+
+**(2016-05-02)**
+
+Added implementation results for Cyclone IV E. Restored numbers for MD5,
+even though the comparison is somewhat irrelevant.
+
 
 **(2016-04-21)**
 
