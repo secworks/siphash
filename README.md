@@ -1,4 +1,4 @@
-# SipHash Core #
+# SipHash #
 ## Introduction ##
 
 This is a hardware implementation of the SipHash [1] keyed hash
