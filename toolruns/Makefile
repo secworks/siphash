@@ -36,28 +36,39 @@
 #=======================================================================
 
 CORE_SRC = ../src/rtl/siphash_core.v
-TOP_SRC = ../src/rtl/siphash.v $(CORE_SRC)
-
-TOP_TB = ../src/tb/tb_siphash.v
 CORE_TB = ../src/tb/tb_siphash_core.v
 
+TOP_SRC = ../src/rtl/siphash.v $(CORE_SRC)
+TOP_TB = ../src/tb/tb_siphash.v
+
 CC = iverilog
+CC_FLAGS= -Wall
+
 LINT=verilator
+LINT_FLAGS = +1364-2001ext+ --lint-only -Wall -Wno-fatal -Wno-DECLFILENAME
 
 
-all:    top core
+all: top.sim core.sim
 
 
-top:	$(TOP_TB) $(TOP_SRC)
-	iverilog -Wall -o top.sim $(TOP_TB) $(TOP_SRC)
+top.sim: $(TOP_TB_SRC) $(TOP_SRC)
+	$(CC) $(CC_FLAGS) -o top.sim $(TOP_TB_SRC) $(TOP_SRC)
 
 
-core:	$(CORE_TB) $(CORE_SRC)
-	iverilog -Wall -o core.sim $(CORE_TB) $(CORE_SRC)
+core.sim: $(CORE_TB_SRC) $(CORE_SRC)
+	$(CC) $(CC_FLAGS) -o core.sim $(CORE_SRC) $(CORE_TB_SRC)
 
 
-lint:
-	verilator --lint-only -Wall $(TOP_SRC)
+sim-top: top.sim
+	./top.sim
+
+
+sim-core: core.sim
+	./core.sim
+
+
+lint: $(TOP_SRC)
+	$(LINT) $(LINT_FLAGS) $(TOP_SRC)
 
 
 clean:
