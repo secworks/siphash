@@ -36,10 +36,10 @@
 #=======================================================================
 
 CORE_SRC = ../src/rtl/siphash_core.v
-CORE_TB = ../src/tb/tb_siphash_core.v
+CORE_TB_SRC = ../src/tb/tb_siphash_core.v
 
 TOP_SRC = ../src/rtl/siphash.v $(CORE_SRC)
-TOP_TB = ../src/tb/tb_siphash.v
+TOP_TB_SRC = ../src/tb/tb_siphash.v
 
 CC = iverilog
 CC_FLAGS= -Wall
