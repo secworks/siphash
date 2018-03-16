@@ -95,7 +95,7 @@ integration into a system on chip.
 
 ### Altera FPGAs ###
 
-**(Altera Cyclone V)**
+**Altera Cyclone V**
 
 - Specific device: 5CGXFC7D6F31C7
 - ALMs: 657
@@ -104,21 +104,13 @@ integration into a system on chip.
 - 116 MHz max, slow 85c model
 
 
-**(Altera Cyclone IV E)**
+**Altera Cyclone IV E**
 
 - Specific device: EP4CE6F17C6
 - LEs: 1576
 - Regs: 794
 - No memory blocks, DSPs allocated
 - 101 MHz max, slow 85c model
-
-As a comparison, building the OpenCores MD5 core [2] using the same tools and for the same target device requires the following amount of resources:
-
-- Number of LEs: 1883
-- Number of regs: 910
-- Max frequency: 62 MHz
-
-Note: MD5 processing takes at least 64 cycles for a message block.
 
 
 ### Xilinx FPGAs ###
