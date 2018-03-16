@@ -33,7 +33,7 @@ LICENSE.txt for more information.
 
 ## Status ##
 
-The core is done and has been tested in FPGAs.
+The core is completed and has been tested in FPGAs.
 
 
 ## Usage ##
