@@ -31,6 +31,10 @@ Implementation notes below for more information.
 This core is released as open source under a BSD license, see
 LICENSE.txt for more information.
 
+## Status ##
+
+The core is done and has been tested in FPGAs.
+
 
 ## Usage ##
 
@@ -89,6 +93,8 @@ integration into a system on chip.
 
 ## Implementation results ##
 
+### Altera FPGAs ###
+
 **(Altera Cyclone V)**
 
 - Specific device: 5CGXFC7D6F31C7
@@ -115,78 +121,22 @@ As a comparison, building the OpenCores MD5 core [2] using the same tools and fo
 Note: MD5 processing takes at least 64 cycles for a message block.
 
 
-## Status ##
+### Xilinx FPGAs ###
 
-**(2016-05-02)**
+**Spartan-6**
+- xc6slx75-3fgg676
+- 1235 LUTs
+- 345 Slices
+- 793 regs
+- 114 MHz
 
-Added implementation results for Cyclone IV E. Restored numbers for MD5,
-even though the comparison is somewhat irrelevant.
-
-
-**(2016-04-21)**
-
-The testbench for the top now tests long hash mode, which simulates
-correctly. Now we have a core that works for short and long hash modes
-and testbenches that perform self checking tests of both modes at core
-and top level. Finally a Python model with a good number of tests to
-drive verification of the core.
-
-There is also implementation results, see above.
-
-This core is now DONE. Core version has been updated to 2.00.
-
-
-**(2016-04-20)**
-
-The core now supports 128-bit long hashes as well as 64-bit hashes. The
-core generates expected results. There is a first test case for long
-hashes in the core testbench.
-
-The Python model supports short and long hashes and uses all test cases
-from ([the reference code by Aumasson](https://github.com/veorq/SipHash))
-
-What is left to do:
-
-  - Implement long hash test case in the top level testbench and verify
-    that it works
-  - Implement all test cases in core and top level testbenches
-  - Do test implementations for different FPGAs and update resource and
-    performance information
-  - Do a real test implementation on a FPGA dev board.
-
-Then the core is really done.
-
-
-**(2016-04-12)**
-
-The top level now generates tje correct result for the SipHash paper
-test vectors. The top level test bench contains self checking test cases
-for name and version of the DUT as well as for the SipHash paper test
-vector test case.
-
-Next up is fixing the long mode.
-
-
-**(2016-04-06)**
-
-The core has now actually been debugged and generates the correct result
-for the test vectors in the SipHash paper. Amazing that I actually
-haven't done this before.
-
-The top level wrapper generates the correct results, but not the way I
-expect it too. There is also the beginnings of support for the long
-digest mode in the test benches, but core and top lacks functionality
-for it.
-
-There has been substantial cleanup work done to the core. It is now much
-more compact and readable. I guess one learn by doing stuff...
-
-
-**(2015-01-24)**
-
-The core now includes the first parts of a beta implementation of the
-long version with 128 bit digest.
-
+**Artix-7**
+- xc7a200t-3fbg484
+- 998 LUTs
+- 432 Slices
+- 789 regs
+- 173 MHz
+- 66 cycles latency
 
 
 ## Contact information ##
