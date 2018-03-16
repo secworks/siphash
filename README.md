@@ -131,12 +131,6 @@ integration into a system on chip.
 - 66 cycles latency
 
 
-## Contact information ##
-
-For any questions and inquiries regarding the siphash core, please
-contact Secworks Sweden AB: http://secworks.se/
-
-
 ## References ##
 
 [1] J-P. Aumasson, D. J. Bernstein. SipHash: a fast short-input PRF.
