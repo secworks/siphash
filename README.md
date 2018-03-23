@@ -128,7 +128,6 @@ integration into a system on chip.
 - 432 Slices
 - 789 regs
 - 173 MHz
-- 66 cycles latency
 
 
 ## References ##
