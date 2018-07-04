@@ -192,7 +192,7 @@ module siphash(
   // All registers are positive edge triggered with
   // asynchronous active low reset.
   //----------------------------------------------------------------
-  always @ (posedge clk)
+  always @ (posedge clk or negedge reset_n)
     begin
       if (!reset_n)
         begin
