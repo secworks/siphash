@@ -374,7 +374,7 @@ module tb_siphash();
     reg [127 : 0] result;
     begin
       inc_test_ctr();
-      $display("\nTC2: Testing eight block long hash.");
+      $display("\nTC: Testing eight block long hash.");
 
       $display("Setting long hash mode..");
       write_word(ADDR_CONFIG, 32'h01);
@@ -466,6 +466,193 @@ module tb_siphash();
 
 
   //----------------------------------------------------------------
+  // run_14_byte_short_test()
+  //
+  // Perform testing of short hash with 14 byte long message.
+  //----------------------------------------------------------------
+  task run_14_byte_short_test;
+    reg [63 : 0] result;
+    begin
+      inc_test_ctr();
+      $display("\nTC: Testing short hash with 14 byte long message.");
+
+      $display("Setting short hash mode..");
+      write_word(ADDR_CONFIG, 32'h00);
+      wait_ready();
+
+      $display("Starting key based init.");
+      write_word(ADDR_KEY0, 32'h03020100);
+      write_word(ADDR_KEY1, 32'h07060504);
+      write_word(ADDR_KEY2, 32'h0b0a0908);
+      write_word(ADDR_KEY3, 32'h0f0e0d0c);
+      write_word(ADDR_CTRL, 3'h1);
+      wait_ready();
+
+      $display("\nStarting compression of first block.");
+      write_word(ADDR_MI0, 32'h03020100);
+      write_word(ADDR_MI1, 32'h07060504);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of second block.");
+      write_word(ADDR_MI0, 32'h0b0a0908);
+      write_word(ADDR_MI1, 32'h0e000d0c);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting finalization.");
+      write_word(ADDR_CTRL, 3'h4);
+      wait_ready();
+
+      $display("\nReading out digest.");
+      read_word(ADDR_WORD0);
+      result[031 : 000] = read_data;
+      read_word(ADDR_WORD1);
+      result[063 : 032] = read_data;
+
+      if (result == 64'hf723ca908e7af2ee)
+        begin
+          $display("Correct hash for short hash with 14 byte long message received.");
+        end
+      else
+        begin
+          inc_error_ctr();
+          $display("Error: Incorrect hash for short hash with 14 byte long message received.");
+          $display("Expected: 0x%016x", 64'hf723ca908e7af2ee);
+          $display("Recived:  0x%016x", result);
+        end
+    end
+  endtask // run_14_byte_short_test
+
+
+  //----------------------------------------------------------------
+  // run_15_byte_short_test()
+  //
+  // Perform testing of short hash with 15 byte long message.
+  //----------------------------------------------------------------
+  task run_15_byte_short_test;
+    reg [63 : 0] result;
+    begin
+      inc_test_ctr();
+      $display("\nTC: Testing short hash with 15 byte long message.");
+
+      $display("Setting short hash mode..");
+      write_word(ADDR_CONFIG, 32'h00);
+      wait_ready();
+
+      $display("Starting key based init.");
+      write_word(ADDR_KEY0, 32'h03020100);
+      write_word(ADDR_KEY1, 32'h07060504);
+      write_word(ADDR_KEY2, 32'h0b0a0908);
+      write_word(ADDR_KEY3, 32'h0f0e0d0c);
+      write_word(ADDR_CTRL, 3'h1);
+      wait_ready();
+
+      $display("\nStarting compression of first block.");
+      write_word(ADDR_MI0, 32'h03020100);
+      write_word(ADDR_MI1, 32'h07060504);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of second block.");
+      write_word(ADDR_MI0, 32'h0b0a0908);
+      write_word(ADDR_MI1, 32'h0f0e0d0c);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting finalization.");
+      write_word(ADDR_CTRL, 3'h4);
+      wait_ready();
+
+      $display("\nReading out digest.");
+      read_word(ADDR_WORD0);
+      result[031 : 000] = read_data;
+      read_word(ADDR_WORD1);
+      result[063 : 032] = read_data;
+
+      if (result == 64'ha129ca6149be45e5)
+        begin
+          $display("Correct hash for short hash with 15 byte long message received.");
+        end
+      else
+        begin
+          inc_error_ctr();
+          $display("Error: Incorrect hash for short hash with 15 byte long message received.");
+          $display("Expected: 0x%016x", 64'ha129ca6149be45e5);
+          $display("Recived:  0x%016x", result);
+        end
+    end
+  endtask // run_15_byte_short_test
+
+
+  //----------------------------------------------------------------
+  // run_16_byte_short_test()
+  //
+  // Perform testing of short hash with 16 byte long message.
+  // This testcase requires a third padding block.
+  //----------------------------------------------------------------
+  task run_16_byte_short_test;
+    reg [63 : 0] result;
+    begin
+      inc_test_ctr();
+      $display("\nTC: Testing short hash with 16 byte long message.");
+
+      $display("Setting short hash mode..");
+      write_word(ADDR_CONFIG, 32'h00);
+      wait_ready();
+
+      $display("Starting key based init.");
+      write_word(ADDR_KEY0, 32'h03020100);
+      write_word(ADDR_KEY1, 32'h07060504);
+      write_word(ADDR_KEY2, 32'h0b0a0908);
+      write_word(ADDR_KEY3, 32'h0f0e0d0c);
+      write_word(ADDR_CTRL, 3'h1);
+      wait_ready();
+
+      $display("\nStarting compression of first block.");
+      write_word(ADDR_MI0, 32'h03020100);
+      write_word(ADDR_MI1, 32'h07060504);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of second block.");
+      write_word(ADDR_MI0, 32'h0b0a0908);
+      write_word(ADDR_MI1, 32'h0f0e0d0c);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of third block.");
+      write_word(ADDR_MI0, 32'h00000000);
+      write_word(ADDR_MI1, 32'h10000000);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting finalization.");
+      write_word(ADDR_CTRL, 3'h4);
+      wait_ready();
+
+      $display("\nReading out digest.");
+      read_word(ADDR_WORD0);
+      result[031 : 000] = read_data;
+      read_word(ADDR_WORD1);
+      result[063 : 032] = read_data;
+
+      if (result == 64'h3f2acc7f57c29bdb)
+        begin
+          $display("Correct hash for short hash with 16 byte long message received.");
+        end
+      else
+        begin
+          inc_error_ctr();
+          $display("Error: Incorrect hash for short hash with 16 byte long message received.");
+          $display("Expected: 0x%016x", 64'h3f2acc7f57c29bdb);
+          $display("Recived:  0x%016x", result);
+        end
+    end
+  endtask // run_16_byte_short_test
+
+
+  //----------------------------------------------------------------
   // run_long_test()
   //
   // Perform testing of long hash based on the reference model.
@@ -474,7 +661,7 @@ module tb_siphash();
     reg [127 : 0] result;
     begin
       inc_test_ctr();
-      $display("\nTC2: Testing long hash.");
+      $display("\nTC: Testing long hash.");
 
       $display("Setting long hash mode..");
       write_word(ADDR_CONFIG, 32'h01);
@@ -539,7 +726,7 @@ module tb_siphash();
     reg [127 : 0] result;
     begin
       inc_test_ctr();
-      $display("\nTC2: Testing with test vectors from SipHash paper.");
+      $display("\nTC: Testing with test vectors from SipHash paper.");
 
       $display("Starting key based init.");
       write_word(ADDR_KEY0, 32'h03020100);
@@ -604,6 +791,9 @@ module tb_siphash();
       run_paper_test_vector();
       run_long_test();
       run_eight_block_test();
+      run_14_byte_short_test();
+      run_15_byte_short_test();
+      run_16_byte_short_test();
 
       $display("");
       $display("   -- Test of SipHash top level wrapper completed --");
