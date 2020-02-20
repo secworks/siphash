@@ -1,4 +1,10 @@
 # SipHash #
+
+## Status ##
+
+The core is completed and has been tested in several FPGAs designs.
+
+
 ## Introduction ##
 
 This is a hardware implementation of the SipHash [1] keyed hash
@@ -25,15 +31,11 @@ the correct response to the testvectors in Appendix A of the SipHash
 paper [1]. The project also includes a simple Makefile for compiling the
 core using Icarus Verilog [3].
 
-The core has been implemented in an Altera Cyclone IV GX FPGA, see
+The core has been implemented in Altera and Xilinx FPGA devices. See
 Implementation notes below for more information.
 
 This core is released as open source under a BSD license, see
 LICENSE.txt for more information.
-
-## Status ##
-
-The core is completed and has been tested in FPGAs.
 
 
 ## Usage ##
@@ -49,6 +51,10 @@ described in the SipHash paper.
 
 Processing a message block is done by assigning the block to the message
 block port (mi) and asserting the (compress) flag.
+
+Note that the core does not know the length of the message and does not
+perform final padding. The user of the core is expected to perform
+padding including setting length of the message in the final block.
 
 After all blocks in the message has been processed the processing is
 completed by asserting the (finalize) flag for one cycle.
