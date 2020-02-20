@@ -364,6 +364,108 @@ module tb_siphash();
 
 
   //----------------------------------------------------------------
+  // run_eight_block_test()
+  //
+  // Perform testing with a message with 3f bytes. With padding
+  // this becomes eight full blocks.
+  // See final test in model/long_test_vectors.txt for vectors.
+  //----------------------------------------------------------------
+  task run_eight_block_test;
+    reg [127 : 0] result;
+    begin
+      inc_test_ctr();
+      $display("\nTC2: Testing eight block long hash.");
+
+      $display("Setting long hash mode..");
+      write_word(ADDR_CONFIG, 32'h01);
+      wait_ready();
+
+      $display("Starting key based init.");
+      write_word(ADDR_KEY0, 32'h03020100);
+      write_word(ADDR_KEY1, 32'h07060504);
+      write_word(ADDR_KEY2, 32'h0b0a0908);
+      write_word(ADDR_KEY3, 32'h0f0e0d0c);
+      write_word(ADDR_CTRL, 3'h1);
+      wait_ready();
+
+      $display("\nStarting compression of block 1.");
+      write_word(ADDR_MI0, 32'h03020100);
+      write_word(ADDR_MI1, 32'h07060504);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of block 2.");
+      write_word(ADDR_MI0, 32'h0b0a0908);
+      write_word(ADDR_MI1, 32'h0f0e0d0c);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of block 3.");
+      write_word(ADDR_MI0, 32'h13121110);
+      write_word(ADDR_MI1, 32'h17161514);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of block 4.");
+      write_word(ADDR_MI0, 32'h1b1a1918);
+      write_word(ADDR_MI1, 32'h1f1e1d1c);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of block 5.");
+      write_word(ADDR_MI0, 32'h23222120);
+      write_word(ADDR_MI1, 32'h27262524);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of block 6.");
+      write_word(ADDR_MI0, 32'h2b2a2928);
+      write_word(ADDR_MI1, 32'h2f2e2d2c);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of block 7.");
+      write_word(ADDR_MI0, 32'h33323130);
+      write_word(ADDR_MI1, 32'h37363534);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting compression of block 8.");
+      write_word(ADDR_MI0, 32'h3b3a3938);
+      write_word(ADDR_MI1, 32'h3f3e3d3c);
+      write_word(ADDR_CTRL, 3'h2);
+      wait_ready();
+
+      $display("\nStarting finalization.");
+      write_word(ADDR_CTRL, 3'h4);
+      wait_ready();
+
+      $display("\nReading out digest.");
+      read_word(ADDR_WORD0);
+      result[031 : 000] = read_data;
+      read_word(ADDR_WORD1);
+      result[063 : 032] = read_data;
+      read_word(ADDR_WORD2);
+      result[095 : 064] = read_data;
+      read_word(ADDR_WORD3);
+      result[127 : 096] = read_data;
+
+      if (result == 128'h7cbd3f979a063e504a83502f77d15051)
+        begin
+          $display("Correct hash for eight block long test received.");
+        end
+      else
+        begin
+          inc_error_ctr();
+          $display("Error: incorrect hash for long test received.");
+          $display("Expected: 0x%016x", 128'h7cbd3f979a063e504a83502f77d15051);
+          $display("Recived:  0x%016x", result);
+        end
+    end
+  endtask // run_eight_block_test
+
+
+  //----------------------------------------------------------------
   // run_long_test()
   //
   // Perform testing of long hash based on the reference model.
@@ -501,6 +603,7 @@ module tb_siphash();
       check_name_version();
       run_paper_test_vector();
       run_long_test();
+      run_eight_block_test();
 
       $display("");
       $display("   -- Test of SipHash top level wrapper completed --");
