@@ -224,9 +224,9 @@ def load_test_vectors(filename):
 
 
 #-------------------------------------------------------------------
-# siphash_short_test()
+# siphash_long_test()
 #
-# Runs 64 test with siphash in long mode, i.e. with
+# Runs 64 tests with siphash in long mode, i.e. with
 # 128 bit digest output.
 #-------------------------------------------------------------------
 def siphash_long_test():
@@ -255,7 +255,7 @@ def siphash_long_test():
 #-------------------------------------------------------------------
 # siphash_short_test()
 #
-# Runs 64 test with siphash in short mode, i.e. with
+# Runs 64 tests with siphash in short mode, i.e. with
 # 64 bit digest output.
 #-------------------------------------------------------------------
 def siphash_short_test():
