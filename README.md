@@ -7,8 +7,7 @@ The core is completed and has been tested in several FPGAs designs.
 
 ## Introduction ##
 
-This is a hardware implementation of the SipHash [1] keyed hash
-function written in Verilog 2001.
+This is a hardware implementation of the [SipHash short-input PRF](https://131002.net/siphash/siphash.pdf) written in Verilog 2001.
 
 The implementation is designed as a self contained core that performs
 the message block processing including initialization, compression and
@@ -21,10 +20,7 @@ combinations from SipHash-1-1 to SipHash-15-15.
 
 The core is suitable as an application specific SipHash coprocessor
 offloading compact 8, 16 or 32 bit processors from hashing, PRF
-generation and Message Authentication Code (MAC) processing. The core is
-substantially faster and more compact in terms of hardware resources
-than for example cores implementing the MD5 cryptographic hash
-function.
+generation and Message Authentication Code (MAC) processing.
 
 The project includes a testbench that verifies that the core generates
 the correct response to the testvectors in Appendix A of the SipHash
@@ -141,12 +137,7 @@ integration into a system on chip.
 [1] J-P. Aumasson, D. J. Bernstein. SipHash: a fast short-input PRF.
 
   - SipHash Project: https://131002.net/siphash/
-  - Siphash Paper: https://131002.net/siphash/siphash.pdf
-
-
-[2] OpenCores. MD5 core.
-
-  - Core home page: http://opencores.org/project,systemcmd5
+  - Siphash Paper:
 
 
 [3] Icarus Verilog
