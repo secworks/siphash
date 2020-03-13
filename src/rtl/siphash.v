@@ -127,7 +127,6 @@ module siphash(
   wire           core_initalize;
   wire           core_compress;
   wire           core_finalize;
-  wire           core_long;
   wire [3 : 0]   core_c;
   wire [3 : 0]   core_d;
   wire [127 : 0] core_key;
@@ -145,7 +144,6 @@ module siphash(
   assign core_initalize  = ctrl_reg[CTRL_INIT_BIT];
   assign core_compress   = ctrl_reg[CTRL_COMPRESS_BIT];
   assign core_finalize   = ctrl_reg[CTRL_FINALIZE_BIT];
-  assign core_long       = long_reg;
   assign core_c          = param_reg[(SIPHASH_START_C + SIPHASH_SIZE_C - 1) :
                                      SIPHASH_START_C];
   assign core_d          = param_reg[(SIPHASH_START_D + SIPHASH_SIZE_D - 1) :
@@ -164,7 +162,7 @@ module siphash(
                     .initalize(core_initalize),
                     .compress(core_compress),
                     .finalize(core_finalize),
-                    .long(core_long),
+                    .long(long_reg),
 
                     .compression_rounds(core_c),
                     .final_rounds(core_d),
