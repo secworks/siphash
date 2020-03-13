@@ -252,13 +252,9 @@ module siphash(
             begin
               case (addr)
                 ADDR_CTRL:   ctrl_new = write_data[2 : 0];
-
                 ADDR_CONFIG: long_we = 1'b1;
-
                 ADDR_PARAM:  param_we  = 1'b1;
-
                 ADDR_MI0:    mi0_we  = 1'b1;
-
                 ADDR_MI1:    mi1_we  = 1'b1;
 
                 default:
@@ -274,22 +270,14 @@ module siphash(
             begin
               case (addr)
                 ADDR_NAME0:   tmp_read_data = CORE_NAME0;
-
                 ADDR_NAME1:   tmp_read_data = CORE_NAME1;
-
                 ADDR_VERSION: tmp_read_data = CORE_VERSION;
-
                 ADDR_STATUS:  tmp_read_data = {30'h0, core_siphash_word_valid, core_ready};
-
                 ADDR_PARAM:   tmp_read_data = {24'h0, param_reg};
-
                 ADDR_WORD0:   tmp_read_data = word0_reg;
-
                 ADDR_WORD1:   tmp_read_data = word1_reg;
-
                 ADDR_WORD2:   tmp_read_data = word2_reg;
-
-                ADDR_WORD3:  tmp_read_data = word3_reg;
+                ADDR_WORD3:   tmp_read_data = word3_reg;
 
                 default:
                   begin
