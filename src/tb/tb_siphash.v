@@ -195,8 +195,8 @@ module tb_siphash();
   task dump_state;
     begin
       $display("Internal top state:");
-      $display("key0_reg = 0x%08x, key1_reg = 0x%08x", dut.key0_reg, dut.key1_reg);
-      $display("key2_reg = 0x%08x, key3_reg = 0x%08x", dut.key2_reg, dut.key3_reg);
+      $display("key0_reg = 0x%08x, key1_reg = 0x%08x", dut.key_reg[0], dut.key_reg[1]);
+      $display("key2_reg = 0x%08x, key3_reg = 0x%08x", dut.key_reg[2], dut.key_reg[3]);
       $display("mi0_reg  = 0x%08x, mi1_reg  = 0x%08x", dut.mi0_reg, dut.mi1_reg);
       $display("");
 

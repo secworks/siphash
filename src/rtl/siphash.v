@@ -104,17 +104,8 @@ module siphash(
   reg [7 : 0]  param_reg;
   reg          param_we;
 
-  reg [31 : 0] key0_reg;
-  reg          key0_we;
-
-  reg [31 : 0] key1_reg;
-  reg          key1_we;
-
-  reg [31 : 0] key2_reg;
-  reg          key2_we;
-
-  reg [31 : 0] key3_reg;
-  reg          key3_we;
+  reg [31 : 0] key_reg[0 : 3];
+  reg          key_we;
 
   reg [31 : 0] mi0_reg;
   reg          mi0_we;
@@ -139,7 +130,7 @@ module siphash(
   wire           core_long;
   wire [3 : 0]   core_c;
   wire [3 : 0]   core_d;
-  wire [127 : 0] core_k;
+  wire [127 : 0] core_key;
   wire [63 : 0]  core_mi;
   wire           core_ready;
   wire [127 : 0] core_siphash_word;
@@ -159,7 +150,7 @@ module siphash(
                                      SIPHASH_START_C];
   assign core_d          = param_reg[(SIPHASH_START_D + SIPHASH_SIZE_D - 1) :
                                      SIPHASH_START_D];
-  assign core_k          = {key3_reg, key2_reg, key1_reg, key0_reg};
+  assign core_key        = {key_reg[3], key_reg[2], key_reg[1], key_reg[0]};
   assign core_mi         = {mi1_reg, mi0_reg};
 
 
@@ -177,7 +168,7 @@ module siphash(
 
                     .compression_rounds(core_c),
                     .final_rounds(core_d),
-                    .key(core_k),
+                    .key(core_key),
                     .mi(core_mi),
 
                     .ready(core_ready),
@@ -193,17 +184,17 @@ module siphash(
   // synchronous active low reset.
   //----------------------------------------------------------------
   always @ (posedge clk)
-    begin
+    begin : reg_update
+      integer i;
+
       if (!reset_n)
         begin
-          // Reset all registers to defined values.
+          for (i = 0 ; i < 4 ; i = i + 1)
+            key_reg[i] <= 32'h0;
+
           ctrl_reg  <= 3'h0;
           long_reg  <= 1'b0;
           param_reg <= {SIPHASH_DEFAULT_D, SIPHASH_DEFAULT_C};
-          key0_reg  <= 32'h0;
-          key1_reg  <= 32'h0;
-          key2_reg  <= 32'h0;
-          key3_reg  <= 32'h0;
           mi0_reg   <= 32'h0;
           mi1_reg   <= 32'h0;
           word0_reg <= 32'h0;
@@ -221,17 +212,8 @@ module siphash(
           if (param_we)
             param_reg <= write_data[7 : 0];
 
-          if (key0_we)
-            key0_reg <= write_data;
-
-          if (key1_we)
-            key1_reg <= write_data;
-
-          if (key2_we)
-            key2_reg <= write_data;
-
-          if (key3_we)
-            key3_reg <= write_data;
+          if (key_we)
+            key_reg[addr[1 : 0]] <= write_data;
 
           if (mi0_we)
             mi0_reg <= write_data;
@@ -260,10 +242,7 @@ module siphash(
       ctrl_new      = 3'h0;
       long_we       = 1'b0;
       param_we      = 1'b0;
-      key0_we       = 1'b0;
-      key1_we       = 1'b0;
-      key2_we       = 1'b0;
-      key3_we       = 1'b0;
+      key_we        = 1'b0;
       mi0_we        = 1'b0;
       mi1_we        = 1'b0;
 
@@ -272,90 +251,45 @@ module siphash(
           if (we)
             begin
               case (addr)
-                ADDR_CTRL:
-                  ctrl_new = write_data[2 : 0];
+                ADDR_CTRL:   ctrl_new = write_data[2 : 0];
 
-                ADDR_CONFIG:
-                  long_we = 1'b1;
+                ADDR_CONFIG: long_we = 1'b1;
 
-                ADDR_PARAM:
-                  param_we  = 1'b1;
+                ADDR_PARAM:  param_we  = 1'b1;
 
-                ADDR_KEY0:
-                  key0_we  = 1'b1;
+                ADDR_MI0:    mi0_we  = 1'b1;
 
-                ADDR_KEY1:
-                  key1_we  = 1'b1;
-
-                ADDR_KEY2:
-                  key2_we  = 1'b1;
-
-                ADDR_KEY3:
-                  key3_we  = 1'b1;
-
-                ADDR_MI0:
-                  mi0_we  = 1'b1;
-
-                ADDR_MI1:
-                  mi1_we  = 1'b1;
+                ADDR_MI1:    mi1_we  = 1'b1;
 
                 default:
                   begin
                   end
               endcase // case (addr)
+
+              if ((addr >= ADDR_KEY0) && (addr <= ADDR_KEY3))
+                key_we = 1'h1;
             end
 
           else
             begin
               case (addr)
-                ADDR_NAME0:
-                  tmp_read_data = CORE_NAME0;
+                ADDR_NAME0:   tmp_read_data = CORE_NAME0;
 
-                ADDR_NAME1:
-                  tmp_read_data = CORE_NAME1;
+                ADDR_NAME1:   tmp_read_data = CORE_NAME1;
 
-                ADDR_VERSION:
-                  tmp_read_data = CORE_VERSION;
+                ADDR_VERSION: tmp_read_data = CORE_VERSION;
 
-                ADDR_CTRL:
-                  tmp_read_data = {29'h0, ctrl_reg};
+                ADDR_STATUS:  tmp_read_data = {30'h0, core_siphash_word_valid, core_ready};
 
-                ADDR_STATUS:
-                  tmp_read_data = {30'h0, core_siphash_word_valid,
-                                   core_ready};
+                ADDR_PARAM:   tmp_read_data = {24'h0, param_reg};
 
-                ADDR_PARAM:
-                  tmp_read_data = {24'h0, param_reg};
+                ADDR_WORD0:   tmp_read_data = word0_reg;
 
-                ADDR_KEY0:
-                  tmp_read_data = key0_reg;
+                ADDR_WORD1:   tmp_read_data = word1_reg;
 
-                ADDR_KEY1:
-                  tmp_read_data = key1_reg;
+                ADDR_WORD2:   tmp_read_data = word2_reg;
 
-                ADDR_KEY2:
-                  tmp_read_data = key2_reg;
-
-                ADDR_KEY3:
-                  tmp_read_data = key3_reg;
-
-                ADDR_MI0:
-                  tmp_read_data = mi0_reg;
-
-                ADDR_MI1:
-                    tmp_read_data = mi1_reg;
-
-                ADDR_WORD0:
-                  tmp_read_data = word0_reg;
-
-                ADDR_WORD1:
-                  tmp_read_data = word1_reg;
-
-                ADDR_WORD2:
-                    tmp_read_data = word2_reg;
-
-                ADDR_WORD3:
-                  tmp_read_data = word3_reg;
+                ADDR_WORD3:  tmp_read_data = word3_reg;
 
                 default:
                   begin
