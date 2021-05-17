@@ -224,6 +224,15 @@ module siphash_core(
       reg [63 : 0] v2_tmp;
       reg [63 : 0] v3_tmp;
 
+
+      add_0_res = 64'h0;
+      add_1_res = 64'h0;
+      add_2_res = 64'h0;
+      add_3_res = 64'h0;
+      v0_tmp    = 64'h0;
+      v1_tmp    = 64'h0;
+      v2_tmp    = 64'h0;
+      v3_tmp    = 64'h0;
       v0_new    = 64'h0;
       v0_we     = 0;
       v1_new    = 64'h0;
