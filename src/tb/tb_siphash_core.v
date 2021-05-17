@@ -35,15 +35,17 @@
 //
 //======================================================================
 
+`default_nettype none
+
 module tb_siphash_core();
 
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
-  parameter DEBUG = 0;
+  localparam DEBUG = 0;
 
-  parameter CLK_HALF_PERIOD = 2;
-  parameter CLK_PERIOD      = 2 * CLK_HALF_PERIOD;
+  localparam CLK_HALF_PERIOD = 2;
+  localparam CLK_PERIOD      = 2 * CLK_HALF_PERIOD;
 
 
   //----------------------------------------------------------------

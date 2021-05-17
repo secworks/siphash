@@ -36,6 +36,8 @@
 //
 //======================================================================
 
+`default_nettype none
+
 module siphash(
                input wire           clk,
                input wire           reset_n,

@@ -41,6 +41,8 @@
 //
 //======================================================================
 
+`default_nettype none
+
 module siphash_core(
                     // Clock and reset.
                     input wire            clk,
