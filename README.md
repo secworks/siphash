@@ -108,35 +108,35 @@ Create and enter a new workspace
 mkdir workspace && cd workspace
 ~~~
 
-Register aes as a library in the workspace
+Register siphash as a library in the workspace
 ~~~
-fusesoc library add aes /path/to/aes
+fusesoc library add siphash /path/to/siphash
 ~~~
 
 ...if repo is available locally or...
 ...to get the upstream repo
 ~~~
-fusesoc library add aes https://github.com/secworks/aes
+fusesoc library add siphash https://github.com/secworks/siphash
 ~~~
 
 To run lint
 ~~~
-fusesoc run --target=lint secworks:crypto:aes
+fusesoc run --target=lint secworks:crypto:siphash
 ~~~
 
-Run tb_aes testbench
+Run tb_siphash testbench
 ~~~
-fusesoc run --target=tb_aes secworks:crypto:aes
+fusesoc run --target=tb_siphash secworks:crypto:siphash
 ~~~
 
 Run with modelsim instead of default tool (icarus)
 ~~~
-fusesoc run --target=tb_aes --tool=modelsim secworks:crypto:aes
+fusesoc run --target=tb_siphash --tool=modelsim secworks:crypto:siphash
 ~~~
 
 List all targets
 ~~~
-fusesoc core show secworks:crypto:aes
+fusesoc core show secworks:crypto:siphash
 ~~~
 
 ## Implementation results ##
