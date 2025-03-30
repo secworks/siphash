@@ -34,6 +34,14 @@ This core is released as open source under a BSD license, see
 LICENSE.txt for more information.
 
 
+### Contact information ##
+
+Assured provides customer support including customization, integration
+and system development related to the core. For more informantion,
+please contact [Assured Security
+Consultants](https://www.assured.se/contact).
+
+
 ## Usage ##
 
 The core accepts 64 bit blocks (mi) of a given message to process. Prior
