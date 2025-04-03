@@ -1,13 +1,14 @@
 # SipHash #
+Verilog implementation of the SipHash has function.
 
 ## Status ##
-
-The core is completed and has been tested in several FPGAs designs.
+The core is completed, functionally verified and has been tested in
+several FPGAs designs.
 
 
 ## Introduction ##
-
-This is a hardware implementation of the [SipHash short-input PRF](https://131002.net/siphash/siphash.pdf) written in Verilog 2001.
+This is a hardware implementation of the [SipHash short-input
+PRF](https://131002.net/siphash/siphash.pdf) written in Verilog 2001.
 
 The implementation is designed as a self contained core that performs
 the message block processing including initialization, compression and
@@ -35,9 +36,8 @@ LICENSE.txt for more information.
 
 
 ### Contact information ##
-
 Assured provides customer support including customization, integration
-and system development related to the core. For more informantion,
+and system development related to the core. For more information,
 please contact [Assured Security
 Consultants](https://www.assured.se/contact).
 
